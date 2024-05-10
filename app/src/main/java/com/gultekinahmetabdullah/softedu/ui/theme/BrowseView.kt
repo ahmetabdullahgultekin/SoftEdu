@@ -11,7 +11,7 @@ fun Learn(){
     val categories = listOf("Hits", "Happy", "Workout", "Running", "TGIF", "Yoga")
     LazyVerticalGrid(GridCells.Fixed(2)) {
         items(categories) { cat ->
-            LearnrItem(cat = cat, drawable = R.drawable.baseline_apps_24)
+            LearnerItem(cat = cat, drawable = R.drawable.baseline_apps_24)
         }
     }
 }
