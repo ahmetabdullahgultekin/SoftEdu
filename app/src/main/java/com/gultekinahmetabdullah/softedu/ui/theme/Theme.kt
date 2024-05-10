@@ -104,12 +104,6 @@ fun SoftEduTheme(
         }
     }
 
-    val colors = if (!useDarkTheme) {
-        LightColors
-    } else {
-        DarkColors
-    }
-
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,

@@ -265,7 +265,7 @@ fun MoreBottomSheet(modifier: Modifier){
 fun Navigation(navController: NavController, viewModel: MainViewModel, pd:PaddingValues){
 
     NavHost(navController = navController as NavHostController,
-        startDestination =/*Screen.DrawerScreen.Account.route*/viewModel.currentScreen.value.route,
+        startDestination = Screen.DrawerScreen.Account.route,
         modifier = Modifier.padding(pd) ){
 
         composable(Screen.BottomScreen.Home.bRoute){

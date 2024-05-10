@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -58,7 +58,7 @@ fun AccountView(){
             )
             Text(text = "Melik Ali")
         }
-        Divider()
+        HorizontalDivider()
 
         Row(modifier = Modifier.padding(top = 16.dp)) {
             Icon(
@@ -70,7 +70,7 @@ fun AccountView(){
             )
             Text(text = "Deligöz")
         }
-        Divider()
+        HorizontalDivider()
 
         Row(modifier = Modifier.padding(top = 16.dp)) {
             Icon(
@@ -82,7 +82,7 @@ fun AccountView(){
             )
             Text(text = "+90-532-123-45-67")
         }
-        Divider()
+        HorizontalDivider()
     }
 }
 @Preview(name = "Welcome Account", showBackground = true)

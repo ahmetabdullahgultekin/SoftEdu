@@ -11,7 +11,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -45,7 +45,7 @@ fun Subscription(){
 
                     }
                 }
-                Divider(thickness = 1.dp, modifier = Modifier.padding(horizontal = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp), thickness = 1.dp)
                 Row(Modifier.padding(vertical = 16.dp)) {
                     Icon(imageVector = Icons.Default.AccountBox, contentDescription = "Get a Plan")
                     Text(text = "Get a Plan")
