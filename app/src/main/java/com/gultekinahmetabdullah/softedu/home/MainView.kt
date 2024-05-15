@@ -1,4 +1,4 @@
-package com.gultekinahmetabdullah.softedu.ui.theme
+package com.gultekinahmetabdullah.softedu.home.theme
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -52,9 +52,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.gultekinahmetabdullah.softedu.MainViewModel
 import com.gultekinahmetabdullah.softedu.R
-import com.gultekinahmetabdullah.softedu.Screen
-import com.gultekinahmetabdullah.softedu.screensInBottom
-import com.gultekinahmetabdullah.softedu.screensInDrawer
+import com.gultekinahmetabdullah.softedu.home.Scoreboard
+import com.gultekinahmetabdullah.softedu.learning.Learn
+import com.gultekinahmetabdullah.softedu.theme.SoftEduTheme
+import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onSecondaryContainer
+import com.gultekinahmetabdullah.softedu.util.Screen
+import com.gultekinahmetabdullah.softedu.util.screensInBottom
+import com.gultekinahmetabdullah.softedu.util.screensInDrawer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

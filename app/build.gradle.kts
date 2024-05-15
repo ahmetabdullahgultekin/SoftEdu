@@ -51,6 +51,8 @@ android {
 
 dependencies {
 
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     //val nav_version = "2.7.5"
     //val compose_version = "1.6.0-alpha08"
     val nav_version = "2.7.7"
