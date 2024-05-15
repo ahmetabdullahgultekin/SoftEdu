@@ -1,4 +1,4 @@
-package com.gultekinahmetabdullah.softedu.ui.theme
+package com.gultekinahmetabdullah.softedu.home.theme
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gultekinahmetabdullah.softedu.theme.SoftEduTheme
 
 @Composable
 fun AccountView(){

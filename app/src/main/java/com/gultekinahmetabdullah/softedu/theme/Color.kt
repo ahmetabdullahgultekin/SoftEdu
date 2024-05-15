@@ -1,4 +1,4 @@
-package com.gultekinahmetabdullah.softedu.ui.theme
+package com.gultekinahmetabdullah.softedu.theme
 
 import androidx.compose.ui.graphics.Color
 

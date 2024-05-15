@@ -1,11 +1,12 @@
-package com.gultekinahmetabdullah.softedu
+package com.gultekinahmetabdullah.softedu.util
 
 import androidx.annotation.DrawableRes
+import com.gultekinahmetabdullah.softedu.R
 
 sealed class Screen(val title: String, val route: String) {
 
     sealed class BottomScreen(
-        val bTitle: String, val bRoute: String, @DrawableRes val icon: Int):Screen(bTitle,bRoute){
+        val bTitle: String, val bRoute: String, @DrawableRes val icon: Int): Screen(bTitle,bRoute){
         data object Home : BottomScreen(
             "Home", "home", R.drawable.baseline_home_24
         )

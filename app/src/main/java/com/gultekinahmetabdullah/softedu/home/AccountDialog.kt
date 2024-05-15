@@ -1,4 +1,4 @@
-package com.gultekinahmetabdullah.softedu.ui.theme
+package com.gultekinahmetabdullah.softedu.home.theme
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -1,4 +1,4 @@
-package com.gultekinahmetabdullah.softedu.ui.theme
+package com.gultekinahmetabdullah.softedu.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,8 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.gultekinahmetabdullah.softedu.Lib
-import com.gultekinahmetabdullah.softedu.libraries
+import com.gultekinahmetabdullah.softedu.util.Lib
+import com.gultekinahmetabdullah.softedu.util.libraries
 
 @Composable
 fun Scoreboard(){

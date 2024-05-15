@@ -9,8 +9,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.gultekinahmetabdullah.softedu.ui.theme.MainView
-import com.gultekinahmetabdullah.softedu.ui.theme.SoftEduTheme
+import com.gultekinahmetabdullah.softedu.home.theme.MainView
+import com.gultekinahmetabdullah.softedu.theme.SoftEduTheme
 
 class
 MainActivity : ComponentActivity() {

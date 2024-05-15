@@ -1,4 +1,4 @@
-package com.gultekinahmetabdullah.softedu.ui.theme
+package com.gultekinahmetabdullah.softedu.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
