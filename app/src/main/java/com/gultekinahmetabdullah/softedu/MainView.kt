@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,21 +39,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.gultekinahmetabdullah.softedu.MainViewModel
+import com.gultekinahmetabdullah.softedu.Navigation
 import com.gultekinahmetabdullah.softedu.R
-import com.gultekinahmetabdullah.softedu.home.Scoreboard
-import com.gultekinahmetabdullah.softedu.learning.Learn
-import com.gultekinahmetabdullah.softedu.theme.SoftEduTheme
 import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onSecondaryContainer
 import com.gultekinahmetabdullah.softedu.util.Screen
 import com.gultekinahmetabdullah.softedu.util.screensInBottom
@@ -64,7 +56,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainView(){
+fun MainView(controller: NavController){
 
     //val scaffoldState = rememberState
     val scope: CoroutineScope = rememberCoroutineScope()
@@ -73,7 +65,7 @@ fun MainView(){
 
     val modifier = if(isSheetFullScreen) Modifier.fillMaxSize() else Modifier.fillMaxWidth()
     // Allow us to find out on which "View" we current are
-    val controller: NavController = rememberNavController()
+    //val controller: NavController = rememberNavController()
     val navBackStackEntry by controller.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val dialogOpen = remember{
@@ -98,7 +90,7 @@ fun MainView(){
     val roundedCornerRadius = if(isSheetFullScreen) 0.dp else 12.dp
 
     val bottomBar:  @Composable () -> Unit = {
-        if(currentScreen is Screen.DrawerScreen || currentScreen == Screen.BottomScreen.Home){
+        if(currentScreen is Screen.AccountDrawerScreen || currentScreen == Screen.BottomScreen.Home){
             BottomAppBar(
                 Modifier.wrapContentSize(),
             ) {
@@ -153,7 +145,7 @@ fun MainView(){
             )
         },
         content = {
-            Navigation(navController = controller, viewModel = viewModel, pd = it)
+            Navigation(pd = it)
             AccountDialog(dialogOpen = dialogOpen)
         }
     )
@@ -195,7 +187,7 @@ fun MainView(){
 @Composable
 fun DrawerItem(
     selected: Boolean,
-    item: Screen.DrawerScreen,
+    item: Screen.AccountDrawerScreen,
     onDrawerItemClicked : () -> Unit
 ){
     val background = if (selected) md_theme_dark_onSecondaryContainer
@@ -261,43 +253,5 @@ fun MoreBottomSheet(modifier: Modifier){
                 )
             }
         }
-    }
-}
-
-
-@Composable
-fun Navigation(navController: NavController, viewModel: MainViewModel, pd:PaddingValues){
-
-    NavHost(navController = navController as NavHostController,
-        startDestination = Screen.DrawerScreen.Account.route,
-        modifier = Modifier.padding(pd) ){
-
-        composable(Screen.BottomScreen.Home.bRoute){
-            Home()
-        }
-
-        composable(Screen.BottomScreen.Learn.bRoute){
-            Learn()
-        }
-
-        composable(Screen.BottomScreen.Scoreboard.bRoute){
-            Scoreboard()
-        }
-
-        composable(Screen.DrawerScreen.Account.route){
-            AccountView()
-        }
-
-        composable(Screen.DrawerScreen.Subscription.route){
-            Subscription()
-        }
-    }
-
-}
-@Preview(name = "Welcome Account")
-@Composable
-fun WelcomeScreenPreview() {
-    SoftEduTheme {
-        MainView()
     }
 }

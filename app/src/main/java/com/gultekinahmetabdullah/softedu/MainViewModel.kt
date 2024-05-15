@@ -7,7 +7,7 @@ import com.gultekinahmetabdullah.softedu.util.Screen
 
 class MainViewModel:ViewModel() {
 
-    private val _currentScreen: MutableState<Screen> = mutableStateOf(Screen.DrawerScreen.Account)
+    private val _currentScreen: MutableState<Screen> = mutableStateOf(Screen.AccountDrawerScreen.Account)
 
     val currentScreen: MutableState<Screen>
         get() = _currentScreen

@@ -1,4 +1,4 @@
-package com.gultekinahmetabdullah.softedu.home.theme
+package com.gultekinahmetabdullah.softedu.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
