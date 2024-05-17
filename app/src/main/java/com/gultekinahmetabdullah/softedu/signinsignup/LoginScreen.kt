@@ -27,11 +27,10 @@ import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.gultekinahmetabdullah.softedu.util.Screen
 
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, currentUser: Boolean) {//TODO Signup Level add determination test
     val context = LocalContext.current
     val auth: FirebaseAuth = Firebase.auth
 
@@ -72,7 +71,13 @@ fun LoginScreen(navController: NavController) {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(context, "Sign in successful!", Toast.LENGTH_SHORT).show()
-                            navController.navigate(Screen.BottomScreen.Home.bRoute) // Navigate to "main" screen
+                            //navController.navigate(Screen.MainScreen.Main.mRoute)
+                            //Crash yiyor saçma statement
+                            //TODO Problem here
+                            // Navigate to "main" screen
+                            //If current user value changes, screen will change
+
+
                         } else {
                             Toast.makeText(context,
                                 "Please enter valid address.", Toast.LENGTH_SHORT).show()
@@ -95,7 +100,7 @@ fun LoginScreen(navController: NavController) {
                         if (task.isSuccessful) {
                             Toast.makeText(context, "Sign up successful!", Toast.LENGTH_SHORT).show()
                             // Navigate to "main" screen
-                            navController.navigate(Screen.BottomScreen.Home.bRoute)
+                            //navController.navigate(Screen.MainScreen.Main.mRoute)
                         } else {
                             Toast.makeText(
                                 context, "Sign up incomplete.", Toast.LENGTH_SHORT).show()

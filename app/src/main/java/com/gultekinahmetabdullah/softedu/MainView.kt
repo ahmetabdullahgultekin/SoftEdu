@@ -1,4 +1,4 @@
-package com.gultekinahmetabdullah.softedu.home.theme
+package com.gultekinahmetabdullah.softedu
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -44,9 +44,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.gultekinahmetabdullah.softedu.MainViewModel
-import com.gultekinahmetabdullah.softedu.Navigation
-import com.gultekinahmetabdullah.softedu.R
+import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.home.theme.AccountDialog
+import com.gultekinahmetabdullah.softedu.signinsignup.LoginScreen
 import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onSecondaryContainer
 import com.gultekinahmetabdullah.softedu.util.Screen
 import com.gultekinahmetabdullah.softedu.util.screensInBottom
@@ -56,7 +59,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainView(controller: NavController){
+fun MainView(){//TODO Add Feedback operation
 
     //val scaffoldState = rememberState
     val scope: CoroutineScope = rememberCoroutineScope()
@@ -65,7 +68,7 @@ fun MainView(controller: NavController){
 
     val modifier = if(isSheetFullScreen) Modifier.fillMaxSize() else Modifier.fillMaxWidth()
     // Allow us to find out on which "View" we current are
-    //val controller: NavController = rememberNavController()
+    val controller: NavController = rememberNavController()
     val navBackStackEntry by controller.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val dialogOpen = remember{
@@ -88,9 +91,12 @@ fun MainView(controller: NavController){
     )
 
     val roundedCornerRadius = if(isSheetFullScreen) 0.dp else 12.dp
+    val auth: FirebaseAuth = Firebase.auth
+    var isUserLoggedIn by remember { mutableStateOf(auth.currentUser != null) }
 
-    val bottomBar:  @Composable () -> Unit = {
-        if(currentScreen is Screen.AccountDrawerScreen || currentScreen == Screen.BottomScreen.Home){
+    var bottomBar:  @Composable () -> Unit = {
+        if(currentScreen is Screen.AccountDrawerScreen
+            || currentScreen == Screen.BottomScreen.Home){
             BottomAppBar(
                 Modifier.wrapContentSize(),
             ) {
@@ -98,7 +104,8 @@ fun MainView(controller: NavController){
                     item ->
                     val isSelected = currentRoute == item.bRoute
                     Log.d("Navigation",
-                        "Item: ${item.bTitle}, Current Route: $currentRoute, Is Selected: $isSelected")
+                        "Item: ${item.bTitle}, Current Route: $currentRoute," +
+                                " Is Selected: $isSelected")
                     val tint = if(isSelected)Color.Cyan else Color.Red
                     NavigationBarItem(selected = currentRoute == item.bRoute,
                         onClick = { controller.navigate(item.bRoute)
@@ -116,7 +123,19 @@ fun MainView(controller: NavController){
         }
     }
 
-    Scaffold(
+    //Here if user does not sign in so this if statement runs and it is login screen
+    if (!isUserLoggedIn){// logged in now
+        //Returns UI
+        LoginScreen(navController = controller, isUserLoggedIn)//
+        //TODO We have null variable controller
+        //Other navigator uses composable
+        //Eurake!
+        //IF CURRENTUSER VALUE CHANGES THAN ELSE RUNS
+    }
+
+    //Here if user signs in so this else statement runs and it is main screen
+    else {
+        Scaffold(
         bottomBar = bottomBar,
         topBar = {
             TopAppBar(
@@ -145,36 +164,38 @@ fun MainView(controller: NavController){
             )
         },
         content = {
-            Navigation(pd = it)
+            //This returns the selected screen
+            Navigation(navController = controller, viewModel = viewModel, pd = it)
             AccountDialog(dialogOpen = dialogOpen)
         }
     )
 
-    if (openBottomSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { openBottomSheet = false; isNavigationClicked = false },
-            sheetState = modalSheetState,
-            shape = RoundedCornerShape(
-                topStart = roundedCornerRadius,
-                topEnd = roundedCornerRadius
-            )
+        if (openBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { openBottomSheet = false; isNavigationClicked = false },
+                sheetState = modalSheetState,
+                shape = RoundedCornerShape(
+                    topStart = roundedCornerRadius,
+                    topEnd = roundedCornerRadius
+                )
 
-        ) {
-            if (!isNavigationClicked) {
-                MoreBottomSheet(modifier = modifier)
-            } else {
-                LazyColumn(Modifier.padding(16.dp)) {
-                    items(screensInDrawer) { item ->
-                        DrawerItem(selected = currentRoute == item.dRoute, item = item) {
-                            scope.launch {
-                                openBottomSheet = false
-                                isNavigationClicked = false
-                            }
-                            if (item.dRoute == "add_account") {
-                                dialogOpen.value = true
-                            } else {
-                                controller.navigate(item.dRoute)
-                                title.value = item.dTitle
+            ) {
+                if (!isNavigationClicked) {
+                    MoreBottomSheet(modifier = modifier)
+                } else {
+                    LazyColumn(Modifier.padding(16.dp)) {
+                        items(screensInDrawer) { item ->
+                            DrawerItem(selected = currentRoute == item.dRoute, item = item) {
+                                scope.launch {
+                                    openBottomSheet = false
+                                    isNavigationClicked = false
+                                }
+                                if (item.dRoute == "add_account") {
+                                    dialogOpen.value = true
+                                } else {
+                                    controller.navigate(item.dRoute)
+                                    title.value = item.dTitle
+                                }
                             }
                         }
                     }

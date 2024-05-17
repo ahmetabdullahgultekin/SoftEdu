@@ -73,6 +73,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx:23.0.0")
     implementation("com.google.firebase:firebase-common-ktx:21.0.0")
     implementation("com.google.firebase:firebase-firestore-ktx:25.0.0")
+    implementation("com.google.android.gms:play-services-games:23.1.0")
     //val nav_version = "2.7.5"
     //val compose_version = "1.6.0-alpha08"
     val nav_version = "2.7.7"

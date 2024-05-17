@@ -13,10 +13,11 @@ sealed class Screen(val title: String, val route: String) {
             )
     }
 
-    sealed class MainScreen(private val mTitle: String, val mRoute: String,
-                            @DrawableRes val icon: Int) : Screen(mTitle, mRoute){
+    sealed class MainScreen(
+        private val mTitle: String, val mRoute: String,
+        @DrawableRes val icon: Int) : Screen(mTitle, mRoute){
         data object Main : MainScreen(
-            "Main", "main", R.drawable.baseline_home_24
+            "Main", "main", R.drawable.baseline_login_24
         )
     }
 
