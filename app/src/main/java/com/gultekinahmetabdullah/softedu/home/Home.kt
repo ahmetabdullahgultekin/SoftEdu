@@ -1,4 +1,4 @@
-package com.gultekinahmetabdullah.softedu.home.theme
+package com.gultekinahmetabdullah.softedu.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -22,7 +22,7 @@ import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_tertiaryContainer
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Home(){
+fun Home(){//TODO Add Progress bar
     val categories = listOf("Hits", "Happy", "Workout", "Running", "TGIF", "Yoga")
     val grouped = listOf<String>("New Release","Favorites","Top  Rated").groupBy { it[0] }
     LazyColumn{

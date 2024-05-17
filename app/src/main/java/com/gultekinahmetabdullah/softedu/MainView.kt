@@ -1,4 +1,4 @@
-package com.gultekinahmetabdullah.softedu.home.theme
+package com.gultekinahmetabdullah.softedu
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,21 +39,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.gultekinahmetabdullah.softedu.MainViewModel
-import com.gultekinahmetabdullah.softedu.R
-import com.gultekinahmetabdullah.softedu.home.Scoreboard
-import com.gultekinahmetabdullah.softedu.learning.Learn
-import com.gultekinahmetabdullah.softedu.theme.SoftEduTheme
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.home.theme.AccountDialog
+import com.gultekinahmetabdullah.softedu.signinsignup.LoginScreen
 import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onSecondaryContainer
 import com.gultekinahmetabdullah.softedu.util.Screen
 import com.gultekinahmetabdullah.softedu.util.screensInBottom
@@ -64,7 +59,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainView(){
+fun MainView(){//TODO Add Feedback operation
 
     //val scaffoldState = rememberState
     val scope: CoroutineScope = rememberCoroutineScope()
@@ -96,9 +91,12 @@ fun MainView(){
     )
 
     val roundedCornerRadius = if(isSheetFullScreen) 0.dp else 12.dp
+    val auth: FirebaseAuth = Firebase.auth
+    var isUserLoggedIn by remember { mutableStateOf(auth.currentUser != null) }
 
-    val bottomBar:  @Composable () -> Unit = {
-        if(currentScreen is Screen.DrawerScreen || currentScreen == Screen.BottomScreen.Home){
+    var bottomBar:  @Composable () -> Unit = {
+        if(currentScreen is Screen.AccountDrawerScreen
+            || currentScreen == Screen.BottomScreen.Home){
             BottomAppBar(
                 Modifier.wrapContentSize(),
             ) {
@@ -106,7 +104,8 @@ fun MainView(){
                     item ->
                     val isSelected = currentRoute == item.bRoute
                     Log.d("Navigation",
-                        "Item: ${item.bTitle}, Current Route: $currentRoute, Is Selected: $isSelected")
+                        "Item: ${item.bTitle}, Current Route: $currentRoute," +
+                                " Is Selected: $isSelected")
                     val tint = if(isSelected)Color.Cyan else Color.Red
                     NavigationBarItem(selected = currentRoute == item.bRoute,
                         onClick = { controller.navigate(item.bRoute)
@@ -124,7 +123,19 @@ fun MainView(){
         }
     }
 
-    Scaffold(
+    //Here if user does not sign in so this if statement runs and it is login screen
+    if (!isUserLoggedIn){// logged in now
+        //Returns UI
+        LoginScreen(navController = controller, isUserLoggedIn)//
+        //TODO We have null variable controller
+        //Other navigator uses composable
+        //Eurake!
+        //IF CURRENTUSER VALUE CHANGES THAN ELSE RUNS
+    }
+
+    //Here if user signs in so this else statement runs and it is main screen
+    else {
+        Scaffold(
         bottomBar = bottomBar,
         topBar = {
             TopAppBar(
@@ -153,36 +164,38 @@ fun MainView(){
             )
         },
         content = {
+            //This returns the selected screen
             Navigation(navController = controller, viewModel = viewModel, pd = it)
             AccountDialog(dialogOpen = dialogOpen)
         }
     )
 
-    if (openBottomSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { openBottomSheet = false; isNavigationClicked = false },
-            sheetState = modalSheetState,
-            shape = RoundedCornerShape(
-                topStart = roundedCornerRadius,
-                topEnd = roundedCornerRadius
-            )
+        if (openBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { openBottomSheet = false; isNavigationClicked = false },
+                sheetState = modalSheetState,
+                shape = RoundedCornerShape(
+                    topStart = roundedCornerRadius,
+                    topEnd = roundedCornerRadius
+                )
 
-        ) {
-            if (!isNavigationClicked) {
-                MoreBottomSheet(modifier = modifier)
-            } else {
-                LazyColumn(Modifier.padding(16.dp)) {
-                    items(screensInDrawer) { item ->
-                        DrawerItem(selected = currentRoute == item.dRoute, item = item) {
-                            scope.launch {
-                                openBottomSheet = false
-                                isNavigationClicked = false
-                            }
-                            if (item.dRoute == "add_account") {
-                                dialogOpen.value = true
-                            } else {
-                                controller.navigate(item.dRoute)
-                                title.value = item.dTitle
+            ) {
+                if (!isNavigationClicked) {
+                    MoreBottomSheet(modifier = modifier)
+                } else {
+                    LazyColumn(Modifier.padding(16.dp)) {
+                        items(screensInDrawer) { item ->
+                            DrawerItem(selected = currentRoute == item.dRoute, item = item) {
+                                scope.launch {
+                                    openBottomSheet = false
+                                    isNavigationClicked = false
+                                }
+                                if (item.dRoute == "add_account") {
+                                    dialogOpen.value = true
+                                } else {
+                                    controller.navigate(item.dRoute)
+                                    title.value = item.dTitle
+                                }
                             }
                         }
                     }
@@ -195,7 +208,7 @@ fun MainView(){
 @Composable
 fun DrawerItem(
     selected: Boolean,
-    item: Screen.DrawerScreen,
+    item: Screen.AccountDrawerScreen,
     onDrawerItemClicked : () -> Unit
 ){
     val background = if (selected) md_theme_dark_onSecondaryContainer
@@ -261,43 +274,5 @@ fun MoreBottomSheet(modifier: Modifier){
                 )
             }
         }
-    }
-}
-
-
-@Composable
-fun Navigation(navController: NavController, viewModel: MainViewModel, pd:PaddingValues){
-
-    NavHost(navController = navController as NavHostController,
-        startDestination = Screen.DrawerScreen.Account.route,
-        modifier = Modifier.padding(pd) ){
-
-        composable(Screen.BottomScreen.Home.bRoute){
-            Home()
-        }
-
-        composable(Screen.BottomScreen.Learn.bRoute){
-            Learn()
-        }
-
-        composable(Screen.BottomScreen.Scoreboard.bRoute){
-            Scoreboard()
-        }
-
-        composable(Screen.DrawerScreen.Account.route){
-            AccountView()
-        }
-
-        composable(Screen.DrawerScreen.Subscription.route){
-            Subscription()
-        }
-    }
-
-}
-@Preview(name = "Welcome Account")
-@Composable
-fun WelcomeScreenPreview() {
-    SoftEduTheme {
-        MainView()
     }
 }
