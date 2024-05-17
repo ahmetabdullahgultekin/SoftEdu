@@ -25,13 +25,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 
 @Composable
-fun LoginScreen(navController: NavController, currentUser: FirebaseUser) {//TODO Signup Level add determination test
+fun LoginScreen(navController: NavController, currentUser: Boolean) {//TODO Signup Level add determination test
     val context = LocalContext.current
     val auth: FirebaseAuth = Firebase.auth
 
