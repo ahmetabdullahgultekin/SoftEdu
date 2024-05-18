@@ -1,6 +1,4 @@
 package com.gultekinahmetabdullah.softedu.signinsignup
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -95,7 +93,7 @@ fun LoginScreen(navController: NavController) {//TODO Signup Level add determina
                         if (task.isSuccessful) {
                             Toast.makeText(context, "Sign up successful!", Toast.LENGTH_SHORT).show()
                             // Navigate to "home" screen
-                            navController.navigate("home")
+                            navController.navigate("userinfo")
                         } else {
                             Toast.makeText(
                                 context, "Sign up incomplete.", Toast.LENGTH_SHORT).show()

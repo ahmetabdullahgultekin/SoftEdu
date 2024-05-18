@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,22 +47,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.database.updateAnsweredQuestions
-import com.gultekinahmetabdullah.softedu.theme.SoftEduTheme
-import java.util.UUID
+import com.gultekinahmetabdullah.softedu.util.fetchQuestion
 
-
-data class Choice(val choiceStr: String)
-
-const val totalQuestions = 10
-val possibleAnswers: List<Choice>? = null
-val selectedAnswer: Choice? = null
 
 @Composable
-fun Learn(navController: NavController) {
+fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: Int) {
     val context = LocalContext.current
     val db = Firebase.firestore
     val auth: FirebaseAuth = Firebase.auth
-    var correctAnswered = 0
+    var correctAnswered by rememberSaveable { mutableStateOf(0) }
 
     var questionText by remember { mutableStateOf("") }
     var choices by remember { mutableStateOf(listOf<String>()) }
@@ -80,49 +74,17 @@ fun Learn(navController: NavController) {
     experienceLevel = triple.second
     userId = triple.third
 
-    // Function to fetch a question from Firestore
-    val fetchQuestion = {
-        userId?.let { userId ->
-            db.collection("users").document(userId).get()
-                    .addOnSuccessListener { document ->
-                        if (document != null) {  // If the user document exists
-                            // Get the correctQuestions array from the user's document
-                            val correctQuestions = document.get("correctQuestions") as? List<String> ?: emptyList()
-
-                            // Fetch each question that is not in the correctQuestions array
-                            db.collection("questions")
-                                    .whereGreaterThanOrEqualTo("difficultyLevel", experienceLevel)
-                                    .get()
-                                    .addOnSuccessListener { result ->
-                                        val documents = result.filter { document ->
-                                            ! correctQuestions.contains(document.id) && ! askedQuestionIds.contains(document.id)
-                                        }
-                                        if (documents.isNotEmpty()) {
-                                            val document = documents.random()
-                                            questionId = document.id
-                                            questionText = document.getString("questionText") ?: ""
-                                            choices = document.get("choices") as List<String>
-                                            correctChoice = document.getLong("correctChoice")?.toInt() ?: - 1
-                                            questionCounter ++
-                                            isAnswerSelected = false
-                                            askedQuestionIds += document.id
-                                        }
-                                    }
-                                    .addOnFailureListener { exception ->
-                                        Log.w(ContentValues.TAG, "Error getting documents.", exception)
-                                    }
-                        } else {
-                            Log.d(ContentValues.TAG, "No such document")
-                        }
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.d(ContentValues.TAG, "get failed with ", exception)
-                    }
-        }
-    }
     LaunchedEffect(key1 = Unit) {
         fetchUserProfile()
-        fetchQuestion()
+        fetchQuestion(userId, questionCounter, totalQuestions, askedQuestionIds, isTestScreen) { newQuestionId, newQuestionText, newChoices, newCorrectChoice ->
+            questionId = newQuestionId
+            questionText = newQuestionText
+            choices = newChoices
+            correctChoice = newCorrectChoice
+            questionCounter ++
+            isAnswerSelected = false
+            askedQuestionIds += newQuestionId
+        }
     }
     Column(
         modifier = Modifier
@@ -136,10 +98,9 @@ fun Learn(navController: NavController) {
             progress = { (questionCounter - 1) / (totalQuestions).toFloat() },
             modifier = Modifier.fillMaxWidth(0.80f),  // Fill 80% of the width
             color = MaterialTheme.colorScheme.primary
-
         )
 
-        Text(text = questionText + "\n" + questionId)
+        Text(text = "QuestionText -> $questionText \n QuestionId -> $questionId")
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -165,8 +126,24 @@ fun Learn(navController: NavController) {
         if (isAnswerSelected) {
             // Continue button
             Button(onClick = {
-                fetchQuestion()
+                fetchQuestion(userId, questionCounter, totalQuestions, askedQuestionIds, false) { newQuestionId, newQuestionText, newChoices, newCorrectChoice ->
+                    questionId = newQuestionId
+                    questionText = newQuestionText
+                    choices = newChoices
+                    correctChoice = newCorrectChoice
+                    questionCounter ++
+                    isAnswerSelected = false
+                    askedQuestionIds += newQuestionId
+                }
                 if (questionCounter >= totalQuestions) {
+                    if (isTestScreen) {
+                        val newExperienceLevel = when (correctAnswered) {
+                            0 -> 1
+                            totalQuestions -> 5
+                            else -> 1 + totalQuestions / correctAnswered
+                        }
+                        auth.currentUser?.uid?.let { updateExperienceLevel(it, newExperienceLevel) }
+                    }
                     navController.navigate("result/${correctAnswered}/${totalQuestions}")
                 }
             }) {
@@ -174,6 +151,18 @@ fun Learn(navController: NavController) {
             }
         }
     }
+}
+
+fun updateExperienceLevel(userId: String, experienceLevel: Int) {
+    val db = Firebase.firestore
+    db.collection("users").document(userId)
+            .update("experienceLevel", experienceLevel)
+            .addOnSuccessListener {
+                Log.d(ContentValues.TAG, "User experience level updated")
+            }
+            .addOnFailureListener { e ->
+                Log.w(ContentValues.TAG, "Error updating user experience level", e)
+            }
 }
 
 @Composable
@@ -191,7 +180,7 @@ private fun getUserInfo(userId: String?,
                     .get()
                     .addOnSuccessListener { document ->
                         if (document != null) {
-                            experienceLevel1 = document.getLong("experienceLevel")?.toInt() ?: 0
+                            experienceLevel1 = document.getLong("experienceLevel")?.toInt() ?: 1
                         } else {
                             Log.d(ContentValues.TAG, "No such user document")
                         }

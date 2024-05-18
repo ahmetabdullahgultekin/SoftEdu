@@ -18,6 +18,7 @@ import com.gultekinahmetabdullah.softedu.leaderboard.Leaderboard
 import com.gultekinahmetabdullah.softedu.learning.Learn
 import com.gultekinahmetabdullah.softedu.settings.SettingsScreen
 import com.gultekinahmetabdullah.softedu.signinsignup.LoginScreen
+import com.gultekinahmetabdullah.softedu.signinsignup.UserInfoScreen
 import com.gultekinahmetabdullah.softedu.util.Screen
 
 
@@ -29,13 +30,16 @@ fun Navigation() {
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable("home") { Home(navController) }
-        composable("learn") { Learn(navController) }
+        composable("learn") { Learn(navController, false, 5) }
+        composable("test") { Learn(navController, true, 10) }
         composable("leaderboard") { Leaderboard(navController, auth) }
         composable("accountView") { AccountView(navController) }
         composable("login") { LoginScreen(navController) }
         composable("settings") { SettingsScreen() }
         composable("feedback") { FeedbackScreen(navController) }
         composable("about") { AboutScreen() }
+        composable("userinfo") { UserInfoScreen(navController) }
+
         composable("result/{correctAnswered}/{totalQuestions}") { backStackEntry ->
             val correctAnswered = backStackEntry.arguments?.getString("correctAnswered")?.toIntOrNull() ?: 0
             val totalQuestions = backStackEntry.arguments?.getString("totalQuestions")?.toIntOrNull() ?: 0
