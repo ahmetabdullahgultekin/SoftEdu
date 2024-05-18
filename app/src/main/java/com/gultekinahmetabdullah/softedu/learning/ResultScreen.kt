@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.util.Screen
 
 @Composable
 fun ResultScreen(navController: NavController, correctAnswered: Int, totalQuestions: Int) {
@@ -43,7 +44,7 @@ fun ResultScreen(navController: NavController, correctAnswered: Int, totalQuesti
 
         Button(onClick = {
             Toast.makeText(context, "Navigating to home", Toast.LENGTH_SHORT).show()
-            navController.navigate("home")
+            navController.navigate(Screen.BottomScreen.Home.route)
         }) {
             Text("Continue")
         }

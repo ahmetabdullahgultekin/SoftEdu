@@ -16,7 +16,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,6 +49,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.drawer.AccountDialog
 import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onSecondaryContainer
 import com.gultekinahmetabdullah.softedu.util.Screen
@@ -59,14 +63,13 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainView() {
-    // TODO logout button
 
     //val scaffoldState = rememberState
     val scope: CoroutineScope = rememberCoroutineScope()
     val viewModel: MainViewModel = viewModel()
     val isSheetFullScreen by remember { mutableStateOf(false) }
+    val auth: FirebaseAuth = Firebase.auth
 
-    val modifier = if (isSheetFullScreen) Modifier.fillMaxSize() else Modifier.fillMaxWidth()
 
     // Allow us to find out on which "View" we current are
     val controller: NavController = rememberNavController()
@@ -151,7 +154,17 @@ fun MainView() {
                     ) {
                         Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
                     }
+                    IconButton(
+                        onClick = {
+                            auth.signOut()
+                            // Navigate back to login screen after signing out
+                            controller.navigate(Screen.LoginScreen.Login.lRoute)
+                        }
+                    ) {
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null)
+                    }
                 },
+
                 navigationIcon = {
                     IconButton(onClick = {
                         // Open the drawer

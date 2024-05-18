@@ -29,6 +29,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.util.Screen
 
 @Composable
 fun UserInfoScreen(navController: NavController) {
@@ -66,7 +67,7 @@ fun UserInfoScreen(navController: NavController) {
         Button(onClick = {
             // Navigate to the test screen
             if (saveProfileInfo(name, surname, db, context)) {
-                navController.navigate("test")
+                navController.navigate(Screen.BottomScreen.Learn.route)
             }
         }) {
             Text("Continue")

@@ -30,7 +30,6 @@ import com.gultekinahmetabdullah.softedu.util.Screen
 
 @Composable
 fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
-    //TODO Signup Level add determination test
     val context = LocalContext.current
     //val auth: FirebaseAuth = Firebase.auth
 
@@ -94,7 +93,7 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                         if (task.isSuccessful) {
                             Toast.makeText(context, "Sign up successful!", Toast.LENGTH_SHORT).show()
                             // Navigate to "main" screen
-                            navController.navigate(Screen.BottomScreen.Home.bRoute)
+                            navController.navigate(Screen.LoginScreen.UserInfo.route)
                         } else {
                             Toast.makeText(
                                 context, "Sign up failed.", Toast.LENGTH_SHORT).show()

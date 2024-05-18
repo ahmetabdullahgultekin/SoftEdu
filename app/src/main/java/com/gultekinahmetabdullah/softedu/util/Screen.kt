@@ -11,6 +11,9 @@ sealed class Screen(val title: String, val route: String) {
             data object Login : LoginScreen(
                 "Login", "login", R.drawable.baseline_login_24
             )
+            data object UserInfo : LoginScreen(
+                "UserInfo", "userInfo", R.drawable.baseline_login_24
+            )
     }
 
     sealed class MainScreen(

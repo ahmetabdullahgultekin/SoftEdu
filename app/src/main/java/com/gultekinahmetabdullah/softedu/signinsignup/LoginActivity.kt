@@ -42,6 +42,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.database.updateAnsweredQuestions
 import com.gultekinahmetabdullah.softedu.leaderboard.User
+import com.gultekinahmetabdullah.softedu.util.Screen
 import java.util.UUID
 
 @Composable
@@ -118,7 +119,7 @@ private fun saveProfileInfo(name: String,
                 .set(user) // Use set instead of add
                 .addOnSuccessListener {
                     Toast.makeText(context, "Profile information saved!", Toast.LENGTH_SHORT).show()
-                    navController.navigate("main") // Navigate to "main" screen
+                    navController.navigate(Screen.BottomScreen.Home.bRoute)
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(context, "Error saving profile information.", Toast.LENGTH_SHORT).show()
@@ -236,7 +237,7 @@ fun MultipleChoiceQuestionScreen(navController: NavController) {
             Button(onClick = {
                 fetchQuestion()
                 if (questionCounter >= 10) {
-                    navController.navigate("main")
+                    navController.navigate(Screen.BottomScreen.Home.bRoute)
                 }
             }) {
                 Text("Continue")

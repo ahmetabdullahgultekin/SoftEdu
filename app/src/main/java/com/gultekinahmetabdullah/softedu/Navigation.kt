@@ -20,6 +20,7 @@ import com.gultekinahmetabdullah.softedu.leaderboard.Leaderboard
 import com.gultekinahmetabdullah.softedu.learning.Learn
 import com.gultekinahmetabdullah.softedu.settings.SettingsScreen
 import com.gultekinahmetabdullah.softedu.signinsignup.LoginScreen
+import com.gultekinahmetabdullah.softedu.signinsignup.UserInfoScreen
 import com.gultekinahmetabdullah.softedu.util.Screen
 
 
@@ -60,7 +61,7 @@ fun Navigation(pd: PaddingValues, navController: NavController) {
         }
 
         composable(Screen.AccountDrawerScreen.Account.route) {
-            AccountView()
+            AccountView(auth)
         }
 
         composable(Screen.AccountDrawerScreen.Subscription.route) {
@@ -77,6 +78,9 @@ fun Navigation(pd: PaddingValues, navController: NavController) {
 
         composable(Screen.SettingsDrawerScreen.About.route) {
             AboutScreen()
+        }
+        composable(Screen.LoginScreen.UserInfo.route) {
+            UserInfoScreen(navController)
         }
 
         composable(Screen.ResultScreen.Result.rRoute + ",{correctAnswered}" + ",{totalQuestions}") {backStackEntry ->
