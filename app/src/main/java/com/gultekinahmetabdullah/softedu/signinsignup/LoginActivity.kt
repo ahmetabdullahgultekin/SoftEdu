@@ -118,7 +118,7 @@ private fun saveProfileInfo(name: String,
                 .set(user) // Use set instead of add
                 .addOnSuccessListener {
                     Toast.makeText(context, "Profile information saved!", Toast.LENGTH_SHORT).show()
-                    navController.navigate("main") // Navigate to "main" screen
+                    navController.navigate("home") // Navigate to "home" screen
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(context, "Error saving profile information.", Toast.LENGTH_SHORT).show()
@@ -236,7 +236,7 @@ fun MultipleChoiceQuestionScreen(navController: NavController) {
             Button(onClick = {
                 fetchQuestion()
                 if (questionCounter >= 10) {
-                    navController.navigate("main")
+                    navController.navigate("home")
                 }
             }) {
                 Text("Continue")

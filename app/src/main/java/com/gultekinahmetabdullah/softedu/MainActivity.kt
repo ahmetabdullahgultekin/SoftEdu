@@ -21,9 +21,7 @@ MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     //color = MaterialTheme.colorScheme.background
                 ) {
-                    //Main
-                    MainView()
-                    //TODO login nasıl çalışacak
+                    Navigation()
                 }
             }
         }
