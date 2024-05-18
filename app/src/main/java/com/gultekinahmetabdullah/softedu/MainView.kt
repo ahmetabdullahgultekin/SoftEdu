@@ -59,7 +59,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainView() {//TODO Add Feedback operation
-    //TODO right drawer title
+    // TODO logout button
 
     //val scaffoldState = rememberState
     val scope: CoroutineScope = rememberCoroutineScope()
