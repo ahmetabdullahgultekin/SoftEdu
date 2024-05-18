@@ -68,7 +68,7 @@ fun UserInfoScreen(navController: NavController) {
         Button(onClick = {
             // Navigate to the test screen
             if (saveProfileInfo(name, surname, db, context)) {
-                navController.navigate(Screen.BottomScreen.Learn.route + ",${false},${totalQuestions}")
+                navController.navigate(Screen.BottomScreen.Learn.route + ",${true},${totalQuestions}")
 
             }
         }) {
