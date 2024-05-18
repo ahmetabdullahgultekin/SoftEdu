@@ -134,10 +134,10 @@ fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: I
 
                        if (questionCounter >= totalQuestions) {
                            if (isTestScreen) {
+                               val intervalSize = totalQuestions / 5.0
                                val newExperienceLevel = when (correctAnswered) {
-                                   0 -> 1
                                    totalQuestions -> 5
-                                   else -> 1 + totalQuestions / correctAnswered
+                                   else -> (correctAnswered / intervalSize).toInt() + 1
                                }
                                auth.currentUser?.uid?.let { updateExperienceLevel(it, newExperienceLevel) }
                            }
