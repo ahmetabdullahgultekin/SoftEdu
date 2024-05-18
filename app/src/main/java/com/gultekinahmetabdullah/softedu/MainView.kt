@@ -58,7 +58,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainView() {//TODO Add Feedback operation
+fun MainView() {
     // TODO logout button
 
     //val scaffoldState = rememberState
@@ -76,7 +76,7 @@ fun MainView() {//TODO Add Feedback operation
         mutableStateOf(false)
     }
 
-    var currentScreen = remember {
+    val currentScreen = remember {
         viewModel.currentScreen.value
     }
 
