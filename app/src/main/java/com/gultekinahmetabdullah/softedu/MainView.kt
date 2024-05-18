@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -36,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -46,8 +49,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.home.theme.AccountDialog
 import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onSecondaryContainer
 import com.gultekinahmetabdullah.softedu.util.Screen
@@ -63,23 +64,23 @@ fun MainView() {//TODO Add Feedback operation
     //val scaffoldState = rememberState
     val scope: CoroutineScope = rememberCoroutineScope()
     val viewModel: MainViewModel = viewModel()
-    val isSheetFullScreen by remember{ mutableStateOf(false) }
+    val isSheetFullScreen by remember { mutableStateOf(false) }
 
-    val modifier = if(isSheetFullScreen) Modifier.fillMaxSize() else Modifier.fillMaxWidth()
+    val modifier = if (isSheetFullScreen) Modifier.fillMaxSize() else Modifier.fillMaxWidth()
 
     // Allow us to find out on which "View" we current are
     val controller: NavController = rememberNavController()
     val navBackStackEntry by controller.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val dialogOpen = remember{
+    val dialogOpen = remember {
         mutableStateOf(false)
     }
 
-    val currentScreen = remember{
+    val currentScreen = remember {
         viewModel.currentScreen.value
     }
 
-    val title = remember{
+    val title = remember {
         mutableStateOf(currentScreen.title)
     }
 
@@ -90,41 +91,64 @@ fun MainView() {//TODO Add Feedback operation
         skipPartiallyExpanded = skipPartiallyExpanded
     )
 
-    val roundedCornerRadius = if(isSheetFullScreen) 0.dp else 12.dp
-    val auth: FirebaseAuth = Firebase.auth
-    var isUserSignedIn by remember { mutableStateOf(auth.currentUser != null) }
+    val roundedCornerRadius = if (isSheetFullScreen) 0.dp else 12.dp
+    //val auth: FirebaseAuth = Firebase.auth
+    val isUserSignedIn by remember {
+        mutableStateOf(FirebaseAuth.getInstance().currentUser != null)
+    }
+    /*
+    val startDestination = if (false) {
+        Screen.BottomScreen.Home.bRoute
+        controller.navigate(Screen.BottomScreen.Home.bRoute)
+    }
+    else {
+        Screen.LoginScreen.Login.lRoute
+        controller.navigate(Screen.LoginScreen.Login.lRoute)
+    }
+*/
+    var isUserInSignInScreen by rememberSaveable {
+        mutableStateOf(
+            controller.currentDestination?.route.equals(Screen.LoginScreen.Login.lRoute)
+                    || controller.currentDestination == null
+        )
+    }
+    isUserInSignInScreen = false
 
-    val bottomBar:  @Composable () -> Unit = {
-        println(controller.currentDestination.toString())
-        if(isUserSignedIn){
+
+    val bottomBar: @Composable () -> Unit = {
+        if (!isUserInSignInScreen) {
             BottomAppBar(
                 Modifier.wrapContentSize(),
             ) {
-                screensInBottom.forEach{
-                    item ->
+                screensInBottom.forEach { item ->
                     val isSelected = currentRoute == item.bRoute
-                    Log.d("Navigation",
+                    Log.d(
+                        "Navigation",
                         "Item: ${item.bTitle}, Current Route: $currentRoute," +
-                                " Is Selected: $isSelected")
-                    val tint = if(isSelected)Color.Cyan else Color.Red
-                    NavigationBarItem(selected = currentRoute == item.bRoute,
-                        onClick = { controller.navigate(item.bRoute)
-                                  title.value = item.bTitle
-                                  },
-                        icon = {
-                            Icon(tint= tint,
-                                contentDescription = item.bTitle,
-                                painter= painterResource(id = item.icon))
+                                " Is Selected: $isSelected"
+                    )
+                    val tint = if (isSelected) Color.Cyan else Color.Red
+                    NavigationBarItem(
+                        selected = currentRoute == item.bRoute,
+                        onClick = {
+                            controller.navigate(item.bRoute)
+                            title.value = item.bTitle
                         },
-                            label = { Text(text = item.bTitle, color = tint )},
+                        icon = {
+                            Icon(
+                                tint = tint,
+                                contentDescription = item.bTitle,
+                                painter = painterResource(id = item.icon)
+                            )
+                        },
+                        label = { Text(text = item.bTitle, color = tint) },
                     )
                 }
             }
         }
     }
     val topBar: @Composable () -> Unit = {
-        if(isUserSignedIn){
-
+        if (!isUserInSignInScreen) {
             TopAppBar(
                 title = { Text(title.value) },
                 actions = {
@@ -139,56 +163,91 @@ fun MainView() {//TODO Add Feedback operation
                         Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
                     }
                 },
-                navigationIcon = { IconButton(onClick = {
-                    // Open the drawer
-                    scope.launch {
-                        isNavigationClicked = true
-                        openBottomSheet = true
+                navigationIcon = {
+                    IconButton(onClick = {
+                        // Open the drawer
+                        scope.launch {
+                            isNavigationClicked = true
+                            openBottomSheet = true
+                        }
+                    }) {
+                        Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Menu")
                     }
-                }) {
-                    Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Menu" )
-                }}
+                }
             )
-
         }
     }
 
-        Scaffold(
-            bottomBar = bottomBar,
-            topBar = topBar,
-            content = {
-                //This returns the selected screen
-                Navigation(navController = controller, viewModel = viewModel, pd = it)
-                AccountDialog(dialogOpen = dialogOpen)
+    Scaffold(
+        bottomBar = bottomBar,
+        topBar = topBar,
+        content = {
+            Column {
+                Spacer(modifier = Modifier
+                    .size(16.dp)
+                    .background(Color.Red))
+                Spacer(modifier = Modifier
+                    .size(16.dp)
+                    .background(Color.Red))
+                Spacer(modifier = Modifier
+                    .size(16.dp)
+                    .background(Color.Red))
+                Spacer(modifier = Modifier
+                    .size(16.dp)
+                    .background(Color.Red))
+                Spacer(modifier = Modifier
+                    .size(16.dp)
+                    .background(Color.Red))
+                Text(text = "x" + controller.currentDestination?.route.toString().toUpperCase() + "x")
+                Spacer(modifier = Modifier
+                    .size(16.dp)
+                    .background(Color.Red))
+                Text(text = "x" + Screen.LoginScreen.Login.lRoute.toUpperCase() + "x")
+                Spacer(modifier = Modifier
+                    .size(16.dp)
+                    .background(Color.Red))
+                Text(text = isUserInSignInScreen.toString())
+                Spacer(modifier = Modifier
+                    .size(16.dp)
+                    .background(Color.Red))
+                controller.currentDestination?.route?.let { it1 -> Text(text = it1) }
+                Spacer(modifier = Modifier
+                    .size(16.dp)
+                    .background(Color.Red))
+                Text(text = controller.currentDestination.toString())
             }
-        )
 
-        if (openBottomSheet) {
-            ModalBottomSheet(
-                onDismissRequest = { openBottomSheet = false; isNavigationClicked = false },
-                sheetState = modalSheetState,
-                shape = RoundedCornerShape(
-                    topStart = roundedCornerRadius,
-                    topEnd = roundedCornerRadius
-                )
+            //This returns the selected screen
+            Navigation(pd = it, navController = controller)
+            AccountDialog(dialogOpen = dialogOpen)
+        }
+    )
 
-            ) {
-                if (!isNavigationClicked) {
-                    MoreBottomSheet(modifier = modifier)
-                } else {
-                    LazyColumn(Modifier.padding(16.dp)) {
-                        items(screensInDrawer) { item ->
-                            DrawerItem(selected = currentRoute == item.dRoute, item = item) {
-                                scope.launch {
-                                    openBottomSheet = false
-                                    isNavigationClicked = false
-                                }
-                                if (item.dRoute == "add_account") {
-                                    dialogOpen.value = true
-                                } else {
-                                    controller.navigate(item.dRoute)
-                                    title.value = item.dTitle
-                                }
+    if (openBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { openBottomSheet = false; isNavigationClicked = false },
+            sheetState = modalSheetState,
+            shape = RoundedCornerShape(
+                topStart = roundedCornerRadius,
+                topEnd = roundedCornerRadius
+            )
+
+        ) {
+            if (!isNavigationClicked) {
+                MoreBottomSheet(modifier = modifier)
+            } else {
+                LazyColumn(Modifier.padding(16.dp)) {
+                    items(screensInDrawer) { item ->
+                        DrawerItem(selected = currentRoute == item.dRoute, item = item) {
+                            scope.launch {
+                                openBottomSheet = false
+                                isNavigationClicked = false
+                            }
+                            if (item.dRoute == "add_account") {
+                                dialogOpen.value = true
+                            } else {
+                                controller.navigate(item.dRoute)
+                                title.value = item.dTitle
                             }
                         }
                     }
@@ -196,15 +255,16 @@ fun MainView() {//TODO Add Feedback operation
             }
         }
     }
+}
 
 @Composable
 fun DrawerItem(
     selected: Boolean,
     item: Screen.AccountDrawerScreen,
-    onDrawerItemClicked : () -> Unit
-){
+    onDrawerItemClicked: () -> Unit
+) {
     val background = if (selected) md_theme_dark_onSecondaryContainer
-                    else Color.Transparent
+    else Color.Transparent
     Row(
         Modifier
             .fillMaxWidth()
@@ -226,16 +286,17 @@ fun DrawerItem(
 }
 
 @Composable
-fun MoreBottomSheet(modifier: Modifier){
+fun MoreBottomSheet(modifier: Modifier) {
     Box(
         Modifier
             .fillMaxWidth()
             .height(200.dp)
-    ){
-        Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.SpaceBetween){
-            Row(modifier = modifier.padding(16.dp)){
-                Icon(modifier = Modifier.padding(end = 8.dp),
-                   painter =  painterResource(id = R.drawable.baseline_settings_24),
+    ) {
+        Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.SpaceBetween) {
+            Row(modifier = modifier.padding(16.dp)) {
+                Icon(
+                    modifier = Modifier.padding(end = 8.dp),
+                    painter = painterResource(id = R.drawable.baseline_settings_24),
                     contentDescription = "Settings"
                 )
                 Text(

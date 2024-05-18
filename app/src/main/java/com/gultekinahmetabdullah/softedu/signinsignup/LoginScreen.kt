@@ -97,7 +97,7 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                             navController.navigate(Screen.BottomScreen.Home.bRoute)
                         } else {
                             Toast.makeText(
-                                context, "Sign up incomplete.", Toast.LENGTH_SHORT).show()
+                                context, "Sign up failed.", Toast.LENGTH_SHORT).show()
                         }
                     }
             } else {

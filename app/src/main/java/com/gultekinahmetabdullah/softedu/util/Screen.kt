@@ -78,6 +78,13 @@ sealed class Screen(val title: String, val route: String) {
     }
 }
 
+val screens = listOf(
+    Screen.BottomScreen.Home,
+    Screen.BottomScreen.Learn,
+    Screen.BottomScreen.Leaderboard,
+    Screen.LoginScreen.Login,
+)
+
 val screensInBottom = listOf(
     Screen.BottomScreen.Home,
     Screen.BottomScreen.Learn,
@@ -87,5 +94,5 @@ val screensInBottom = listOf(
 val screensInDrawer = listOf(
     Screen.AccountDrawerScreen.Account,
     Screen.AccountDrawerScreen.Subscription,
-    Screen.AccountDrawerScreen.AddAccount
+    Screen.AccountDrawerScreen.AddAccount,
 )
