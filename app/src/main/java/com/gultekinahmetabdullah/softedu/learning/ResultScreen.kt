@@ -1,8 +1,5 @@
-package com.gultekinahmetabdullah.softedu
+package com.gultekinahmetabdullah.softedu.learning
 
-import android.content.ContentValues
-import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,10 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.util.Screen
 
 @Composable

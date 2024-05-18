@@ -18,7 +18,8 @@ import com.gultekinahmetabdullah.softedu.home.Home
 import com.gultekinahmetabdullah.softedu.drawer.*
 import com.gultekinahmetabdullah.softedu.leaderboard.Leaderboard
 import com.gultekinahmetabdullah.softedu.learning.Learn
-import com.gultekinahmetabdullah.softedu.settings.SettingsScreen
+import com.gultekinahmetabdullah.softedu.drawer.SettingsScreen
+import com.gultekinahmetabdullah.softedu.learning.ResultScreen
 import com.gultekinahmetabdullah.softedu.signinsignup.LoginScreen
 import com.gultekinahmetabdullah.softedu.signinsignup.UserInfoScreen
 import com.gultekinahmetabdullah.softedu.util.Screen

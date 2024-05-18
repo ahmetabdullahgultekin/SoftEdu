@@ -1,4 +1,4 @@
-package com.gultekinahmetabdullah.softedu.settings
+package com.gultekinahmetabdullah.softedu.drawer
 
 
 import androidx.compose.foundation.layout.*

@@ -4,6 +4,8 @@ package com.gultekinahmetabdullah.softedu.learning
 import android.content.ContentValues
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -31,9 +32,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.android.gms.tasks.Task
@@ -51,7 +50,7 @@ import com.gultekinahmetabdullah.softedu.util.fetchQuestion
 fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: Int) {
     val db = Firebase.firestore
     val auth: FirebaseAuth = Firebase.auth
-    var correctAnswered by rememberSaveable { mutableStateOf(0) }
+    val correctAnswered by rememberSaveable { mutableStateOf(0) }
 
     var questionText by remember { mutableStateOf("") }
     var choices by remember { mutableStateOf(listOf<String>()) }
@@ -63,6 +62,7 @@ fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: I
     var questionId by remember { mutableStateOf("") }
     var askedQuestionIds by remember { mutableStateOf(listOf<String>()) }
     var selectedChoice by remember { mutableStateOf(- 1) }
+    var continueClicked by remember { mutableStateOf(false) }
 
 
     // Function to fetch the user's profile information from Firestore
@@ -101,43 +101,112 @@ fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: I
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        choices.forEachIndexed { index, choice ->  //TODO change buttons with choice boxes
-            ChoiceBox(text = choice,
-                      selected = index == selectedChoice,
-                      onOptionSelected = {
-                          selectedChoice = index
-                      })
+
+        choices.forEachIndexed { index, choice ->
+            ChoiceBox(
+                text = choice,
+                selected = index == selectedChoice,
+                correct = index == correctChoice,
+                answered = continueClicked,
+                onOptionSelected = {
+                    selectedChoice = index
+                    isAnswerSelected = true
+                }
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
         }
         Button(onClick = {
-            fetchQuestion(userId, questionCounter, totalQuestions, askedQuestionIds, false) { newQuestionId, newQuestionText, newChoices, newCorrectChoice ->
-                questionId = newQuestionId
-                questionText = newQuestionText
-                choices = newChoices
-                correctChoice = newCorrectChoice
-                questionCounter ++
-                isAnswerSelected = false
-                askedQuestionIds += newQuestionId
-            }
-
-            if (questionCounter >= totalQuestions) {
-                if (isTestScreen) {
-                    val newExperienceLevel = when (correctAnswered) {
-                        0 -> 1
-                        totalQuestions -> 5
-                        else -> 1 + totalQuestions / correctAnswered
-                    }
-                    auth.currentUser?.uid?.let { updateExperienceLevel(it, newExperienceLevel) }
+            if (continueClicked) {
+                fetchQuestion(userId, questionCounter, totalQuestions, askedQuestionIds, false) { newQuestionId, newQuestionText, newChoices, newCorrectChoice ->
+                    questionId = newQuestionId
+                    questionText = newQuestionText
+                    choices = newChoices
+                    correctChoice = newCorrectChoice
+                    questionCounter ++
+                    isAnswerSelected = false
+                    askedQuestionIds += newQuestionId
+                    continueClicked = false
+                    selectedChoice = - 1
                 }
-                navController.navigate(Screen.ResultScreen.Result.rRoute
-                                               + ",${correctAnswered},${totalQuestions}")
+
+                if (questionCounter >= totalQuestions) {
+                    if (isTestScreen) {
+                        val newExperienceLevel = when (correctAnswered) {
+                            0 -> 1
+                            totalQuestions -> 5
+                            else -> 1 + totalQuestions / correctAnswered
+                        }
+                        auth.currentUser?.uid?.let { updateExperienceLevel(it, newExperienceLevel) }
+                    }
+                    navController.navigate(Screen.ResultScreen.Result.rRoute
+                                                   + ",${correctAnswered},${totalQuestions}")
+                }
+            } else {
+                continueClicked = true
             }
         }) {
             Text("Continue")
         }
     }
 }
+
+@Composable
+fun ChoiceBox(
+    text: String,
+    selected: Boolean,
+    correct: Boolean,
+    answered: Boolean,
+    onOptionSelected: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val color = when {
+        answered && correct -> Color.Green
+        answered && selected -> Color.Red
+        selected -> MaterialTheme.colorScheme.primaryContainer
+        else -> MaterialTheme.colorScheme.surface
+    }
+
+    val borderColor = when {
+        answered && correct -> Color.Green
+        answered && selected -> Color.Red
+        selected -> MaterialTheme.colorScheme.primary
+        else -> MaterialTheme.colorScheme.outline
+    }
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Surface(
+        shape = MaterialTheme.shapes.small,
+        color = color,
+        border = BorderStroke(
+            width = 1.dp,
+            color = borderColor
+        ),
+
+        modifier = modifier
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                    enabled = !answered,
+                    onClick = onOptionSelected
+                )
+    ) {
+        Row(
+            modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(Modifier.width(8.dp))
+
+            Text(text, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
+            Box(Modifier.padding(8.dp)) {
+                RadioButton(selected, onClick = null)
+            }
+        }
+    }
+}
+
 
 fun updateExperienceLevel(userId: String, experienceLevel: Int) {
     val db = Firebase.firestore
@@ -177,53 +246,6 @@ private fun getUserInfo(userId: String?,
         }
     }
     return Triple(function, experienceLevel1, userId1)
-}
-
-
-@Composable
-fun ChoiceBox(
-    text: String,
-    selected: Boolean,
-    onOptionSelected: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        shape = MaterialTheme.shapes.small,
-        color = if (selected) {
-            MaterialTheme.colorScheme.primaryContainer
-        } else {
-            MaterialTheme.colorScheme.surface
-        },
-        border = BorderStroke(
-            width = 1.dp,
-            color = if (selected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.outline
-            }
-        ),
-        modifier = modifier
-                .clip(MaterialTheme.shapes.small)
-                .selectable(
-                    selected,
-                    onClick = onOptionSelected,
-                    role = Role.RadioButton
-                )
-    ) {
-        Row(
-            modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(Modifier.width(8.dp))
-
-            Text(text, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
-            Box(Modifier.padding(8.dp)) {
-                RadioButton(selected, onClick = null)
-            }
-        }
-    }
 }
 
 
