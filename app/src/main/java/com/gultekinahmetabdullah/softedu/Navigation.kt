@@ -55,6 +55,7 @@ fun Navigation(pd: PaddingValues, navController: NavController) {
 
         composable(Screen.BottomScreen.Learn.bRoute + ",{isTestScreen}" + ",{totalQuestions}") {
             backStackEntry ->
+//        composable(Screen.BottomScreen.Learn.bRoute + "/{isTestScreen}/{totalQuestions}") { backStackEntry ->
             val isTestScreen = backStackEntry.arguments?.getString("isTestScreen").toBoolean()
             val totalQuestions = backStackEntry.arguments?.getString("totalQuestions")?.toIntOrNull() ?: 0
             Learn(navController, isTestScreen, totalQuestions)
@@ -87,7 +88,7 @@ fun Navigation(pd: PaddingValues, navController: NavController) {
             UserInfoScreen(navController)
         }
 
-        composable(Screen.ResultScreen.Result.rRoute + ",{correctAnswered}" + ",{totalQuestions}") { backStackEntry ->
+        composable(Screen.ResultScreen.Result.rRoute + "/{correctAnswered}/{totalQuestions}") { backStackEntry ->
             val correctAnswered = backStackEntry.arguments?.getString("correctAnswered")?.toIntOrNull() ?: 0
             val totalQuestions = backStackEntry.arguments?.getString("totalQuestions")?.toIntOrNull() ?: 0
             ResultScreen(navController, correctAnswered, totalQuestions)

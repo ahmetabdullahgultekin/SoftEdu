@@ -42,6 +42,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.database.updateAnsweredQuestions
 import com.gultekinahmetabdullah.softedu.util.Screen
 import com.gultekinahmetabdullah.softedu.util.fetchQuestion
 
@@ -50,7 +51,7 @@ import com.gultekinahmetabdullah.softedu.util.fetchQuestion
 fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: Int) {
     val db = Firebase.firestore
     val auth: FirebaseAuth = Firebase.auth
-    val correctAnswered by rememberSaveable { mutableStateOf(0) }
+    var correctAnswered by rememberSaveable { mutableStateOf(0) }
 
     var questionText by remember { mutableStateOf("") }
     var choices by remember { mutableStateOf(listOf<String>()) }
@@ -140,10 +141,16 @@ fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: I
                                }
                                auth.currentUser?.uid?.let { updateExperienceLevel(it, newExperienceLevel) }
                            }
-                           navController.navigate(Screen.ResultScreen.Result.rRoute
-                                                          + ",${correctAnswered},${totalQuestions}")
+                           navController.navigate(Screen.ResultScreen.Result.rRoute + "/${correctAnswered}/${totalQuestions}")
                        }
                    } else {
+                       if (selectedChoice == correctChoice) {
+                           userId?.let { updateAnsweredQuestions(it, questionId, true) }
+                           correctAnswered ++
+                       } else {
+                           userId?.let { updateAnsweredQuestions(it, questionId, false) }
+                       }
+                       isAnswerSelected = true
                        continueClicked = true
                    }
                }) {
