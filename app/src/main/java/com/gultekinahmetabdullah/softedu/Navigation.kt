@@ -16,6 +16,7 @@ import com.gultekinahmetabdullah.softedu.home.theme.AccountView
 import com.gultekinahmetabdullah.softedu.home.theme.Subscription
 import com.gultekinahmetabdullah.softedu.leaderboard.Leaderboard
 import com.gultekinahmetabdullah.softedu.learning.Learn
+import com.gultekinahmetabdullah.softedu.signinsignup.LoginScreen
 import com.gultekinahmetabdullah.softedu.util.Screen
 
 
@@ -23,10 +24,19 @@ import com.gultekinahmetabdullah.softedu.util.Screen
 fun Navigation(pd: PaddingValues, navController: NavController, viewModel: MainViewModel){
 
     val auth: FirebaseAuth = Firebase.auth
-    val startDestination = Screen.BottomScreen.Home.bRoute
+    //val startDestination = Screen.BottomScreen.Home.bRoute
+    val startDestination = if (auth.currentUser != null)
+                                Screen.BottomScreen.Home.bRoute
+                            else
+                                Screen.LoginScreen.Login.lRoute
+
 
     NavHost(navController = navController as NavHostController,
         startDestination = startDestination, modifier = Modifier.padding(pd) ){
+
+        composable(Screen.LoginScreen.Login.lRoute){
+            LoginScreen(auth = auth, navController)
+        }
 
         composable(Screen.BottomScreen.Home.bRoute){
             Home()

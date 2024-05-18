@@ -49,7 +49,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.home.theme.AccountDialog
-import com.gultekinahmetabdullah.softedu.signinsignup.LoginScreen
 import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onSecondaryContainer
 import com.gultekinahmetabdullah.softedu.util.Screen
 import com.gultekinahmetabdullah.softedu.util.screensInBottom
@@ -59,7 +58,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainView(){//TODO Add Feedback operation
+fun MainView() {//TODO Add Feedback operation
 
     //val scaffoldState = rememberState
     val scope: CoroutineScope = rememberCoroutineScope()
@@ -67,6 +66,7 @@ fun MainView(){//TODO Add Feedback operation
     val isSheetFullScreen by remember{ mutableStateOf(false) }
 
     val modifier = if(isSheetFullScreen) Modifier.fillMaxSize() else Modifier.fillMaxWidth()
+
     // Allow us to find out on which "View" we current are
     val controller: NavController = rememberNavController()
     val navBackStackEntry by controller.currentBackStackEntryAsState()
@@ -92,11 +92,11 @@ fun MainView(){//TODO Add Feedback operation
 
     val roundedCornerRadius = if(isSheetFullScreen) 0.dp else 12.dp
     val auth: FirebaseAuth = Firebase.auth
-    var isUserLoggedIn by remember { mutableStateOf(auth.currentUser != null) }
+    var isUserSignedIn by remember { mutableStateOf(auth.currentUser != null) }
 
-    var bottomBar:  @Composable () -> Unit = {
-        if(currentScreen is Screen.AccountDrawerScreen
-            || currentScreen == Screen.BottomScreen.Home){
+    val bottomBar:  @Composable () -> Unit = {
+        println(controller.currentDestination.toString())
+        if(isUserSignedIn){
             BottomAppBar(
                 Modifier.wrapContentSize(),
             ) {
@@ -122,22 +122,9 @@ fun MainView(){//TODO Add Feedback operation
             }
         }
     }
+    val topBar: @Composable () -> Unit = {
+        if(isUserSignedIn){
 
-    //Here if user does not sign in so this if statement runs and it is login screen
-    if (!isUserLoggedIn){// logged in now
-        //Returns UI
-        LoginScreen(navController = controller, isUserLoggedIn)//
-        //TODO We have null variable controller
-        //Other navigator uses composable
-        //Eurake!
-        //IF CURRENTUSER VALUE CHANGES THAN ELSE RUNS
-    }
-
-    //Here if user signs in so this else statement runs and it is main screen
-    else {
-        Scaffold(
-        bottomBar = bottomBar,
-        topBar = {
             TopAppBar(
                 title = { Text(title.value) },
                 actions = {
@@ -162,13 +149,19 @@ fun MainView(){//TODO Add Feedback operation
                     Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Menu" )
                 }}
             )
-        },
-        content = {
-            //This returns the selected screen
-            Navigation(navController = controller, viewModel = viewModel, pd = it)
-            AccountDialog(dialogOpen = dialogOpen)
+
         }
-    )
+    }
+
+        Scaffold(
+            bottomBar = bottomBar,
+            topBar = topBar,
+            content = {
+                //This returns the selected screen
+                Navigation(navController = controller, viewModel = viewModel, pd = it)
+                AccountDialog(dialogOpen = dialogOpen)
+            }
+        )
 
         if (openBottomSheet) {
             ModalBottomSheet(
@@ -203,7 +196,6 @@ fun MainView(){//TODO Add Feedback operation
             }
         }
     }
-}
 
 @Composable
 fun DrawerItem(

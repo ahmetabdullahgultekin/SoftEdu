@@ -23,17 +23,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.util.Screen
 
 
 @Composable
-fun LoginScreen(navController: NavController, currentUser: FirebaseUser) {//TODO Signup Level add determination test
+fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
+    //TODO Signup Level add determination test
     val context = LocalContext.current
-    val auth: FirebaseAuth = Firebase.auth
+    //val auth: FirebaseAuth = Firebase.auth
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -72,13 +71,7 @@ fun LoginScreen(navController: NavController, currentUser: FirebaseUser) {//TODO
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(context, "Sign in successful!", Toast.LENGTH_SHORT).show()
-                            //navController.navigate(Screen.MainScreen.Main.mRoute)
-                            //Crash yiyor saçma statement
-                            //TODO Problem here
-                            // Navigate to "main" screen
-                            //If current user value changes, screen will change
-
-
+                            navController.navigate(Screen.BottomScreen.Home.bRoute)
                         } else {
                             Toast.makeText(context,
                                 "Please enter valid address.", Toast.LENGTH_SHORT).show()
@@ -101,7 +94,7 @@ fun LoginScreen(navController: NavController, currentUser: FirebaseUser) {//TODO
                         if (task.isSuccessful) {
                             Toast.makeText(context, "Sign up successful!", Toast.LENGTH_SHORT).show()
                             // Navigate to "main" screen
-                            //navController.navigate(Screen.MainScreen.Main.mRoute)
+                            navController.navigate(Screen.BottomScreen.Home.bRoute)
                         } else {
                             Toast.makeText(
                                 context, "Sign up incomplete.", Toast.LENGTH_SHORT).show()
