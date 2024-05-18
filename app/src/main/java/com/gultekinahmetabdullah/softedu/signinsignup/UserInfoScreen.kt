@@ -37,6 +37,7 @@ fun UserInfoScreen(navController: NavController) {
     var surname by remember { mutableStateOf("") }
     val db = Firebase.firestore
     val context = LocalContext.current
+    val totalQuestions = 10
 
 
     Column(
@@ -67,7 +68,8 @@ fun UserInfoScreen(navController: NavController) {
         Button(onClick = {
             // Navigate to the test screen
             if (saveProfileInfo(name, surname, db, context)) {
-                navController.navigate(Screen.BottomScreen.Learn.route)
+                navController.navigate(Screen.BottomScreen.Learn.route + ",${false},${totalQuestions}")
+
             }
         }) {
             Text("Continue")

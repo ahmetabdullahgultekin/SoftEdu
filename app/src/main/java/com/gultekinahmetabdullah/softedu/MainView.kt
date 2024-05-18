@@ -65,6 +65,7 @@ import kotlinx.coroutines.launch
 fun MainView() {
 
     //val scaffoldState = rememberState
+    val totalQuestions = 5
     val scope: CoroutineScope = rememberCoroutineScope()
     val viewModel: MainViewModel = viewModel()
     val isSheetFullScreen by remember { mutableStateOf(false) }
@@ -84,7 +85,7 @@ fun MainView() {
     }
 
     val title = remember {
-        mutableStateOf(currentScreen.title)//.title
+        mutableStateOf(currentScreen.title) //.title
     }
 
     var isNavigationClicked by rememberSaveable { mutableStateOf(false) }
@@ -107,7 +108,7 @@ fun MainView() {
     }
 
     val bottomBar: @Composable () -> Unit = {
-        if (!isUserInSignInScreen) {
+        if (! isUserInSignInScreen) {
             BottomAppBar(
                 Modifier.wrapContentSize(),
             ) {
@@ -122,8 +123,14 @@ fun MainView() {
                     NavigationBarItem(
                         selected = currentRoute == item.bRoute,
                         onClick = {
-                            controller.navigate(item.bRoute)
-                            title.value = item.bTitle
+                            if (item.bRoute == Screen.BottomScreen.Learn.bRoute) {
+                                controller.navigate(item.bRoute + ",${false},${totalQuestions}")
+                                title.value = item.bTitle
+                            } else {
+                                controller.navigate(item.bRoute)
+                                title.value = item.bTitle
+                            }
+
                         },
                         icon = {
                             Icon(
@@ -139,7 +146,7 @@ fun MainView() {
         }
     }
     val topBar: @Composable () -> Unit = {
-        if (!isUserInSignInScreen) {
+        if (! isUserInSignInScreen) {
             TopAppBar(
                 title = { Text(title.value) },
                 actions = {
@@ -246,12 +253,12 @@ fun LeftDrawerItem(
     else Color.Transparent
     Row(
         Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 16.dp)
-            .background(background)
-            .clickable {
-                onDrawerItemClicked()
-            }) {
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 16.dp)
+                .background(background)
+                .clickable {
+                    onDrawerItemClicked()
+                }) {
         Icon(
             painter = painterResource(id = item.icon),
             contentDescription = item.dTitle,
@@ -274,12 +281,12 @@ fun RightDrawerItem(
     else Color.Transparent
     Row(
         Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 16.dp)
-            .background(background)
-            .clickable {
-                onDrawerItemClicked()
-            }) {
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 16.dp)
+                .background(background)
+                .clickable {
+                    onDrawerItemClicked()
+                }) {
         Icon(
             painter = painterResource(id = item.icon),
             contentDescription = item.dTitle,
@@ -296,13 +303,15 @@ fun RightDrawerItem(
 fun RightBottomSheet(modifier: Modifier) {
     Box(
         Modifier
-            .fillMaxWidth()
-            .height(200.dp)
+                .fillMaxWidth()
+                .height(200.dp)
     ) {
         Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.SpaceBetween) {
-            Row(modifier = modifier.padding(16.dp).clickable {
-                //controller.navigate(Screen.SettingsDrawerScreen.Settings.dRoute)
-            }) {
+            Row(modifier = modifier
+                    .padding(16.dp)
+                    .clickable {
+                        //controller.navigate(Screen.SettingsDrawerScreen.Settings.dRoute)
+                    }) {
                 Icon(
                     modifier = Modifier.padding(end = 8.dp),
                     painter = painterResource(id = R.drawable.baseline_settings_24),

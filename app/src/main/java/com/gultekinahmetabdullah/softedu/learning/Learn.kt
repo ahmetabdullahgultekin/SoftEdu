@@ -3,7 +3,6 @@ package com.gultekinahmetabdullah.softedu.learning
 
 import android.content.ContentValues
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,25 +34,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.gultekinahmetabdullah.softedu.database.updateAnsweredQuestions
 import com.gultekinahmetabdullah.softedu.util.Screen
 import com.gultekinahmetabdullah.softedu.util.fetchQuestion
 
 
 @Composable
 fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: Int) {
-    val context = LocalContext.current
     val db = Firebase.firestore
     val auth: FirebaseAuth = Firebase.auth
     var correctAnswered by rememberSaveable { mutableStateOf(0) }
@@ -67,6 +62,7 @@ fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: I
     var userId by remember { mutableStateOf(auth.currentUser?.uid) }
     var questionId by remember { mutableStateOf("") }
     var askedQuestionIds by remember { mutableStateOf(listOf<String>()) }
+    var selectedChoice by remember { mutableStateOf(- 1) }
 
 
     // Function to fetch the user's profile information from Firestore
@@ -106,51 +102,39 @@ fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: I
         Spacer(modifier = Modifier.height(16.dp))
 
         choices.forEachIndexed { index, choice ->  //TODO change buttons with choice boxes
-            Button(onClick = {
-                if (index == correctChoice) {
-                    userId?.let { updateAnsweredQuestions(it, questionId, true) }
-                    correctAnswered ++
-                    Toast.makeText(context, "Correct choice!", Toast.LENGTH_SHORT).show()
-                } else {
-                    userId?.let { updateAnsweredQuestions(it, questionId, false) }
-                    Toast.makeText(context, "Incorrect choice! The correct answer is $correctChoice.", Toast.LENGTH_SHORT).show()
-                }
-                isAnswerSelected = true
-            },
-                   enabled = ! isAnswerSelected
-            ) {
-                Text(choice)
-            }
+            ChoiceBox(text = choice,
+                      selected = index == selectedChoice,
+                      onOptionSelected = {
+                          selectedChoice = index
+                      })
 
             Spacer(modifier = Modifier.height(8.dp))
         }
-        if (isAnswerSelected) {
-            // Continue button
-            Button(onClick = {
-                fetchQuestion(userId, questionCounter, totalQuestions, askedQuestionIds, false) { newQuestionId, newQuestionText, newChoices, newCorrectChoice ->
-                    questionId = newQuestionId
-                    questionText = newQuestionText
-                    choices = newChoices
-                    correctChoice = newCorrectChoice
-                    questionCounter ++
-                    isAnswerSelected = false
-                    askedQuestionIds += newQuestionId
-                }
-                if (questionCounter >= totalQuestions) {
-                    if (isTestScreen) {
-                        val newExperienceLevel = when (correctAnswered) {
-                            0 -> 1
-                            totalQuestions -> 5
-                            else -> 1 + totalQuestions / correctAnswered
-                        }
-                        auth.currentUser?.uid?.let { updateExperienceLevel(it, newExperienceLevel) }
-                    }
-                    navController.navigate(Screen.ResultScreen.Result.rRoute
-                            + ",${correctAnswered},${totalQuestions}")
-                }
-            }) {
-                Text("Continue")
+        Button(onClick = {
+            fetchQuestion(userId, questionCounter, totalQuestions, askedQuestionIds, false) { newQuestionId, newQuestionText, newChoices, newCorrectChoice ->
+                questionId = newQuestionId
+                questionText = newQuestionText
+                choices = newChoices
+                correctChoice = newCorrectChoice
+                questionCounter ++
+                isAnswerSelected = false
+                askedQuestionIds += newQuestionId
             }
+
+            if (questionCounter >= totalQuestions) {
+                if (isTestScreen) {
+                    val newExperienceLevel = when (correctAnswered) {
+                        0 -> 1
+                        totalQuestions -> 5
+                        else -> 1 + totalQuestions / correctAnswered
+                    }
+                    auth.currentUser?.uid?.let { updateExperienceLevel(it, newExperienceLevel) }
+                }
+                navController.navigate(Screen.ResultScreen.Result.rRoute
+                                               + ",${correctAnswered},${totalQuestions}")
+            }
+        }) {
+            Text("Continue")
         }
     }
 }

@@ -39,7 +39,7 @@ sealed class Screen(val title: String, val route: String) {
         )
 
         data object Learn: BottomScreen(
-            "Learn", "play", R.drawable.baseline_school_24
+            "Learn", "learn", R.drawable.baseline_school_24
         )
 
         data object Leaderboard : BottomScreen(
