@@ -15,55 +15,74 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.home.Home
-import com.gultekinahmetabdullah.softedu.home.theme.AccountView
-import com.gultekinahmetabdullah.softedu.home.theme.Subscription
+import com.gultekinahmetabdullah.softedu.drawer.*
 import com.gultekinahmetabdullah.softedu.leaderboard.Leaderboard
 import com.gultekinahmetabdullah.softedu.learning.Learn
+import com.gultekinahmetabdullah.softedu.settings.SettingsScreen
 import com.gultekinahmetabdullah.softedu.signinsignup.LoginScreen
 import com.gultekinahmetabdullah.softedu.util.Screen
 
 
 @Composable
-fun Navigation(pd: PaddingValues, navController: NavController){
+fun Navigation(pd: PaddingValues, navController: NavController) {
 
     val auth: FirebaseAuth = Firebase.auth
-
     //val startDestination = Screen.BottomScreen.Home.bRoute
     val isUserSignedIn by remember {
         mutableStateOf(FirebaseAuth.getInstance().currentUser != null)
     }
 
-    val startDestination = if (false)
-                                Screen.BottomScreen.Home.bRoute
-                            else
-                                Screen.LoginScreen.Login.lRoute
+    val startDestination = if (isUserSignedIn)
+        Screen.BottomScreen.Home.bRoute
+    else
+        Screen.LoginScreen.Login.lRoute
 
 
-    NavHost(navController = navController as NavHostController,
-        startDestination = startDestination, modifier = Modifier.padding(pd) ){
+    NavHost(
+        navController = navController as NavHostController,
+        startDestination = startDestination, modifier = Modifier.padding(pd)
+    ) {
 
-        composable(Screen.LoginScreen.Login.lRoute){
+        composable(Screen.LoginScreen.Login.lRoute) {
             LoginScreen(auth = auth, navController)
         }
 
-        composable(Screen.BottomScreen.Home.bRoute){
+        composable(Screen.BottomScreen.Home.bRoute) {
             Home()
         }
 
-        composable(Screen.BottomScreen.Learn.bRoute){
-            Learn()
+        composable(Screen.BottomScreen.Learn.bRoute) {
+            Learn(navController, false, 1)
         }
 
-        composable(Screen.BottomScreen.Leaderboard.bRoute){
+        composable(Screen.BottomScreen.Leaderboard.bRoute) {
             Leaderboard(auth = auth)
         }
 
-        composable(Screen.AccountDrawerScreen.Account.route){
+        composable(Screen.AccountDrawerScreen.Account.route) {
             AccountView()
         }
 
-        composable(Screen.AccountDrawerScreen.Subscription.route){
+        composable(Screen.AccountDrawerScreen.Subscription.route) {
             Subscription()
+        }
+
+        composable(Screen.SettingsDrawerScreen.Settings.route) {
+            SettingsScreen()
+        }
+
+        composable(Screen.SettingsDrawerScreen.Feedback.route) {
+            FeedbackScreen(navController)
+        }
+
+        composable(Screen.SettingsDrawerScreen.About.route) {
+            AboutScreen()
+        }
+
+        composable(Screen.ResultScreen.Result.rRoute + ",{correctAnswered}" + ",{totalQuestions}") {backStackEntry ->
+            val correctAnswered = backStackEntry.arguments?.getString("correctAnswered")?.toIntOrNull() ?: 0
+            val totalQuestions = backStackEntry.arguments?.getString("totalQuestions")?.toIntOrNull() ?: 0
+            ResultScreen(navController, correctAnswered, totalQuestions)
         }
     }
 }

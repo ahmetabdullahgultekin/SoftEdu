@@ -7,12 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -32,13 +30,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -49,17 +47,19 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.gultekinahmetabdullah.softedu.home.theme.AccountDialog
+import com.gultekinahmetabdullah.softedu.drawer.AccountDialog
 import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onSecondaryContainer
 import com.gultekinahmetabdullah.softedu.util.Screen
 import com.gultekinahmetabdullah.softedu.util.screensInBottom
-import com.gultekinahmetabdullah.softedu.util.screensInDrawer
+import com.gultekinahmetabdullah.softedu.util.screensInLeftDrawer
+import com.gultekinahmetabdullah.softedu.util.screensInRightDrawer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainView() {//TODO Add Feedback operation
+    //TODO right drawer title
 
     //val scaffoldState = rememberState
     val scope: CoroutineScope = rememberCoroutineScope()
@@ -76,12 +76,12 @@ fun MainView() {//TODO Add Feedback operation
         mutableStateOf(false)
     }
 
-    val currentScreen = remember {
+    var currentScreen = remember {
         viewModel.currentScreen.value
     }
 
     val title = remember {
-        mutableStateOf(currentScreen.title)
+        mutableStateOf(currentScreen.title)//.title
     }
 
     var isNavigationClicked by rememberSaveable { mutableStateOf(false) }
@@ -92,28 +92,16 @@ fun MainView() {//TODO Add Feedback operation
     )
 
     val roundedCornerRadius = if (isSheetFullScreen) 0.dp else 12.dp
-    //val auth: FirebaseAuth = Firebase.auth
-    val isUserSignedIn by remember {
-        mutableStateOf(FirebaseAuth.getInstance().currentUser != null)
-    }
-    /*
-    val startDestination = if (false) {
-        Screen.BottomScreen.Home.bRoute
-        controller.navigate(Screen.BottomScreen.Home.bRoute)
-    }
-    else {
-        Screen.LoginScreen.Login.lRoute
-        controller.navigate(Screen.LoginScreen.Login.lRoute)
-    }
-*/
-    var isUserInSignInScreen by rememberSaveable {
-        mutableStateOf(
-            controller.currentDestination?.route.equals(Screen.LoginScreen.Login.lRoute)
-                    || controller.currentDestination == null
-        )
-    }
-    isUserInSignInScreen = false
 
+    var isUserInSignInScreen by remember {
+        mutableStateOf(currentRoute == Screen.LoginScreen.Login.lRoute)
+    }
+
+    LaunchedEffect(navBackStackEntry) {
+        //currentScreen = currentRoute.toString()
+        //title.value = Screen.BottomScreen.Home.bTitle
+        isUserInSignInScreen = currentRoute == Screen.LoginScreen.Login.lRoute
+    }
 
     val bottomBar: @Composable () -> Unit = {
         if (!isUserInSignInScreen) {
@@ -157,6 +145,7 @@ fun MainView() {//TODO Add Feedback operation
                             scope.launch {
                                 //modalSheetState.expand()
                                 openBottomSheet = true
+                                isNavigationClicked = true
                             }
                         }
                     ) {
@@ -167,7 +156,7 @@ fun MainView() {//TODO Add Feedback operation
                     IconButton(onClick = {
                         // Open the drawer
                         scope.launch {
-                            isNavigationClicked = true
+                            isNavigationClicked = false
                             openBottomSheet = true
                         }
                     }) {
@@ -182,41 +171,6 @@ fun MainView() {//TODO Add Feedback operation
         bottomBar = bottomBar,
         topBar = topBar,
         content = {
-            Column {
-                Spacer(modifier = Modifier
-                    .size(16.dp)
-                    .background(Color.Red))
-                Spacer(modifier = Modifier
-                    .size(16.dp)
-                    .background(Color.Red))
-                Spacer(modifier = Modifier
-                    .size(16.dp)
-                    .background(Color.Red))
-                Spacer(modifier = Modifier
-                    .size(16.dp)
-                    .background(Color.Red))
-                Spacer(modifier = Modifier
-                    .size(16.dp)
-                    .background(Color.Red))
-                Text(text = "x" + controller.currentDestination?.route.toString().toUpperCase() + "x")
-                Spacer(modifier = Modifier
-                    .size(16.dp)
-                    .background(Color.Red))
-                Text(text = "x" + Screen.LoginScreen.Login.lRoute.toUpperCase() + "x")
-                Spacer(modifier = Modifier
-                    .size(16.dp)
-                    .background(Color.Red))
-                Text(text = isUserInSignInScreen.toString())
-                Spacer(modifier = Modifier
-                    .size(16.dp)
-                    .background(Color.Red))
-                controller.currentDestination?.route?.let { it1 -> Text(text = it1) }
-                Spacer(modifier = Modifier
-                    .size(16.dp)
-                    .background(Color.Red))
-                Text(text = controller.currentDestination.toString())
-            }
-
             //This returns the selected screen
             Navigation(pd = it, navController = controller)
             AccountDialog(dialogOpen = dialogOpen)
@@ -233,12 +187,24 @@ fun MainView() {//TODO Add Feedback operation
             )
 
         ) {
-            if (!isNavigationClicked) {
-                MoreBottomSheet(modifier = modifier)
+            if (isNavigationClicked) {
+                //RightBottomSheet(modifier = modifier)
+                LazyColumn(Modifier.padding(16.dp)) {
+                    items(screensInRightDrawer) { item ->
+                        RightDrawerItem(selected = currentRoute == item.dRoute, item = item) {
+                            scope.launch {
+                                openBottomSheet = false
+                                isNavigationClicked = true
+                            }
+                            controller.navigate(item.dRoute)
+                            title.value = item.dTitle
+                        }
+                    }
+                }
             } else {
                 LazyColumn(Modifier.padding(16.dp)) {
-                    items(screensInDrawer) { item ->
-                        DrawerItem(selected = currentRoute == item.dRoute, item = item) {
+                    items(screensInLeftDrawer) { item ->
+                        LeftDrawerItem(selected = currentRoute == item.dRoute, item = item) {
                             scope.launch {
                                 openBottomSheet = false
                                 isNavigationClicked = false
@@ -258,7 +224,7 @@ fun MainView() {//TODO Add Feedback operation
 }
 
 @Composable
-fun DrawerItem(
+fun LeftDrawerItem(
     selected: Boolean,
     item: Screen.AccountDrawerScreen,
     onDrawerItemClicked: () -> Unit
@@ -286,14 +252,44 @@ fun DrawerItem(
 }
 
 @Composable
-fun MoreBottomSheet(modifier: Modifier) {
+fun RightDrawerItem(
+    selected: Boolean,
+    item: Screen.SettingsDrawerScreen,
+    onDrawerItemClicked: () -> Unit
+) {
+    val background = if (selected) md_theme_dark_onSecondaryContainer
+    else Color.Transparent
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 16.dp)
+            .background(background)
+            .clickable {
+                onDrawerItemClicked()
+            }) {
+        Icon(
+            painter = painterResource(id = item.icon),
+            contentDescription = item.dTitle,
+            Modifier.padding(end = 8.dp, top = 4.dp)
+        )
+        Text(
+            text = item.dTitle,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+    }
+}
+
+@Composable
+fun RightBottomSheet(modifier: Modifier) {
     Box(
         Modifier
             .fillMaxWidth()
             .height(200.dp)
     ) {
         Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.SpaceBetween) {
-            Row(modifier = modifier.padding(16.dp)) {
+            Row(modifier = modifier.padding(16.dp).clickable {
+                //controller.navigate(Screen.SettingsDrawerScreen.Settings.dRoute)
+            }) {
                 Icon(
                     modifier = Modifier.padding(end = 8.dp),
                     painter = painterResource(id = R.drawable.baseline_settings_24),

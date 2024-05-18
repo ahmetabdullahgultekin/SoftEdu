@@ -23,21 +23,7 @@ import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_tertiaryContainer
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Home(){//TODO Add Progress bar
-    val categories = listOf("Hits", "Happy", "Workout", "Running", "TGIF", "Yoga")
-    val grouped = listOf<String>("New Release","Favorites","Top  Rated").groupBy { it[0] }
-    LazyColumn{
-        grouped.forEach{
-            stickyHeader {
-                Text(text = it.value[0], modifier = Modifier.padding(16.dp))
-                LazyRow{
-                    items(categories){
-                        cat->
-                        LearnerItem(cat= cat, drawable = R.drawable.baseline_apps_24)
-                    }
-                }
-            }
-        }
-    }
+
 }
 @Composable
 fun LearnerItem(cat: String, drawable:Int){

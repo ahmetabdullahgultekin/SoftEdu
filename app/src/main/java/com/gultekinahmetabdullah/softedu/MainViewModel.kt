@@ -7,10 +7,8 @@ import com.gultekinahmetabdullah.softedu.util.Screen
 
 class MainViewModel:ViewModel() {
 
-    val startDestination = if (false)
-        Screen.BottomScreen.Home
-    else
-        Screen.LoginScreen.Login
+    private val startDestination = Screen.BottomScreen.Home
+
     private val _currentScreen: MutableState<Screen> = mutableStateOf(startDestination)
 
     val currentScreen: MutableState<Screen>

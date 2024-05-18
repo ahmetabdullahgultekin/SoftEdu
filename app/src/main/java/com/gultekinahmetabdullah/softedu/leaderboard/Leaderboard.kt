@@ -37,13 +37,6 @@ fun Leaderboard(auth: FirebaseAuth) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
-        Text(
-            text = "Leaderboard",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-        )
 
         LaunchedEffect(key1 = Unit) {
             try {

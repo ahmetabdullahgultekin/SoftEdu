@@ -21,6 +21,14 @@ sealed class Screen(val title: String, val route: String) {
         )
     }
 
+    sealed class ResultScreen(
+        private val rTitle: String, val rRoute: String,
+        @DrawableRes val icon: Int) : Screen(rTitle, rRoute){
+        data object Result : ResultScreen(
+            "Result", "result", R.drawable.baseline_login_24
+        )
+    }
+
     sealed class BottomScreen(val bTitle: String, val bRoute: String,
                               @DrawableRes val icon: Int): Screen(bTitle,bRoute){
         data object Home : BottomScreen(
@@ -59,21 +67,21 @@ sealed class Screen(val title: String, val route: String) {
     sealed class SettingsDrawerScreen(
         val dTitle: String, val dRoute: String,
         @DrawableRes val icon: Int) : Screen(dTitle, dRoute){
-        data object Account: AccountDrawerScreen(
-            "Account",
-            "account",
-            R.drawable.ic_account
+        data object Settings: SettingsDrawerScreen(
+            "Settings",
+            "settings",
+            R.drawable.baseline_settings_24
         )
-        data object Subscription: AccountDrawerScreen(
-            "Subscription",
-            "subscribe",
-            R.drawable.ic_temporary
+        data object Feedback: SettingsDrawerScreen(
+            "Feedback",
+            "feedback",
+            R.drawable.ic_feed_24
         )
 
-        data object AddAccount: AccountDrawerScreen(
-            "Add Account",
-            "add_account",
-            R.drawable.baseline_person_add_alt_1_24
+        data object About: SettingsDrawerScreen(
+            "About",
+            "about",
+            R.drawable.ic_about
         )
     }
 }
@@ -91,8 +99,13 @@ val screensInBottom = listOf(
     Screen.BottomScreen.Leaderboard
 )
 
-val screensInDrawer = listOf(
+val screensInLeftDrawer = listOf(
     Screen.AccountDrawerScreen.Account,
     Screen.AccountDrawerScreen.Subscription,
-    Screen.AccountDrawerScreen.AddAccount,
+    Screen.AccountDrawerScreen.AddAccount
+)
+val screensInRightDrawer = listOf(
+    Screen.SettingsDrawerScreen.Settings,
+    Screen.SettingsDrawerScreen.Feedback,
+    Screen.SettingsDrawerScreen.About
 )
