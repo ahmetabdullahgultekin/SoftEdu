@@ -116,36 +116,37 @@ fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: I
 
             Spacer(modifier = Modifier.height(8.dp))
         }
-        Button(onClick = {
-            if (continueClicked) {
-                fetchQuestion(userId, questionCounter, totalQuestions, askedQuestionIds, false) { newQuestionId, newQuestionText, newChoices, newCorrectChoice ->
-                    questionId = newQuestionId
-                    questionText = newQuestionText
-                    choices = newChoices
-                    correctChoice = newCorrectChoice
-                    questionCounter ++
-                    isAnswerSelected = false
-                    askedQuestionIds += newQuestionId
-                    continueClicked = false
-                    selectedChoice = - 1
-                }
+        Button(enabled = selectedChoice != - 1,  // Disable the button if no choice is selected
+               onClick = {
+                   if (continueClicked) {
+                       fetchQuestion(userId, questionCounter, totalQuestions, askedQuestionIds, false) { newQuestionId, newQuestionText, newChoices, newCorrectChoice ->
+                           questionId = newQuestionId
+                           questionText = newQuestionText
+                           choices = newChoices
+                           correctChoice = newCorrectChoice
+                           questionCounter ++
+                           isAnswerSelected = false
+                           askedQuestionIds += newQuestionId
+                           continueClicked = false
+                           selectedChoice = - 1
+                       }
 
-                if (questionCounter >= totalQuestions) {
-                    if (isTestScreen) {
-                        val newExperienceLevel = when (correctAnswered) {
-                            0 -> 1
-                            totalQuestions -> 5
-                            else -> 1 + totalQuestions / correctAnswered
-                        }
-                        auth.currentUser?.uid?.let { updateExperienceLevel(it, newExperienceLevel) }
-                    }
-                    navController.navigate(Screen.ResultScreen.Result.rRoute
-                                                   + ",${correctAnswered},${totalQuestions}")
-                }
-            } else {
-                continueClicked = true
-            }
-        }) {
+                       if (questionCounter >= totalQuestions) {
+                           if (isTestScreen) {
+                               val newExperienceLevel = when (correctAnswered) {
+                                   0 -> 1
+                                   totalQuestions -> 5
+                                   else -> 1 + totalQuestions / correctAnswered
+                               }
+                               auth.currentUser?.uid?.let { updateExperienceLevel(it, newExperienceLevel) }
+                           }
+                           navController.navigate(Screen.ResultScreen.Result.rRoute
+                                                          + ",${correctAnswered},${totalQuestions}")
+                       }
+                   } else {
+                       continueClicked = true
+                   }
+               }) {
             Text("Continue")
         }
     }
@@ -187,7 +188,7 @@ fun ChoiceBox(
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
-                    enabled = !answered,
+                    enabled = ! answered,
                     onClick = onOptionSelected
                 )
     ) {
