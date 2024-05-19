@@ -103,7 +103,8 @@ fun MainView() {
     val roundedCornerRadius = if (isSheetFullScreen) 0.dp else 12.dp
 
     var isUserInSignInScreen by remember {
-        mutableStateOf(currentRoute == Screen.LoginScreen.Login.lRoute)
+        mutableStateOf(currentRoute == Screen.LoginScreen.Login.lRoute
+                || currentRoute?.contains(Screen.BottomScreen.Learn.bRoute) ?: true)//TODO Correct bars
     }
 
     LaunchedEffect(navBackStackEntry) {
@@ -115,7 +116,8 @@ fun MainView() {
     val topBar: @Composable () -> Unit = {
         if (!isUserInSignInScreen) {
             TopAppBar(colors = topAppBarColors(
-                containerColor = md_theme_dark_onSecondaryContainer),
+                containerColor = md_theme_dark_onSecondaryContainer
+            ),
                 title = { Text(title.value, color = md_theme_dark_onSecondary) },
                 actions = {
                     //More button opens Bottom sheet
@@ -173,9 +175,8 @@ fun MainView() {
             ) {
                 screensInBottom.forEach { item ->
 
-                    val routeOfLearningScreen = item.bRoute + ",${false},${totalQuestions}"
                     val isSelected = (currentRoute == item.bRoute)
-                            || (currentRoute?.contains(item.bRoute) == true)
+                            //|| (currentRoute?.contains(item.bRoute) == true)
                     Log.d(
                         "Navigation",
                         "Item: ${item.bTitle}, Current Route: $currentRoute," +
@@ -185,16 +186,12 @@ fun MainView() {
                         md_theme_dark_onSecondary
                     else
                         md_theme_dark_inverseOnSurface
+
                     NavigationBarItem(
                         selected = isSelected,//currentRoute == item.bRoute,
                         onClick = {
-                            if (item.bRoute == Screen.BottomScreen.Learn.bRoute) {
-                                controller.navigate(item.bRoute + ",${false},${totalQuestions}")
-                                title.value = item.bTitle
-                            } else {
-                                controller.navigate(item.bRoute)
-                                title.value = item.bTitle
-                            }
+                            controller.navigate(item.bRoute)
+                            title.value = item.bTitle
                         },
                         icon = {
                             Icon(

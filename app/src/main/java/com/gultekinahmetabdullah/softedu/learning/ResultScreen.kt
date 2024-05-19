@@ -36,8 +36,8 @@ fun ResultScreen(navController: NavController, correctAnswered: Int, totalQuesti
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(onClick = {
-            Toast.makeText(context, "Navigating to home", Toast.LENGTH_SHORT).show()
-            navController.navigate(Screen.BottomScreen.Home.route)
+            Toast.makeText(context, "Navigating to Learn Screen", Toast.LENGTH_SHORT).show()
+            navController.navigate(Screen.BottomScreen.Learn.bRoute)
         }) {
             Text("Continue")
         }

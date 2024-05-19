@@ -73,7 +73,7 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                             navController.navigate(Screen.BottomScreen.Home.bRoute)
                         } else {
                             Toast.makeText(context,
-                                "Please enter valid address.", Toast.LENGTH_SHORT).show()
+                                "Mail address or password is invalid.", Toast.LENGTH_SHORT).show()
                         }
                     }
             } else {
@@ -96,7 +96,10 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                             navController.navigate(Screen.LoginScreen.UserInfo.route)
                         } else {
                             Toast.makeText(
-                                context, "Sign up failed.", Toast.LENGTH_SHORT).show()
+                                context,
+                                "Sign up failed. Please try to sign up" +
+                                        " with valid email address again.",
+                                Toast.LENGTH_SHORT).show()
                         }
                     }
             } else {

@@ -147,6 +147,19 @@ fun AccountView(auth: FirebaseAuth, navController: NavController) {
             )
         }
 
+        item { Row(modifier = Modifier.padding(16.dp)) {
+            TextButton(onClick = {
+                navController.navigate(Screen.AccountDrawerScreen.AdjustAccount.dRoute)
+            }) {
+                Row {
+                    Text(text = "Manage")
+                    Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null)
+                }
+                //IconButton(onClick = {})}
+            }
+        } }
+
         item { Spacer(modifier = Modifier.padding(50.dp)) }
 
         items(userSInfoRowItems.size) { index ->

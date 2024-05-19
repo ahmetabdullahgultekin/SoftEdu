@@ -1,5 +1,4 @@
 package com.gultekinahmetabdullah.softedu.util
-
 import androidx.annotation.DrawableRes
 import com.gultekinahmetabdullah.softedu.R
 
@@ -22,15 +21,18 @@ sealed class Screen(val title: String, val route: String) {
         private val rTitle: String, val rRoute: String,
         @DrawableRes val icon: Int
     ) : Screen(rTitle, rRoute) {
+
         data object Result : ResultScreen(
-            "Result", "result", R.drawable.baseline_login_24
+            "Result", "result",//TODO might cause an error
+            R.drawable.baseline_login_24
         )
     }
 
     sealed class BottomScreen(
         val bTitle: String, val bRoute: String,
-        @DrawableRes val icon: Int
+        @DrawableRes open val icon: Int
     ) : Screen(bTitle, bRoute) {
+
         data object Home : BottomScreen(
             "Home", "home", R.drawable.baseline_home_24
         )
@@ -39,10 +41,38 @@ sealed class Screen(val title: String, val route: String) {
             "Learn", "learn", R.drawable.baseline_school_24
         )
 
+        sealed class Learnings(
+            private val gTitle: String, private val gRoute: String,
+            @DrawableRes override val icon: Int
+        ) : BottomScreen(gTitle, gRoute, icon) {
+
+            data object Quiz : Learnings(
+                "Quiz",
+                Learn.bRoute + "//" + "quiz",
+                R.drawable.baseline_quiz_24
+            )
+
+            data object Puzzle : Learnings(
+                "Puzzle", Learn.bRoute + "//" + "puzzle",
+                R.drawable.baseline_widgets_24
+            )
+
+            data object Memory : Learnings(
+                "Memory", Learn.bRoute + "//" + "memory",
+                R.drawable.baseline_memory_24
+            )
+
+            data object Sliders : Learnings(
+                "Sliders", Learn.bRoute + "//" + "sliders",
+                R.drawable.sharp_swap_horizontal_circle_24
+            )
+        }
+
         data object Leaderboard : BottomScreen(
             "Leaderboard", "leaderboard", R.drawable.baseline_leaderboard_24
         )
     }
+
 
     sealed class AccountDrawerScreen(
         val dTitle: String, val dRoute: String,
@@ -54,7 +84,7 @@ sealed class Screen(val title: String, val route: String) {
             R.drawable.ic_account
         )
 
-        data object AdjustAccount: AccountDrawerScreen(
+        data object AdjustAccount : AccountDrawerScreen(
             "Adjust Account",
             "adjust_account",
             R.drawable.ic_account
@@ -97,17 +127,17 @@ sealed class Screen(val title: String, val route: String) {
     }
 }
 
-val screens = listOf(
-    Screen.BottomScreen.Home,
-    Screen.BottomScreen.Learn,
-    Screen.BottomScreen.Leaderboard,
-    Screen.LoginScreen.Login,
-)
-
 val screensInBottom = listOf(
     Screen.BottomScreen.Home,
     Screen.BottomScreen.Learn,
     Screen.BottomScreen.Leaderboard
+)
+
+val screensInLearn = listOf(
+    Screen.BottomScreen.Learnings.Quiz,
+    Screen.BottomScreen.Learnings.Puzzle,
+    Screen.BottomScreen.Learnings.Memory,
+    Screen.BottomScreen.Learnings.Sliders
 )
 
 val screensInLeftDrawer = listOf(

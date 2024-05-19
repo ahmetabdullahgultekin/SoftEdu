@@ -54,7 +54,7 @@ val md_theme_dark_onTertiary = Color(0xFFD50000)
 //GridBorderColourOfHome
 val md_theme_dark_tertiaryContainer = Color(0xFFFF6D00)
 val md_theme_dark_onTertiaryContainer = Color(0xFF5E2801)
-val md_theme_dark_error = Color(0xFFD50000)
+val md_theme_dark_error = Color(0xFF570000)
 val md_theme_dark_errorContainer = Color(0xFFD50000)
 val md_theme_dark_onError = Color(0xFFD50000)
 val md_theme_dark_onErrorContainer = Color(0xFFD50000)

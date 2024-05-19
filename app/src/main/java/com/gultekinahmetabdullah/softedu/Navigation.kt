@@ -17,9 +17,13 @@ import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.home.Home
 import com.gultekinahmetabdullah.softedu.drawer.*
 import com.gultekinahmetabdullah.softedu.leaderboard.Leaderboard
-import com.gultekinahmetabdullah.softedu.learning.Learn
+import com.gultekinahmetabdullah.softedu.learning.games.Quiz
 import com.gultekinahmetabdullah.softedu.drawer.AdjustProfileScreen
+import com.gultekinahmetabdullah.softedu.learning.Learn
 import com.gultekinahmetabdullah.softedu.learning.ResultScreen
+import com.gultekinahmetabdullah.softedu.learning.games.Memory
+import com.gultekinahmetabdullah.softedu.learning.games.Puzzle
+import com.gultekinahmetabdullah.softedu.learning.games.Sliders
 import com.gultekinahmetabdullah.softedu.signinsignup.LoginScreen
 import com.gultekinahmetabdullah.softedu.signinsignup.UserInfoScreen
 import com.gultekinahmetabdullah.softedu.util.Screen
@@ -53,12 +57,27 @@ fun Navigation(pd: PaddingValues, navController: NavController) {
             Home()
         }
 
-        composable(Screen.BottomScreen.Learn.bRoute + ",{isTestScreen}" + ",{totalQuestions}") {
+        composable(Screen.BottomScreen.Learn.bRoute) {
+            Learn(navController)
+        }
+
+        composable(Screen.BottomScreen.Learnings.Quiz.bRoute + ",{isTestScreen}"+ ",{totalQuestions}") {
             backStackEntry ->
-            //composable(Screen.BottomScreen.Learn.bRoute + "/{isTestScreen}/{totalQuestions}") { backStackEntry ->
             val isTestScreen = backStackEntry.arguments?.getString("isTestScreen").toBoolean()
             val totalQuestions = backStackEntry.arguments?.getString("totalQuestions")?.toIntOrNull() ?: 0
-            Learn(navController, isTestScreen, totalQuestions)
+            Quiz(navController, isTestScreen, totalQuestions)
+        }
+
+        composable(Screen.BottomScreen.Learnings.Memory.route) {
+            Memory()
+        }
+
+        composable(Screen.BottomScreen.Learnings.Puzzle.route) {
+            Puzzle()
+        }
+
+        composable(Screen.BottomScreen.Learnings.Sliders.route) {
+            Sliders()
         }
 
         composable(Screen.BottomScreen.Leaderboard.bRoute) {
@@ -93,7 +112,7 @@ fun Navigation(pd: PaddingValues, navController: NavController) {
             UserInfoScreen(navController)
         }
 
-        composable(Screen.ResultScreen.Result.rRoute + "/{correctAnswered}/{totalQuestions}") { backStackEntry ->
+        composable(Screen.ResultScreen.Result.rRoute + ",{correctAnswered}" + ",{totalQuestions}") { backStackEntry ->
             val correctAnswered = backStackEntry.arguments?.getString("correctAnswered")?.toIntOrNull() ?: 0
             val totalQuestions = backStackEntry.arguments?.getString("totalQuestions")?.toIntOrNull() ?: 0
             ResultScreen(navController, correctAnswered, totalQuestions)
