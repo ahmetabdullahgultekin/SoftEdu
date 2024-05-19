@@ -13,6 +13,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -134,14 +135,15 @@ fun AccountView(auth: FirebaseAuth, navController: NavController) {
         }
 
         Row(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Manage", modifier = Modifier
-                .align(Alignment.CenterVertically))
-            IconButton(onClick = {
-                //TODO : Something can be made
-                navController.navigate(Screen.SettingsDrawerScreen.Settings.dRoute)
+            TextButton(onClick = {
+                navController.navigate(Screen.AccountDrawerScreen.AdjustAccount.dRoute)
             }) {
-                Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = null)
+                Row {
+                    Text(text = "Manage")
+                    Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null)
+                }
+                //IconButton(onClick = {})}
             }
         }
     }
