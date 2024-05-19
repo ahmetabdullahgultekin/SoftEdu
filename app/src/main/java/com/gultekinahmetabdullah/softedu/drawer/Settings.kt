@@ -1,103 +1,73 @@
 package com.gultekinahmetabdullah.softedu.drawer
 
-
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import java.util.Locale
+import com.gultekinahmetabdullah.softedu.MainActivity
+import com.gultekinahmetabdullah.softedu.theme.DarkColors
+import com.gultekinahmetabdullah.softedu.theme.LightColors
+import com.gultekinahmetabdullah.softedu.theme.SoftEduTheme
+import com.gultekinahmetabdullah.softedu.theme.Typography
 
 @Composable
-fun SettingsScreen() {
-    val auth = Firebase.auth
-    val db = Firebase.firestore
-    val context = LocalContext.current
+fun Settings() {
+    //TODO add settings
+    val settings = listOf("Dark Mode", "Notifications", "Privacy", "About", "Help")
+    val systemInDarkTheme = isSystemInDarkTheme()
+    val isDarkTheme = remember { mutableStateOf(systemInDarkTheme) }
 
-    var selectedField by remember { mutableStateOf("") }
-    var newValue by remember { mutableStateOf("") }
-    var oldPassword by remember { mutableStateOf("") }
+    Column {
+        SwitchButtonOnRow(settings[0])
+    }
+}
 
-    val fields = listOf("Name", "Surname", "Password")
+@Composable
+fun SwitchButtonOnRow(btnText: String) {
 
-    Column(
+    val systemInDarkTheme = isSystemInDarkTheme()
+    val isDarkThemed = remember { mutableStateOf(systemInDarkTheme) }
+
+    val colors = if (! isDarkThemed.value) {
+        LightColors
+    } else {
+        DarkColors
+    }
+
+
+    Card(
         modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .padding(16.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation()
     ) {
-        fields.forEach { field ->
-            Button(onClick = { selectedField = field }) {
-                Text(field)
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        if (selectedField == "Password") {
-            OutlinedTextField(
-                value = oldPassword,
-                onValueChange = { oldPassword = it },
-                label = { Text("Old Password") },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth()
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                text = btnText, modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.CenterVertically)
             )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        OutlinedTextField(
-            value = newValue,
-            onValueChange = { newValue = it },
-            label = { Text("New $selectedField") },
-            visualTransformation = if (selectedField == "Password") PasswordVisualTransformation() else VisualTransformation.None,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(onClick = {
-            val user = auth.currentUser
-            if (user != null) {
-                when (selectedField) {
-                    "Name", "Surname" -> {
-                        // Update name or surname in Firestore
-                        val docRef = db.collection("users").document(user.uid)
-                        docRef.update(selectedField.lowercase(Locale.getDefault()), newValue)
-                                .addOnSuccessListener {
-                                    android.widget.Toast.makeText(context, "$selectedField updated", android.widget.Toast.LENGTH_SHORT).show()
-                                }
-                    }
-
-                    "Password" -> {
-                        // Sign in with email and old password
-                        auth.signInWithEmailAndPassword(user.email ?: "", oldPassword)
-                                .addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        // Update password in FirebaseAuth
-                                        user.updatePassword(newValue)
-                                                .addOnCompleteListener { updateTask ->
-                                                    if (updateTask.isSuccessful) {
-                                                        android.widget.Toast.makeText(context, "Password updated", android.widget.Toast.LENGTH_SHORT).show()
-                                                    } else {
-                                                        android.widget.Toast.makeText(context, "Error updating password", android.widget.Toast.LENGTH_SHORT).show()
-                                                    }
-                                                }
-                                    } else {
-                                        android.widget.Toast.makeText(context, "Incorrect old password", android.widget.Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                    }
-                }
-            }
-        }) {
-            Text("Update Info")
+            Switch(modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.CenterVertically),
+                checked = isDarkThemed.value, onCheckedChange = {
+                    //TODO change theme
+                    isDarkThemed.value = it
+                })
         }
     }
 }

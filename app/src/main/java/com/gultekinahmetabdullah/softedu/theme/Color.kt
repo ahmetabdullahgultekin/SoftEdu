@@ -2,7 +2,7 @@ package com.gultekinahmetabdullah.softedu.theme
 
 import androidx.compose.ui.graphics.Color
 
-
+//TODO Arrange the colors in a better way
 val md_theme_light_primary = Color(0xFFFF9800)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFEEDCFF)
@@ -52,7 +52,7 @@ val md_theme_dark_onSecondaryContainer = Color(0xFF3F1B00)
 val md_theme_dark_tertiary = Color(0xFFD50000)
 val md_theme_dark_onTertiary = Color(0xFFD50000)
 //GridBorderColourOfHome
-val md_theme_dark_tertiaryContainer = Color(0xFFD50000)
+val md_theme_dark_tertiaryContainer = Color(0xFFFF6D00)
 val md_theme_dark_onTertiaryContainer = Color(0xFF5E2801)
 val md_theme_dark_error = Color(0xFFD50000)
 val md_theme_dark_errorContainer = Color(0xFFD50000)

@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRowScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,7 +29,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -109,8 +111,62 @@ fun MainView() {
         isUserInSignInScreen = currentRoute == Screen.LoginScreen.Login.lRoute
     }
 
+    val topBar: @Composable () -> Unit = {
+        if (!isUserInSignInScreen) {
+            TopAppBar(colors = topAppBarColors(
+                containerColor = md_theme_dark_onSecondaryContainer),
+                title = { Text(title.value, color = md_theme_dark_onSecondary) },
+                actions = {
+                    //More button opens Bottom sheet
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                //modalSheetState.expand()
+                                openBottomSheet = true
+                                isNavigationClicked = true
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = null, tint = md_theme_dark_onSecondary
+                        )
+                    }
+                    //Sign Out button
+                    IconButton(
+                        onClick = {
+                            auth.signOut()
+                            // Navigate back to login screen after signing out
+                            controller.navigate(Screen.LoginScreen.Login.lRoute)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = null, tint = md_theme_dark_onSecondary
+                        )
+                    }
+                },
+                //Account sheet button
+                navigationIcon = {
+                    IconButton(onClick = {
+                        // Open the drawer
+                        scope.launch {
+                            isNavigationClicked = false
+                            openBottomSheet = true
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = "Menu", tint = md_theme_dark_onSecondary
+                        )
+                    }
+                }
+            )
+        }
+    }
+
     val bottomBar: @Composable () -> Unit = {
-        if (! isUserInSignInScreen) {
+        if (!isUserInSignInScreen) {
             BottomAppBar(
                 Modifier.wrapContentSize(), containerColor = md_theme_dark_onTertiaryContainer
             ) {
@@ -125,9 +181,9 @@ fun MainView() {
                                 " Is Selected: $isSelected"
                     )
                     val tint = if (isSelected)
-                                    md_theme_dark_onSecondary
-                                else
-                                    md_theme_dark_inverseOnSurface
+                        md_theme_dark_onSecondary
+                    else
+                        md_theme_dark_inverseOnSurface
                     NavigationBarItem(
                         selected = isSelected,//currentRoute == item.bRoute,
                         onClick = {
@@ -150,50 +206,6 @@ fun MainView() {
                     )
                 }
             }
-        }
-    }
-    val topBar: @Composable () -> Unit = {
-        if (! isUserInSignInScreen) {
-            TopAppBar(colors = TopAppBarDefaults.
-                    smallTopAppBarColors( containerColor = md_theme_dark_onSecondaryContainer),
-                title = { Text(title.value, color = md_theme_dark_onSecondary) },
-                actions = {
-                    IconButton(
-                        onClick = {
-                            scope.launch {
-                                //modalSheetState.expand()
-                                openBottomSheet = true
-                                isNavigationClicked = true
-                            }
-                        }
-                    ) {
-                        Icon(imageVector = Icons.Default.MoreVert,
-                            contentDescription = null, tint = md_theme_dark_onSecondary)
-                    }
-                    IconButton(
-                        onClick = {
-                            auth.signOut()
-                            // Navigate back to login screen after signing out
-                            controller.navigate(Screen.LoginScreen.Login.lRoute)
-                        }
-                    ) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                            contentDescription = null, tint = md_theme_dark_onSecondary)
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        // Open the drawer
-                        scope.launch {
-                            isNavigationClicked = false
-                            openBottomSheet = true
-                        }
-                    }) {
-                        Icon(imageVector = Icons.Default.AccountCircle,
-                            contentDescription = "Menu", tint = md_theme_dark_onSecondary)
-                    }
-                }
-            )
         }
     }
 
@@ -221,7 +233,7 @@ fun MainView() {
                 //RightBottomSheet(modifier = modifier)
                 LazyColumn(Modifier.padding(16.dp)) {
                     items(screensInRightDrawer) { item ->
-                        RightDrawerItem(selected = currentRoute == item.dRoute, item = item) {
+                        SettingsDrawerItem(selected = currentRoute == item.dRoute, item = item) {
                             scope.launch {
                                 openBottomSheet = false
                                 isNavigationClicked = true
@@ -234,7 +246,7 @@ fun MainView() {
             } else {
                 LazyColumn(Modifier.padding(16.dp)) {
                     items(screensInLeftDrawer) { item ->
-                        LeftDrawerItem(selected = currentRoute == item.dRoute, item = item) {
+                        AccountDrawerItem(selected = currentRoute == item.dRoute, item = item) {
                             scope.launch {
                                 openBottomSheet = false
                                 isNavigationClicked = false
@@ -254,7 +266,7 @@ fun MainView() {
 }
 
 @Composable
-fun LeftDrawerItem(
+fun AccountDrawerItem(
     selected: Boolean,
     item: Screen.AccountDrawerScreen,
     onDrawerItemClicked: () -> Unit
@@ -263,26 +275,29 @@ fun LeftDrawerItem(
     else Color.Transparent
     Row(
         Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 16.dp)
-                .background(background)
-                .clickable {
-                    onDrawerItemClicked()
-                }) {
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 16.dp)
+            .background(background, RoundedCornerShape(15.dp))
+            .clickable {
+                onDrawerItemClicked()
+            }) {
         Icon(
             painter = painterResource(id = item.icon),
             contentDescription = item.dTitle,
-            Modifier.padding(end = 8.dp, top = 4.dp)
+            Modifier.align(Alignment.CenterVertically)
+                .padding(end = 8.dp)
         )
         Text(
             text = item.dTitle,
             style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.align(Alignment.CenterVertically)
+                .padding(end = 8.dp)
         )
     }
 }
 
 @Composable
-fun RightDrawerItem(
+fun SettingsDrawerItem(
     selected: Boolean,
     item: Screen.SettingsDrawerScreen,
     onDrawerItemClicked: () -> Unit
@@ -291,20 +306,23 @@ fun RightDrawerItem(
     else Color.Transparent
     Row(
         Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 16.dp)
-                .background(background)
-                .clickable {
-                    onDrawerItemClicked()
-                }) {
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 16.dp)
+            .background(background, RoundedCornerShape(15.dp))
+            .clickable {
+                onDrawerItemClicked()
+            }) {
         Icon(
             painter = painterResource(id = item.icon),
             contentDescription = item.dTitle,
-            Modifier.padding(end = 8.dp, top = 4.dp)
+            Modifier.align(Alignment.CenterVertically)
+                .padding(end = 8.dp)
         )
         Text(
             text = item.dTitle,
             style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.align(Alignment.CenterVertically)
+                .padding(end = 8.dp)
         )
     }
 }
@@ -313,15 +331,15 @@ fun RightDrawerItem(
 fun RightBottomSheet(modifier: Modifier) {
     Box(
         Modifier
-                .fillMaxWidth()
-                .height(200.dp)
+            .fillMaxWidth()
+            .height(200.dp)
     ) {
         Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.SpaceBetween) {
             Row(modifier = modifier
-                    .padding(16.dp)
-                    .clickable {
-                        //controller.navigate(Screen.SettingsDrawerScreen.Settings.dRoute)
-                    }) {
+                .padding(16.dp)
+                .clickable {
+                    //controller.navigate(Screen.SettingsDrawerScreen.Settings.dRoute)
+                }) {
                 Icon(
                     modifier = Modifier.padding(end = 8.dp),
                     painter = painterResource(id = R.drawable.baseline_settings_24),

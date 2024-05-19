@@ -18,7 +18,7 @@ import com.gultekinahmetabdullah.softedu.home.Home
 import com.gultekinahmetabdullah.softedu.drawer.*
 import com.gultekinahmetabdullah.softedu.leaderboard.Leaderboard
 import com.gultekinahmetabdullah.softedu.learning.Learn
-import com.gultekinahmetabdullah.softedu.drawer.SettingsScreen
+import com.gultekinahmetabdullah.softedu.drawer.AdjustProfileScreen
 import com.gultekinahmetabdullah.softedu.learning.ResultScreen
 import com.gultekinahmetabdullah.softedu.signinsignup.LoginScreen
 import com.gultekinahmetabdullah.softedu.signinsignup.UserInfoScreen
@@ -55,7 +55,7 @@ fun Navigation(pd: PaddingValues, navController: NavController) {
 
         composable(Screen.BottomScreen.Learn.bRoute + ",{isTestScreen}" + ",{totalQuestions}") {
             backStackEntry ->
-//        composable(Screen.BottomScreen.Learn.bRoute + "/{isTestScreen}/{totalQuestions}") { backStackEntry ->
+            //composable(Screen.BottomScreen.Learn.bRoute + "/{isTestScreen}/{totalQuestions}") { backStackEntry ->
             val isTestScreen = backStackEntry.arguments?.getString("isTestScreen").toBoolean()
             val totalQuestions = backStackEntry.arguments?.getString("totalQuestions")?.toIntOrNull() ?: 0
             Learn(navController, isTestScreen, totalQuestions)
@@ -69,12 +69,16 @@ fun Navigation(pd: PaddingValues, navController: NavController) {
             AccountView(auth, navController)
         }
 
+        composable(Screen.AccountDrawerScreen.AdjustAccount.route) {
+            AdjustProfileScreen()
+        }
+
         composable(Screen.AccountDrawerScreen.Subscription.route) {
             Subscription()
         }
 
         composable(Screen.SettingsDrawerScreen.Settings.route) {
-            SettingsScreen()
+            Settings()
         }
 
         composable(Screen.SettingsDrawerScreen.Feedback.route) {
@@ -84,6 +88,7 @@ fun Navigation(pd: PaddingValues, navController: NavController) {
         composable(Screen.SettingsDrawerScreen.About.route) {
             AboutScreen()
         }
+
         composable(Screen.LoginScreen.UserInfo.route) {
             UserInfoScreen(navController)
         }
