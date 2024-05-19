@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -226,8 +227,10 @@ fun MainView() {
             shape = RoundedCornerShape(
                 topStart = roundedCornerRadius,
                 topEnd = roundedCornerRadius
-            )
-
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(320.dp)
         ) {
             if (isNavigationClicked) {
                 //RightBottomSheet(modifier = modifier)
@@ -241,6 +244,7 @@ fun MainView() {
                             controller.navigate(item.dRoute)
                             title.value = item.dTitle
                         }
+                        HorizontalDivider()
                     }
                 }
             } else {
@@ -258,6 +262,7 @@ fun MainView() {
                                 title.value = item.dTitle
                             }
                         }
+                        HorizontalDivider()
                     }
                 }
             }
@@ -284,13 +289,15 @@ fun AccountDrawerItem(
         Icon(
             painter = painterResource(id = item.icon),
             contentDescription = item.dTitle,
-            Modifier.align(Alignment.CenterVertically)
+            Modifier
+                .align(Alignment.CenterVertically)
                 .padding(end = 8.dp)
         )
         Text(
             text = item.dTitle,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.align(Alignment.CenterVertically)
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
                 .padding(end = 8.dp)
         )
     }
@@ -315,13 +322,15 @@ fun SettingsDrawerItem(
         Icon(
             painter = painterResource(id = item.icon),
             contentDescription = item.dTitle,
-            Modifier.align(Alignment.CenterVertically)
+            Modifier
+                .align(Alignment.CenterVertically)
                 .padding(end = 8.dp)
         )
         Text(
             text = item.dTitle,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.align(Alignment.CenterVertically)
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
                 .padding(end = 8.dp)
         )
     }

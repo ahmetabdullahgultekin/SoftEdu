@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,41 +26,76 @@ import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_tertiaryContainer
 @Composable
 fun Home() {//TODO add announcement
 
+    val listOfAnnouncements = listOf(
+        "Nickname System",
+        "Friendship System",
+        "Optimise Home Screen",
+        "Optimise Learn Screen",
+        "Learn Screen should show game selection at first",
+        "Add new learning mode",
+        "Optimise Leaderboard Screen",
+        "Add new settings features",
+        "Add new details to the Feedback Screen",
+        "Log in Screen must be improved",
+        "Log in text field show hide password",
+        "Add share feature",
+        "Add version info"
+    )
+
     Column {
-        Card( modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .size(100.dp)) {
-            Column(verticalArrangement = Arrangement.Center) {
-                Text(
-                    text = "Welcome to SoftEdu",
-                    modifier = Modifier.padding(8.dp)
-                )
-                HorizontalDivider()
-                Text(
-                    text = "Learn, Share, Grow",
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-        }
-        Card(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-        ) {
+        MottoCard()
+
+        AnnouncementCard()
+
+        AnnouncementsColumn(listOfAnnouncements)
+    }
+}
+
+@Composable
+fun MottoCard() {
+    Card( modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp)
+        .size(100.dp)) {
+        Column(verticalArrangement = Arrangement.Center) {
             Text(
-                text = "Announcements",
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.CenterHorizontally)
+                text = "Welcome to SoftEdu",
+                modifier = Modifier.padding(8.dp)
+            )
+            HorizontalDivider()
+            Text(
+                text = "Learn, Share, Grow",
+                modifier = Modifier.padding(8.dp)
             )
         }
+    }
+}
 
-        LazyColumn(modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(16.dp)) {
-            item { HomeItem("New Update", drawable = R.drawable.ic_temporary) }
-            item { HomeItem("New Features", drawable = R.drawable.ic_temporary) }
-            item { HomeItem("Beta Release", drawable = R.drawable.ic_temporary) }
+@Composable
+fun AnnouncementCard() {
+    Card(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = "Announcements",
+            modifier = Modifier
+                .padding(8.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+    }
+}
+
+
+@Composable
+fun AnnouncementsColumn(listOfAnnouncements: List<String>) {
+
+    LazyColumn(modifier = Modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(16.dp)) {
+
+        items(listOfAnnouncements.size) { index ->
+            HomeItem(listOfAnnouncements[index], drawable = R.drawable.ic_temporary)
         }
     }
 }
@@ -71,7 +107,7 @@ fun HomeItem(cat: String, drawable: Int) {
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth()
-            .size(200.dp),
+            .fillMaxHeight(),
         border = BorderStroke(2.dp, color = md_theme_dark_tertiaryContainer),
         elevation = CardDefaults.cardElevation(8.dp),
         shape = MaterialTheme.shapes.medium
@@ -82,7 +118,8 @@ fun HomeItem(cat: String, drawable: Int) {
         ) {
             Text(text = cat, modifier = Modifier.padding(8.dp))
             HorizontalDivider()
-            Image(painter = painterResource(id = drawable), contentDescription = cat)
+            Image(painter = painterResource(id = drawable),
+                contentDescription = cat, modifier = Modifier.padding(8.dp))
         }
     }
 }
