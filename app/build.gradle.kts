@@ -75,6 +75,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx:25.0.0")
     implementation("com.google.android.gms:play-services-games:23.1.0")
     implementation("com.google.firebase:firebase-messaging:24.0.0")
+    implementation("com.google.firebase:firebase-messaging-ktx:24.0.0")
     //val nav_version = "2.7.5"
     //val compose_version = "1.6.0-alpha08"
     val nav_version = "2.7.7"
