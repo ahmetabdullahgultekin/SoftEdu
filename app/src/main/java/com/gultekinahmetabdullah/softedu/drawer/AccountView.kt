@@ -20,16 +20,19 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.leaderboard.User
+import com.gultekinahmetabdullah.softedu.util.Screen
 
 @Composable
-fun AccountView(auth: FirebaseAuth) {
+fun AccountView(auth: FirebaseAuth, navController: NavController) {
     val db = Firebase.firestore
     val userId = auth.currentUser?.uid
     var user by remember { mutableStateOf(User("", "", "", 0)) }
@@ -65,8 +68,8 @@ fun AccountView(auth: FirebaseAuth) {
 
     Column(
         modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -80,13 +83,6 @@ fun AccountView(auth: FirebaseAuth) {
                 Column {
                     Text(email)
                 }
-            }
-            IconButton(onClick = {
-                //TODO : Something can be made
-
-            }) {
-                Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                     contentDescription = null)
             }
         }
 
@@ -125,6 +121,7 @@ fun AccountView(auth: FirebaseAuth) {
             Text(text = "Experience Level: " + user.experienceLevel.toString())
         }
         HorizontalDivider()
+
         Row(modifier = Modifier.padding(top = 16.dp)) {
             Icon(
                 painter = painterResource(
@@ -134,6 +131,18 @@ fun AccountView(auth: FirebaseAuth) {
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text(text = "Score: " + user.score.toString())
+        }
+
+        Row(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Manage", modifier = Modifier
+                .align(Alignment.CenterVertically))
+            IconButton(onClick = {
+                //TODO : Something can be made
+                navController.navigate(Screen.SettingsDrawerScreen.Settings.dRoute)
+            }) {
+                Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null)
+            }
         }
     }
 }

@@ -27,6 +27,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_inverseOnSurface
+import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onTertiaryContainer
 import kotlinx.coroutines.tasks.await
 
 @Composable
@@ -66,7 +68,12 @@ fun Leaderboard(auth: FirebaseAuth) {
 @Composable
 fun LeaderboardItem(user: User, isCurrentUser: Boolean) {
     OutlinedCard(
-        colors = CardDefaults.cardColors(containerColor = if (isCurrentUser) Color.LightGray else MaterialTheme.colorScheme.surface),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isCurrentUser)
+                                md_theme_dark_inverseOnSurface
+                            else
+                                md_theme_dark_onTertiaryContainer
+        ),
         border = BorderStroke(1.dp, Color.Black),
         modifier = Modifier.fillMaxWidth()
     ) {

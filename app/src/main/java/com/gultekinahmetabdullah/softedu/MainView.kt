@@ -28,6 +28,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,7 +51,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.drawer.AccountDialog
+import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_inverseOnSurface
+import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onSecondary
 import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onSecondaryContainer
+import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onTertiaryContainer
 import com.gultekinahmetabdullah.softedu.util.Screen
 import com.gultekinahmetabdullah.softedu.util.screensInBottom
 import com.gultekinahmetabdullah.softedu.util.screensInLeftDrawer
@@ -108,18 +112,24 @@ fun MainView() {
     val bottomBar: @Composable () -> Unit = {
         if (! isUserInSignInScreen) {
             BottomAppBar(
-                Modifier.wrapContentSize(),
+                Modifier.wrapContentSize(), containerColor = md_theme_dark_onTertiaryContainer
             ) {
                 screensInBottom.forEach { item ->
-                    val isSelected = currentRoute == item.bRoute
+
+                    val routeOfLearningScreen = item.bRoute + ",${false},${totalQuestions}"
+                    val isSelected = (currentRoute == item.bRoute)
+                            || (currentRoute?.contains(item.bRoute) == true)
                     Log.d(
                         "Navigation",
                         "Item: ${item.bTitle}, Current Route: $currentRoute," +
                                 " Is Selected: $isSelected"
                     )
-                    val tint = if (isSelected) Color.Cyan else Color.Red
+                    val tint = if (isSelected)
+                                    md_theme_dark_onSecondary
+                                else
+                                    md_theme_dark_inverseOnSurface
                     NavigationBarItem(
-                        selected = currentRoute == item.bRoute,
+                        selected = isSelected,//currentRoute == item.bRoute,
                         onClick = {
                             if (item.bRoute == Screen.BottomScreen.Learn.bRoute) {
                                 controller.navigate(item.bRoute + ",${false},${totalQuestions}")
@@ -128,7 +138,6 @@ fun MainView() {
                                 controller.navigate(item.bRoute)
                                 title.value = item.bTitle
                             }
-
                         },
                         icon = {
                             Icon(
@@ -145,8 +154,9 @@ fun MainView() {
     }
     val topBar: @Composable () -> Unit = {
         if (! isUserInSignInScreen) {
-            TopAppBar(
-                title = { Text(title.value) },
+            TopAppBar(colors = TopAppBarDefaults.
+                    smallTopAppBarColors( containerColor = md_theme_dark_onSecondaryContainer),
+                title = { Text(title.value, color = md_theme_dark_onSecondary) },
                 actions = {
                     IconButton(
                         onClick = {
@@ -157,7 +167,8 @@ fun MainView() {
                             }
                         }
                     ) {
-                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
+                        Icon(imageVector = Icons.Default.MoreVert,
+                            contentDescription = null, tint = md_theme_dark_onSecondary)
                     }
                     IconButton(
                         onClick = {
@@ -166,10 +177,10 @@ fun MainView() {
                             controller.navigate(Screen.LoginScreen.Login.lRoute)
                         }
                     ) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null)
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = null, tint = md_theme_dark_onSecondary)
                     }
                 },
-
                 navigationIcon = {
                     IconButton(onClick = {
                         // Open the drawer
@@ -178,7 +189,8 @@ fun MainView() {
                             openBottomSheet = true
                         }
                     }) {
-                        Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Menu")
+                        Icon(imageVector = Icons.Default.AccountCircle,
+                            contentDescription = "Menu", tint = md_theme_dark_onSecondary)
                     }
                 }
             )
