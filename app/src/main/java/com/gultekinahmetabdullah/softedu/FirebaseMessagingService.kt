@@ -6,7 +6,6 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.FirebaseFirestore
@@ -76,19 +75,15 @@ class FirebaseMessagingService : FirebaseMessagingService() {
                                     .add(data)
                                     .addOnSuccessListener { documentReference ->
                                         Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-                                        Toast.makeText(baseContext, "Token added to the database", Toast.LENGTH_LONG).show()
                                     }
                                     .addOnFailureListener { e ->
                                         Log.w(TAG, "Error adding document", e)
-                                        Toast.makeText(baseContext, "Error adding document", Toast.LENGTH_LONG).show()
                                     }
                         } else {
                             Log.d(TAG, "Token already exists in the database")
-                            Toast.makeText(baseContext, "Token already exists in the database", Toast.LENGTH_LONG).show()
                         }
                     } else {
                         Log.w(TAG, "Error checking for token", task.exception)
-                        Toast.makeText(baseContext, "Error checking for token", Toast.LENGTH_LONG).show()
                     }
                 }
     }
@@ -105,10 +100,8 @@ class FirebaseMessagingService : FirebaseMessagingService() {
                 // Get new FCM registration token
                 val token = task.result
 
-                // Log and toast
                 val msg = context.getString(R.string.msg_token_fmt, token)
                 Log.d(TAG, msg)
-                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 sendRegistrationToServer(token)
             })
         }
