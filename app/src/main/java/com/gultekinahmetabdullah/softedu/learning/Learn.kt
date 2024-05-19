@@ -65,6 +65,8 @@ fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: I
     var selectedChoice by remember { mutableStateOf(- 1) }
     var continueClicked by remember { mutableStateOf(false) }
 
+    var buttonText by remember { mutableStateOf("Submit") }
+
 
     // Function to fetch the user's profile information from Firestore
     val triple = getUserInfo(userId, auth, db, experienceLevel)
@@ -102,7 +104,6 @@ fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: I
 
         Spacer(modifier = Modifier.height(16.dp))
 
-
         choices.forEachIndexed { index, choice ->
             ChoiceBox(
                 text = choice,
@@ -130,6 +131,7 @@ fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: I
                            askedQuestionIds += newQuestionId
                            continueClicked = false
                            selectedChoice = - 1
+                           buttonText = "Submit"
                        }
 
                        if (questionCounter >= totalQuestions) {
@@ -152,9 +154,10 @@ fun Learn(navController: NavController, isTestScreen: Boolean, totalQuestions: I
                        }
                        isAnswerSelected = true
                        continueClicked = true
+                       buttonText = "Next"
                    }
                }) {
-            Text("Continue")
+            Text(buttonText)
         }
     }
 }

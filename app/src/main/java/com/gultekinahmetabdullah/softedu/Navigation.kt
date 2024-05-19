@@ -66,7 +66,7 @@ fun Navigation(pd: PaddingValues, navController: NavController) {
         }
 
         composable(Screen.AccountDrawerScreen.Account.route) {
-            AccountView(auth)
+            AccountView(auth, navController)
         }
 
         composable(Screen.AccountDrawerScreen.Subscription.route) {
