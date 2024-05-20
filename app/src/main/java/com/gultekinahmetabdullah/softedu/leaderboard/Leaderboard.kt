@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
 import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_inverseOnSurface
 import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onTertiaryContainer
 import kotlinx.coroutines.tasks.await
@@ -42,8 +43,8 @@ fun Leaderboard(auth: FirebaseAuth) {
 
         LaunchedEffect(key1 = Unit) {
             try {
-                val result = db.collection("users")
-                        .orderBy("score", Query.Direction.DESCENDING)
+                val result = db.collection(FirestoreConstants.COLLECTION_USERS)
+                        .orderBy(FirestoreConstants.FIELD_SCORE, Query.Direction.DESCENDING)
                         .get()
                         .await()
                 users = result.documents.mapNotNull { document ->

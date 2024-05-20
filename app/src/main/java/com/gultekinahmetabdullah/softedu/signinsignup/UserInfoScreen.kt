@@ -29,6 +29,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
 import com.gultekinahmetabdullah.softedu.util.Screen
 
 @Composable
@@ -42,8 +43,8 @@ fun UserInfoScreen(navController: NavController) {
 
     Column(
         modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -90,26 +91,26 @@ private fun saveProfileInfo(name: String,
     }
 
     val user = hashMapOf(
-        "name" to name,
-        "surname" to surname,
-        "experienceLevel" to 0,
-        "score" to 0
+        FirestoreConstants.FIELD_NAME to name,
+        FirestoreConstants.FIELD_SURNAME to surname,
+        FirestoreConstants.FIELD_EXPERIENCE_LEVEL to 0,
+        FirestoreConstants.FIELD_SCORE to 0
     )
     val auth: FirebaseAuth = Firebase.auth
     val userId = auth.currentUser?.uid
 
     userId?.let {
-        db.collection("users")
-                .document(it) // Use auth.uid as the document ID
-                .set(user) // Use set instead of add
-                .addOnSuccessListener {
-                    Toast.makeText(context, "Profile information saved!", Toast.LENGTH_SHORT).show()
-                    //                    navController.navigate("home") // Navigate to "home" screen
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(context, "Error saving profile information.", Toast.LENGTH_SHORT).show()
-                    Log.w(ContentValues.TAG, "Error adding document", e)
-                }
+        db.collection(FirestoreConstants.COLLECTION_USERS)
+            .document(it) // Use auth.uid as the document ID
+            .set(user) // Use set instead of add
+            .addOnSuccessListener {
+                Toast.makeText(context, "Profile information saved!", Toast.LENGTH_SHORT).show()
+                //                    navController.navigate("home") // Navigate to "home" screen
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(context, "Error saving profile information.", Toast.LENGTH_SHORT).show()
+                Log.w(ContentValues.TAG, "Error adding document", e)
+            }
     }
     return true
 }

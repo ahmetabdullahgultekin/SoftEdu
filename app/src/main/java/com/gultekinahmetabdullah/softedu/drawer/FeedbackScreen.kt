@@ -1,6 +1,7 @@
 package com.gultekinahmetabdullah.softedu.drawer
 
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,20 +28,18 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
 import kotlinx.coroutines.launch
 
 @Composable
 fun FeedbackScreen(navController: NavController) {
     var feedback by remember { mutableStateOf("") }
-    val auth = Firebase.auth
-    val db = Firebase.firestore
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -54,18 +53,31 @@ fun FeedbackScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(onClick = {
-            val user = auth.currentUser
-            if (user != null) {
-                val docRef = db.collection("users").document(user.uid)
-                docRef.update("feedbacks", FieldValue.arrayUnion(feedback)).addOnSuccessListener {
-                    coroutineScope.launch {
-                        Toast.makeText(context, "Feedback submitted", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-            navController.popBackStack()
+            sendFeedbackToFirestore(feedback, context)
+//            navController.popBackStack()
         }) {
             Text("Submit Feedback")
         }
     }
+}
+
+private fun sendFeedbackToFirestore(feedback: String, context: Context) {
+    val userId = Firebase.auth.currentUser?.uid
+    val email =  Firebase.auth.currentUser?.email
+    val db = Firebase.firestore
+    val feedbackData = hashMapOf(
+        FirestoreConstants.FIELD_EMAIL to email,
+        FirestoreConstants.FIELD_USER_ID to userId,
+        FirestoreConstants.FIELD_FEEDBACK to feedback,
+        FirestoreConstants.FIELD_TIMESTAMP to FieldValue.serverTimestamp()
+    )
+
+    db.collection(FirestoreConstants.COLLECTION_FEEDBACKS)
+        .add(feedbackData)
+        .addOnSuccessListener {
+            Toast.makeText(context, "Feedback submitted", Toast.LENGTH_SHORT).show()
+        }
+        .addOnFailureListener { e ->
+            Toast.makeText(context, "Error submitting feedback", Toast.LENGTH_SHORT).show()
+        }
 }

@@ -44,6 +44,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
 import com.gultekinahmetabdullah.softedu.database.updateAnsweredQuestions
 import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_error
 import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_errorContainer
@@ -229,8 +230,8 @@ fun ChoiceBox(
 
 fun updateExperienceLevel(userId: String, experienceLevel: Int) {
     val db = Firebase.firestore
-    db.collection("users").document(userId)
-            .update("experienceLevel", experienceLevel)
+    db.collection(FirestoreConstants.COLLECTION_USERS).document(userId)
+            .update(FirestoreConstants.FIELD_EXPERIENCE_LEVEL, experienceLevel)
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "User experience level updated")
             }
@@ -249,12 +250,12 @@ private fun getUserInfo(userId: String?,
     val function = {
         userId1 = auth.currentUser?.uid
         userId1?.let {
-            db.collection("users")
+            db.collection(FirestoreConstants.COLLECTION_USERS)
                     .document(it)
                     .get()
                     .addOnSuccessListener { document ->
                         if (document != null) {
-                            experienceLevel1 = document.getLong("experienceLevel")?.toInt() ?: 1
+                            experienceLevel1 = document.getLong(FirestoreConstants.FIELD_EXPERIENCE_LEVEL)?.toInt() ?: 1
                         } else {
                             Log.d(ContentValues.TAG, "No such user document")
                         }

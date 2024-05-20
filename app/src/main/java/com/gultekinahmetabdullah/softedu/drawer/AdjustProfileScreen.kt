@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
 import java.util.Locale
 
 @Composable
@@ -67,7 +68,7 @@ fun AdjustProfileScreen() {
                 when (selectedField) {
                     "Name", "Surname" -> {
                         // Update name or surname in Firestore
-                        val docRef = db.collection("users").document(user.uid)
+                        val docRef = db.collection(FirestoreConstants.COLLECTION_USERS).document(user.uid)
                         docRef.update(selectedField.lowercase(Locale.getDefault()), newValue)
                             .addOnSuccessListener {
                                 android.widget.Toast.makeText(context, "$selectedField updated", android.widget.Toast.LENGTH_SHORT).show()

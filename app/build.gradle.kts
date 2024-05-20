@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.firebase.crashlytics")
+    id("com.google.firebase.firebase-perf")
 
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
@@ -84,8 +85,8 @@ dependencies {
     implementation("androidx.compose.ui:ui:$compose_version")
     implementation("androidx.compose.material:material:$compose_version")
     implementation("androidx.compose.ui:ui-tooling-preview:$compose_version")
-    
 
+    implementation("com.google.firebase:firebase-perf")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
     implementation("androidx.activity:activity-compose:1.9.0")

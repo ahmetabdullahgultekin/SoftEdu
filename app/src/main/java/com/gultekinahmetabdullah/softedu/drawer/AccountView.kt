@@ -36,6 +36,7 @@ import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
 import com.gultekinahmetabdullah.softedu.leaderboard.User
 import com.gultekinahmetabdullah.softedu.util.Screen
 
@@ -60,22 +61,22 @@ fun AccountView(auth: FirebaseAuth, navController: NavController) {
 
     LaunchedEffect(key1 = userId) {
         userId?.let { it ->
-            db.collection("users")
+            db.collection(FirestoreConstants.COLLECTION_USERS)
                 .get()
                 .addOnSuccessListener { result ->
                     users = result.documents.mapNotNull { it.toObject(User::class.java) }
                     users = users.sortedByDescending { it.score }
                 }
 
-            db.collection("users")
+            db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(it)
                 .get()
                 .addOnSuccessListener { document ->
                     if (document != null) {
-                        val name = document.getString("name") ?: ""
-                        val surname = document.getString("surname") ?: ""
-                        val score = document.getLong("score")?.toInt() ?: 0
-                        val experienceLevel = document.getLong("experienceLevel")?.toInt() ?: 1
+                        val name = document.getString(FirestoreConstants.FIELD_NAME) ?: ""
+                        val surname = document.getString(FirestoreConstants.FIELD_SURNAME) ?: ""
+                        val score = document.getLong(FirestoreConstants.FIELD_SCORE)?.toInt() ?: 0
+                        val experienceLevel = document.getLong(FirestoreConstants.FIELD_EXPERIENCE_LEVEL)?.toInt() ?: 1
                         user = User(document.id, name, surname, score)
                         rank =
                             users.indexOfFirst { it.name == user.name && it.surname == user.surname } + 1
