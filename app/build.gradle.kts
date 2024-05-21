@@ -56,7 +56,6 @@ android {
 }
 
 dependencies {
-
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
 
@@ -79,12 +78,12 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging-ktx:24.0.0")
     //val nav_version = "2.7.5"
     //val compose_version = "1.6.0-alpha08"
-    val nav_version = "2.7.7"
-    val compose_version = "1.6.7"
-    implementation("androidx.navigation:navigation-compose:$nav_version")
-    implementation("androidx.compose.ui:ui:$compose_version")
-    implementation("androidx.compose.material:material:$compose_version")
-    implementation("androidx.compose.ui:ui-tooling-preview:$compose_version")
+    val navVersion = "2.7.7"
+    val composeVersion = "1.6.7"
+    implementation("androidx.navigation:navigation-compose:$navVersion")
+    implementation("androidx.compose.ui:ui:$composeVersion")
+    implementation("androidx.compose.material:material:$composeVersion")
+    implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
 
     implementation("com.google.firebase:firebase-perf")
     implementation("androidx.core:core-ktx:1.13.1")

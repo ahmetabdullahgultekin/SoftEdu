@@ -8,19 +8,24 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -37,43 +42,74 @@ fun Home() { //TODO add announcement
     val listOfAnnouncements = remember { mutableStateOf(listOf<String>()) }
 
     GetAnnouncementsFB(listOfAnnouncements)
-
-
-    Column {
-        MottoCard()
-
-        AnnouncementCard()
-
-        AnnouncementsColumn(listOfAnnouncements)
-    }
 }
 
 @Composable
 private fun GetAnnouncementsFB(listOfAnnouncements: MutableState<List<String>>) {
+
     val db = Firebase.firestore
+    var isLoading by remember { mutableStateOf(true) }
 
-    db.collection(FirestoreConstants.COLLECTION_FEEDBACKS)
-        .orderBy(FirestoreConstants.FIELD_TIMESTAMP, Query.Direction.DESCENDING)
-        .limit(FirestoreConstants.LIMIT_ANNOUNCEMENTS)
-        .get()
-        .addOnSuccessListener { documents ->
-            for (document in documents) {
-                listOfAnnouncements.value += document.data[FirestoreConstants.FIELD_FEEDBACK].toString()
+    LaunchedEffect(key1 = Unit) {
+        try {
+            db.collection(FirestoreConstants.COLLECTION_FEEDBACKS)
+                .orderBy(FirestoreConstants.FIELD_TIMESTAMP, Query.Direction.DESCENDING)
+                .limit(FirestoreConstants.LIMIT_ANNOUNCEMENTS)
+                .get()
+                .addOnSuccessListener { documents ->
+                    for (document in documents) {
+                        listOfAnnouncements.value += document.data[FirestoreConstants.FIELD_FEEDBACK].toString()
+                    }
+                    println("feedback -> $listOfAnnouncements")
+
+                }
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error getting documents: ", exception)
+                }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            isLoading = false
+        }
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        //verticalArrangement = Arrangement.Center
+    ) {
+
+        MottoCard()
+
+        AnnouncementCard()
+
+        if (isLoading) {
+            CircularProgressIndicator(
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(16.dp)
+                    .size(50.dp)
+            )
+        } else {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                AnnouncementsColumn(listOfAnnouncements)
             }
-            println("feedback -> $listOfAnnouncements")
-
         }
-        .addOnFailureListener { exception ->
-            Log.w(TAG, "Error getting documents: ", exception)
-        }
+    }
 }
 
 @Composable
 fun MottoCard() {
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp)
-        .size(100.dp)) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .size(100.dp)
+    ) {
         Column(verticalArrangement = Arrangement.Center) {
             Text(
                 text = "Welcome to SoftEdu",
@@ -108,8 +144,10 @@ fun AnnouncementCard() {
 @Composable
 fun AnnouncementsColumn(listOfAnnouncements: MutableState<List<String>>) {
 
-    LazyColumn(modifier = Modifier.fillMaxWidth(),
-               contentPadding = PaddingValues(16.dp)) {
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(16.dp)
+    ) {
 
         items(listOfAnnouncements.value.size) { index ->
             HomeItem(listOfAnnouncements.value[index], drawable = R.drawable.ic_temporary)
@@ -135,8 +173,10 @@ fun HomeItem(cat: String, drawable: Int) {
         ) {
             Text(text = cat, modifier = Modifier.padding(8.dp))
             HorizontalDivider()
-            Image(painter = painterResource(id = drawable),
-                  contentDescription = cat, modifier = Modifier.padding(8.dp))
+            Image(
+                painter = painterResource(id = drawable),
+                contentDescription = cat, modifier = Modifier.padding(8.dp)
+            )
         }
     }
 }

@@ -28,7 +28,7 @@ MainActivity : ComponentActivity() {
             val auth: FirebaseAuth = Firebase.auth
             //val startDestination = Screen.BottomScreen.Home.bRoute
             val isUserSignedIn by remember {
-                mutableStateOf(FirebaseAuth.getInstance().currentUser != null)
+                mutableStateOf(auth.currentUser != null)
             }
 
             val startDestination = if (isUserSignedIn)
