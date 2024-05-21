@@ -107,7 +107,7 @@ fun MainView(startDestination: String, auth: FirebaseAuth) {
         Screen.BottomScreen.Learnings.Memory.bRoute,
         Screen.BottomScreen.Learnings.Puzzle.bRoute,
         Screen.LoginScreen.UserInfo.lRoute,
-        Screen.ResultScreen.Result.rRoute,
+        Screen.ResultScreen.Result.rRoute + ",{correctAnswered}" + ",{totalQuestions}"
     )
 
     var isUserInSignInScreen by remember {
