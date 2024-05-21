@@ -36,7 +36,7 @@ import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_tertiaryContainer
 fun Home() { //TODO add announcement
     val listOfAnnouncements = remember { mutableStateOf(listOf<String>()) }
 
-    //GetAnnouncementsFB(listOfAnnouncements)
+    GetAnnouncementsFB(listOfAnnouncements)
 
 
     Column {

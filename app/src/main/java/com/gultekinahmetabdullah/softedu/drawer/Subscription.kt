@@ -29,7 +29,7 @@ fun Subscription(){
         Text(text = "Manage Subscription")
         Card(modifier = Modifier.padding(8.dp), elevation = CardDefaults.cardElevation()){
             Column(modifier = Modifier.padding(8.dp)){
-                Column() {
+                Column {
                     Text(text = "Musical")
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(text = "Free Tier")

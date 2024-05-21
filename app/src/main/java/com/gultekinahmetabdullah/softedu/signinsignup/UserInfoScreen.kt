@@ -70,7 +70,6 @@ fun UserInfoScreen(navController: NavController) {
             // Navigate to the test screen
             if (saveProfileInfo(name, surname, db, context)) {
                 navController.navigate(Screen.BottomScreen.Learnings.Quiz.bRoute + ",${true},${totalQuestions}")
-
             }
         }) {
             Text("Continue")

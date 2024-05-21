@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,6 +33,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -98,95 +101,107 @@ fun MainView(startDestination: String, auth: FirebaseAuth) {
 
     val roundedCornerRadius = if (isSheetFullScreen) 0.dp else 12.dp
 
+    val routes = listOf(
+        Screen.LoginScreen.Login.lRoute,
+        Screen.BottomScreen.Learnings.Quiz.bRoute + ",{isTestScreen},{totalQuestions}",
+        Screen.BottomScreen.Learnings.Memory.bRoute,
+        Screen.BottomScreen.Learnings.Puzzle.bRoute,
+        Screen.LoginScreen.UserInfo.lRoute,
+        Screen.ResultScreen.Result.rRoute,
+    )
+
     var isUserInSignInScreen by remember {
-        mutableStateOf(startDestination == Screen.LoginScreen.Login.lRoute)
-        //currentRoute == Screen.LoginScreen.Login.lRoute
-                //|| currentRoute?.contains(Screen.BottomScreen.Learn.bRoute) ?: true
-        //TODO Correct bars
+        mutableStateOf(currentRoute in routes)
     }
 
-    /*
-    LaunchedEffect(navBackStackEntry) {
-        //currentScreen = currentRoute.toString()
-        //title.value = Screen.BottomScreen.Home.bTitle
-        isUserInSignInScreen = currentRoute == Screen.LoginScreen.Login.lRoute
+
+    DisposableEffect(navBackStackEntry) {
+        isUserInSignInScreen = currentRoute in routes
+        onDispose { }
     }
 
-     */
+    LaunchedEffect(currentRoute) {
+        title.value = when (currentRoute) {
+            Screen.BottomScreen.Home.bRoute -> Screen.BottomScreen.Home.bTitle
+            Screen.BottomScreen.Learn.bRoute -> Screen.BottomScreen.Learn.bTitle
+            Screen.BottomScreen.Leaderboard.bRoute -> Screen.BottomScreen.Leaderboard.bTitle
+            else -> title.value
+        }
+    }
+
 
     val topBar: @Composable () -> Unit = {
-        if (!isUserInSignInScreen) {
+        if (! isUserInSignInScreen) {
             TopAppBar(colors = topAppBarColors(
                 containerColor = md_theme_dark_onSecondaryContainer
             ),
-                title = { Text(title.value, color = md_theme_dark_onSecondary) },
-                actions = {
-                    //More button opens Bottom sheet
-                    IconButton(
-                        onClick = {
-                            scope.launch {
-                                //modalSheetState.expand()
-                                openBottomSheet = true
-                                isNavigationClicked = true
-                            }
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = null, tint = md_theme_dark_onSecondary
-                        )
-                    }
-                    //Sign Out button
-                    IconButton(
-                        onClick = {
-                            auth.signOut()
-
-                            isUserInSignInScreen = true
-                            navController.graph.startDestinationRoute?.let {
-                                navController.popBackStack(it, true)
-                            }
-                            // Navigate back to login screen after signing out
-                            navController.navigate(Screen.LoginScreen.Login.lRoute)
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                            contentDescription = null, tint = md_theme_dark_onSecondary
-                        )
-                    }
-                },
+                      title = { Text(title.value, color = md_theme_dark_onSecondary) },
+                      actions = {
+                          //More button opens Bottom sheet
+                          IconButton(
+                              onClick = {
+                                  scope.launch {
+                                      //modalSheetState.expand()
+                                      openBottomSheet = true
+                                      isNavigationClicked = true
+                                  }
+                              }
+                          ) {
+                              Icon(
+                                  imageVector = Icons.Default.MoreVert,
+                                  contentDescription = null, tint = md_theme_dark_onSecondary
+                              )
+                          }
+                          //Sign Out button
+                          IconButton(
+                              onClick = {
+                                  auth.signOut()
+                                  isUserInSignInScreen = true
+                                  navController.graph.startDestinationRoute?.let {
+                                      navController.popBackStack(it, true)
+                                  }
+                                  // Navigate back to login screen after signing out
+                                  navController.navigate(Screen.LoginScreen.Login.lRoute)
+                              }
+                          ) {
+                              Icon(
+                                  imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                                  contentDescription = null, tint = md_theme_dark_onSecondary
+                              )
+                          }
+                      },
                 //Account sheet button
-                navigationIcon = {
-                    IconButton(onClick = {
-                        // Open the drawer
-                        scope.launch {
-                            isNavigationClicked = false
-                            openBottomSheet = true
-                        }
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.AccountCircle,
-                            contentDescription = "Menu", tint = md_theme_dark_onSecondary
-                        )
-                    }
-                }
+                      navigationIcon = {
+                          IconButton(onClick = {
+                              // Open the drawer
+                              scope.launch {
+                                  isNavigationClicked = false
+                                  openBottomSheet = true
+                              }
+                          }) {
+                              Icon(
+                                  imageVector = Icons.Default.AccountCircle,
+                                  contentDescription = "Menu", tint = md_theme_dark_onSecondary
+                              )
+                          }
+                      }
             )
         }
     }
 
     val bottomBar: @Composable () -> Unit = {
-        if (!isUserInSignInScreen) {
+        if (! isUserInSignInScreen) {
             BottomAppBar(
                 Modifier.wrapContentSize(), containerColor = md_theme_dark_onTertiaryContainer
             ) {
                 screensInBottom.forEach { item ->
 
                     val isSelected = (currentRoute == item.bRoute)
-                            //|| (currentRoute?.contains(item.bRoute) == true)
+                    //|| (currentRoute?.contains(item.bRoute) == true)
                     Log.d(
                         "Navigation",
                         "Item: ${item.bTitle}, Current Route: $currentRoute," +
-                                " Is Selected: $isSelected"
+                            " Is Selected: $isSelected"
                     )
                     val tint = if (isSelected)
                         md_theme_dark_onSecondary
@@ -194,7 +209,7 @@ fun MainView(startDestination: String, auth: FirebaseAuth) {
                         md_theme_dark_inverseOnSurface
 
                     NavigationBarItem(
-                        selected = isSelected,//currentRoute == item.bRoute,
+                        selected = isSelected, //currentRoute == item.bRoute,
                         onClick = {
                             navController.navigate(item.bRoute)
                             title.value = item.bTitle
@@ -213,15 +228,20 @@ fun MainView(startDestination: String, auth: FirebaseAuth) {
         }
     }
 
-    Scaffold(
-        bottomBar = bottomBar,
-        topBar = topBar,
-        content = {
-            //This returns the selected screen
-            Navigation(pd = it, navController = navController, startDestination, auth)
-            AccountDialog(dialogOpen = dialogOpen)
-        }
-    )
+    if (isUserInSignInScreen || auth.currentUser == null) {
+        // Display the LoginScreen without the Scaffold
+        Navigation(pd = PaddingValues(), navController = navController, startDestination, auth)
+    } else {
+        Scaffold(
+            bottomBar = bottomBar,
+            topBar = topBar,
+            content = {
+                //This returns the selected screen
+                Navigation(pd = it, navController = navController, startDestination, auth)
+                AccountDialog(dialogOpen = dialogOpen)
+            }
+        )
+    }
 
     if (openBottomSheet) {
         ModalBottomSheet(

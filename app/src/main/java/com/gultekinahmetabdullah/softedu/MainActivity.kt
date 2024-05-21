@@ -36,7 +36,7 @@ MainActivity : ComponentActivity() {
             else
                 Screen.LoginScreen.Login.lRoute
 
-            SoftEduTheme() {
+            SoftEduTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),

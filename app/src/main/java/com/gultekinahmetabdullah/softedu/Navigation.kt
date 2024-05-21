@@ -9,15 +9,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.firebase.auth.FirebaseAuth
-import com.gultekinahmetabdullah.softedu.home.Home
-import com.gultekinahmetabdullah.softedu.drawer.*
-import com.gultekinahmetabdullah.softedu.leaderboard.Leaderboard
-import com.gultekinahmetabdullah.softedu.learning.games.Quiz
+import com.gultekinahmetabdullah.softedu.drawer.AboutScreen
+import com.gultekinahmetabdullah.softedu.drawer.AccountView
 import com.gultekinahmetabdullah.softedu.drawer.AdjustProfileScreen
+import com.gultekinahmetabdullah.softedu.drawer.FeedbackScreen
+import com.gultekinahmetabdullah.softedu.drawer.Settings
+import com.gultekinahmetabdullah.softedu.drawer.Subscription
+import com.gultekinahmetabdullah.softedu.home.Home
+import com.gultekinahmetabdullah.softedu.leaderboard.Leaderboard
 import com.gultekinahmetabdullah.softedu.learning.Learn
 import com.gultekinahmetabdullah.softedu.learning.ResultScreen
 import com.gultekinahmetabdullah.softedu.learning.games.Memory
 import com.gultekinahmetabdullah.softedu.learning.games.Puzzle
+import com.gultekinahmetabdullah.softedu.learning.games.Quiz
 import com.gultekinahmetabdullah.softedu.learning.games.Sliders
 import com.gultekinahmetabdullah.softedu.signinsignup.LoginScreen
 import com.gultekinahmetabdullah.softedu.signinsignup.UserInfoScreen
@@ -89,7 +93,7 @@ fun Navigation(
         }
 
         composable(Screen.SettingsDrawerScreen.Feedback.route) {
-            FeedbackScreen(navController)
+            FeedbackScreen()
         }
 
         composable(Screen.SettingsDrawerScreen.About.route) {
