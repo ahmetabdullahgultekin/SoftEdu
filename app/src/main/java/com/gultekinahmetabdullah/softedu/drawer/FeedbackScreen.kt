@@ -17,22 +17,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
-import kotlinx.coroutines.launch
 
 @Composable
-fun FeedbackScreen(navController: NavController) {
+fun FeedbackScreen() {
     var feedback by remember { mutableStateOf("") }
     val context = LocalContext.current
 
@@ -55,7 +52,6 @@ fun FeedbackScreen(navController: NavController) {
         Button(onClick = {
             sendFeedbackToFirestore(feedback, context)
             feedback = ""
-//            navController.popBackStack()
         }) {
             Text("Submit Feedback")
         }
