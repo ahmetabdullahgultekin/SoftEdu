@@ -25,8 +25,8 @@ fun ResultScreen(navController: NavController, correctAnswered: Int, totalQuesti
 
     Column(
         modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -37,7 +37,7 @@ fun ResultScreen(navController: NavController, correctAnswered: Int, totalQuesti
 
         Button(onClick = {
             Toast.makeText(context, "Navigating to Learn Screen", Toast.LENGTH_SHORT).show()
-            navController.navigate(Screen.BottomScreen.Learn.bRoute)
+            navController.navigate(Screen.BottomScreen.Home.bRoute)
         }) {
             Text("Continue")
         }

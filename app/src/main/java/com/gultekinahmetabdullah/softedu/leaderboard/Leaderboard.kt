@@ -4,12 +4,13 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,10 +37,14 @@ import kotlinx.coroutines.tasks.await
 fun Leaderboard(auth: FirebaseAuth) {
     val db = Firebase.firestore
     var users by remember { mutableStateOf(listOf<User>()) }
+    var isLoading by remember { mutableStateOf(true) }
+    //val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center) {
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
 
         LaunchedEffect(key1 = Unit) {
             try {
@@ -55,12 +60,19 @@ fun Leaderboard(auth: FirebaseAuth) {
             } catch (e: Exception) {
                 // Handle any errors that may occur
                 e.printStackTrace()
+            } finally {
+                isLoading = false
+                //swipeRefreshState.isRefreshing = false
             }
         }
 
-        LazyColumn {
-            items(users) { user ->
-                LeaderboardItem(user, user.id == auth.currentUser?.uid)
+        if (isLoading) {
+            CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
+        } else {
+            LazyColumn {
+                items(users) { user ->
+                    LeaderboardItem(user, user.id == auth.currentUser?.uid)
+                }
             }
         }
     }
@@ -80,8 +92,8 @@ fun LeaderboardItem(user: User, isCurrentUser: Boolean) {
     ) {
         Row(
             modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                .fillMaxWidth()
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
