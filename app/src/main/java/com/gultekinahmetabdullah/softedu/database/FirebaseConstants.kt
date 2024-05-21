@@ -19,7 +19,7 @@ object FirestoreConstants {
     const val FIELD_SURNAME = "surname"
     const val FIELD_EXPERIENCE_LEVEL = "experienceLevel"
 
-    const val LIMIT_ANNOUNCEMENTS: Long = 10
+    const val LIMIT_ANNOUNCEMENTS: Long = 50
     const val LIMIT_QUESTIONS: Long = 10
     const val INCREASE_SCORE: Long = 10
 }

@@ -80,6 +80,8 @@ private fun GetAnnouncementsFB(listOfAnnouncements: MutableState<List<String>>) 
 
         AnnouncementCard()
 
+        HorizontalDivider()
+
         if (isLoading) {
             CircularProgressIndicator(
                 Modifier
@@ -162,7 +164,7 @@ fun HomeItem(cat: String, drawable: Int) {
             .fillMaxHeight(),
         border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.primary),
         elevation = CardDefaults.cardElevation(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onTertiaryContainer),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = MaterialTheme.shapes.medium
     ) {
         Column(

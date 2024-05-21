@@ -106,6 +106,7 @@ fun MainView(startDestination: String, auth: FirebaseAuth) {
         Screen.BottomScreen.Learnings.Quiz.bRoute + ",{isTestScreen},{totalQuestions}",
         Screen.BottomScreen.Learnings.Memory.bRoute,
         Screen.BottomScreen.Learnings.Puzzle.bRoute,
+        Screen.BottomScreen.Learnings.Sliders.bRoute,
         Screen.LoginScreen.UserInfo.lRoute,
         Screen.ResultScreen.Result.rRoute + ",{correctAnswered}" + ",{totalQuestions}"
     )
