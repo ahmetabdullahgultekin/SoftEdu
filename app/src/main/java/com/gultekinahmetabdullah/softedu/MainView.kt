@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRowScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,7 +32,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,8 +49,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.drawer.AccountDialog
 import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_inverseOnSurface
 import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onSecondary
@@ -67,19 +63,19 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainView() {
+fun MainView(startDestination: String, auth: FirebaseAuth) {
 
     //val scaffoldState = rememberState
     val totalQuestions = 5
     val scope: CoroutineScope = rememberCoroutineScope()
     val viewModel: MainViewModel = viewModel()
     val isSheetFullScreen by remember { mutableStateOf(false) }
-    val auth: FirebaseAuth = Firebase.auth
+    //val auth: FirebaseAuth = Firebase.auth
 
 
     // Allow us to find out on which "View" we current are
-    val controller: NavController = rememberNavController()
-    val navBackStackEntry by controller.currentBackStackEntryAsState()
+    val navController: NavController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val dialogOpen = remember {
         mutableStateOf(false)
@@ -103,15 +99,20 @@ fun MainView() {
     val roundedCornerRadius = if (isSheetFullScreen) 0.dp else 12.dp
 
     var isUserInSignInScreen by remember {
-        mutableStateOf(currentRoute == Screen.LoginScreen.Login.lRoute
-                || currentRoute?.contains(Screen.BottomScreen.Learn.bRoute) ?: true)//TODO Correct bars
+        mutableStateOf(startDestination == Screen.LoginScreen.Login.lRoute)
+        //currentRoute == Screen.LoginScreen.Login.lRoute
+                //|| currentRoute?.contains(Screen.BottomScreen.Learn.bRoute) ?: true
+        //TODO Correct bars
     }
 
+    /*
     LaunchedEffect(navBackStackEntry) {
         //currentScreen = currentRoute.toString()
         //title.value = Screen.BottomScreen.Home.bTitle
         isUserInSignInScreen = currentRoute == Screen.LoginScreen.Login.lRoute
     }
+
+     */
 
     val topBar: @Composable () -> Unit = {
         if (!isUserInSignInScreen) {
@@ -139,8 +140,13 @@ fun MainView() {
                     IconButton(
                         onClick = {
                             auth.signOut()
+
+                            isUserInSignInScreen = true
+                            navController.graph.startDestinationRoute?.let {
+                                navController.popBackStack(it, true)
+                            }
                             // Navigate back to login screen after signing out
-                            controller.navigate(Screen.LoginScreen.Login.lRoute)
+                            navController.navigate(Screen.LoginScreen.Login.lRoute)
                         }
                     ) {
                         Icon(
@@ -190,7 +196,7 @@ fun MainView() {
                     NavigationBarItem(
                         selected = isSelected,//currentRoute == item.bRoute,
                         onClick = {
-                            controller.navigate(item.bRoute)
+                            navController.navigate(item.bRoute)
                             title.value = item.bTitle
                         },
                         icon = {
@@ -212,7 +218,7 @@ fun MainView() {
         topBar = topBar,
         content = {
             //This returns the selected screen
-            Navigation(pd = it, navController = controller)
+            Navigation(pd = it, navController = navController, startDestination, auth)
             AccountDialog(dialogOpen = dialogOpen)
         }
     )
@@ -238,7 +244,7 @@ fun MainView() {
                                 openBottomSheet = false
                                 isNavigationClicked = true
                             }
-                            controller.navigate(item.dRoute)
+                            navController.navigate(item.dRoute)
                             title.value = item.dTitle
                         }
                         HorizontalDivider()
@@ -255,7 +261,7 @@ fun MainView() {
                             if (item.dRoute == "add_account") {
                                 dialogOpen.value = true
                             } else {
-                                controller.navigate(item.dRoute)
+                                navController.navigate(item.dRoute)
                                 title.value = item.dTitle
                             }
                         }

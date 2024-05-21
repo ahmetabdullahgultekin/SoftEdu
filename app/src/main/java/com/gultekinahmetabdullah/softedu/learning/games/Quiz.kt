@@ -129,7 +129,10 @@ fun Quiz(navController: NavController, isTestScreen: Boolean, totalQuestions: In
         Button(enabled = selectedChoice != - 1,  // Disable the button if no choice is selected
                onClick = {
                    if (continueClicked) {
-                       fetchQuestion(userId, questionCounter, totalQuestions, askedQuestionIds, false) { newQuestionId, newQuestionText, newChoices, newCorrectChoice ->
+                       fetchQuestion(userId, questionCounter, totalQuestions, askedQuestionIds,
+                           false) { newQuestionId, newQuestionText, newChoices,
+                                    newCorrectChoice ->
+
                            questionId = newQuestionId
                            questionText = newQuestionText
                            choices = newChoices

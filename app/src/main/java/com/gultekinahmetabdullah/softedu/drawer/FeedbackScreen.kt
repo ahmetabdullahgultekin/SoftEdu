@@ -54,6 +54,7 @@ fun FeedbackScreen(navController: NavController) {
 
         Button(onClick = {
             sendFeedbackToFirestore(feedback, context)
+            feedback = ""
 //            navController.popBackStack()
         }) {
             Text("Submit Feedback")

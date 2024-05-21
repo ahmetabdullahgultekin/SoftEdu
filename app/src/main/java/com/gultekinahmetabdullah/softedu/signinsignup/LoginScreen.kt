@@ -70,6 +70,9 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(context, "Sign in successful!", Toast.LENGTH_SHORT).show()
+                            navController.graph.startDestinationRoute?.let {
+                                navController.popBackStack(it, true)
+                            }
                             navController.navigate(Screen.BottomScreen.Home.bRoute)
                         } else {
                             Toast.makeText(context,

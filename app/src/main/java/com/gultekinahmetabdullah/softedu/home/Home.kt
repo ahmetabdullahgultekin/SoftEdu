@@ -34,8 +34,22 @@ import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_tertiaryContainer
 
 @Composable
 fun Home() { //TODO add announcement
-    var listOfAnnouncements = remember { mutableStateOf(listOf<String>()) }
+    val listOfAnnouncements = remember { mutableStateOf(listOf<String>()) }
 
+    //GetAnnouncementsFB(listOfAnnouncements)
+
+
+    Column {
+        MottoCard()
+
+        AnnouncementCard()
+
+        AnnouncementsColumn(listOfAnnouncements)
+    }
+}
+
+@Composable
+private fun GetAnnouncementsFB(listOfAnnouncements: MutableState<List<String>>) {
     val db = Firebase.firestore
 
     db.collection(FirestoreConstants.COLLECTION_FEEDBACKS)
@@ -52,15 +66,6 @@ fun Home() { //TODO add announcement
         .addOnFailureListener { exception ->
             Log.w(TAG, "Error getting documents: ", exception)
         }
-
-
-    Column {
-        MottoCard()
-
-        AnnouncementCard()
-
-        AnnouncementsColumn(listOfAnnouncements)
-    }
 }
 
 @Composable
