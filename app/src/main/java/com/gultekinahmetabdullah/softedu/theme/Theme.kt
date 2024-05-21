@@ -93,6 +93,7 @@ fun SoftEduTheme(
 
         useDarkTheme -> DarkColors
         else -> LightColors
+
     }
     val view = LocalView.current
     if (!view.isInEditMode) {

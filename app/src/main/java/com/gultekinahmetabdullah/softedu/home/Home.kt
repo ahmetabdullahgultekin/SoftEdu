@@ -3,7 +3,6 @@ package com.gultekinahmetabdullah.softedu.home
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,14 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.R
 import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
-import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_tertiaryContainer
 
 @Composable
 fun Home() { //TODO add announcement
@@ -160,23 +157,24 @@ fun HomeItem(cat: String, drawable: Int) {
     //TODO add title and image
     Card(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(10.dp)
             .fillMaxWidth()
             .fillMaxHeight(),
-        border = BorderStroke(2.dp, color = md_theme_dark_tertiaryContainer),
-        elevation = CardDefaults.cardElevation(8.dp),
+        border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.primary),
+        elevation = CardDefaults.cardElevation(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onTertiaryContainer),
         shape = MaterialTheme.shapes.medium
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = cat, modifier = Modifier.padding(8.dp))
+            Text(text = cat, modifier = Modifier.padding(10.dp))
             HorizontalDivider()
-            Image(
-                painter = painterResource(id = drawable),
-                contentDescription = cat, modifier = Modifier.padding(8.dp)
-            )
+//            Image(
+//                painter = painterResource(id = drawable),
+//                contentDescription = cat, modifier = Modifier.padding(8.dp)
+//            )
         }
     }
 }
