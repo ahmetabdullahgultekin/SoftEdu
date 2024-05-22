@@ -1,5 +1,6 @@
 package com.gultekinahmetabdullah.softedu.signinsignup
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.gultekinahmetabdullah.softedu.util.Screen
 
 
+@SuppressLint("RestrictedApi")
 @Composable
 fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
     val context = LocalContext.current
@@ -70,8 +72,8 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(context, "Sign in successful!", Toast.LENGTH_SHORT).show()
-                            navController.graph.startDestinationRoute?.let {
-                                navController.popBackStack(it, true)
+                            while (navController.currentBackStack.value.isNotEmpty()) {
+                                navController.popBackStack()
                             }
                             navController.navigate(Screen.BottomScreen.Home.bRoute)
                         } else {
@@ -101,7 +103,7 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                             Toast.makeText(
                                 context,
                                 "Sign up failed. Please try to sign up" +
-                                        " with valid email address again.",
+                                    " with valid email address again.",
                                 Toast.LENGTH_SHORT).show()
                         }
                     }

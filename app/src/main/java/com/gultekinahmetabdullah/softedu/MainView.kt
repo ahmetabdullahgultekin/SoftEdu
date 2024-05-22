@@ -1,5 +1,6 @@
 package com.gultekinahmetabdullah.softedu
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -64,6 +65,7 @@ import com.gultekinahmetabdullah.softedu.util.screensInRightDrawer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainView(startDestination: String, auth: FirebaseAuth) {
@@ -139,6 +141,7 @@ fun MainView(startDestination: String, auth: FirebaseAuth) {
                       title = { Text(title.value, color = md_theme_dark_onSecondary) },
                       actions = {
                           //More button opens Bottom sheet
+
                           IconButton(
                               onClick = {
                                   scope.launch {
@@ -158,9 +161,10 @@ fun MainView(startDestination: String, auth: FirebaseAuth) {
                               onClick = {
                                   auth.signOut()
                                   isUserInSignInScreen = true
-                                  navController.graph.startDestinationRoute?.let {
-                                      navController.popBackStack(it, true)
+                                  while (navController.currentBackStack.value.isNotEmpty()) {
+                                      navController.popBackStack()
                                   }
+
                                   // Navigate back to login screen after signing out
                                   navController.navigate(Screen.LoginScreen.Login.lRoute)
                               }
