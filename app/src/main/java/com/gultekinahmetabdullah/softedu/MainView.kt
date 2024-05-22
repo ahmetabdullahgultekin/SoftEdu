@@ -28,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -54,10 +55,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.gultekinahmetabdullah.softedu.drawer.AccountDialog
-import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_inverseOnSurface
-import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onSecondary
-import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onSecondaryContainer
-import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onTertiaryContainer
 import com.gultekinahmetabdullah.softedu.util.Screen
 import com.gultekinahmetabdullah.softedu.util.screensInBottom
 import com.gultekinahmetabdullah.softedu.util.screensInLeftDrawer
@@ -134,70 +131,69 @@ fun MainView(startDestination: String, auth: FirebaseAuth) {
 
 
     val topBar: @Composable () -> Unit = {
-        if (! isUserInSignInScreen) {
-            TopAppBar(colors = topAppBarColors(
-                containerColor = md_theme_dark_onSecondaryContainer
-            ),
-                      title = { Text(title.value, color = md_theme_dark_onSecondary) },
-                      actions = {
-                          //More button opens Bottom sheet
-
-                          IconButton(
-                              onClick = {
-                                  scope.launch {
-                                      //modalSheetState.expand()
-                                      openBottomSheet = true
-                                      isNavigationClicked = true
-                                  }
-                              }
-                          ) {
-                              Icon(
-                                  imageVector = Icons.Default.MoreVert,
-                                  contentDescription = null, tint = md_theme_dark_onSecondary
-                              )
-                          }
-                          //Sign Out button
-                          IconButton(
-                              onClick = {
-                                  auth.signOut()
-                                  isUserInSignInScreen = true
-                                  while (navController.currentBackStack.value.isNotEmpty()) {
-                                      navController.popBackStack()
-                                  }
-
-                                  // Navigate back to login screen after signing out
-                                  navController.navigate(Screen.LoginScreen.Login.lRoute)
-                              }
-                          ) {
-                              Icon(
-                                  imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                                  contentDescription = null, tint = md_theme_dark_onSecondary
-                              )
-                          }
-                      },
+        if (!isUserInSignInScreen) {
+            TopAppBar(
+                colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
+                title = { Text(title.value, color = MaterialTheme.colorScheme.onPrimary) },
+                actions = {
+                    //More button opens Bottom sheet
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                //modalSheetState.expand()
+                                openBottomSheet = true
+                                isNavigationClicked = true
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                    //Sign Out button
+                    IconButton(
+                        onClick = {
+                            auth.signOut()
+                            isUserInSignInScreen = true
+                            while (navController.currentBackStack.value.isNotEmpty()) {
+                                navController.popBackStack()
+                            }
+                            // Navigate back to login screen after signing out
+                            navController.navigate(Screen.LoginScreen.Login.lRoute)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                },
                 //Account sheet button
-                      navigationIcon = {
-                          IconButton(onClick = {
-                              // Open the drawer
-                              scope.launch {
-                                  isNavigationClicked = false
-                                  openBottomSheet = true
-                              }
-                          }) {
-                              Icon(
-                                  imageVector = Icons.Default.AccountCircle,
-                                  contentDescription = "Menu", tint = md_theme_dark_onSecondary
-                              )
-                          }
-                      }
+                navigationIcon = {
+                    IconButton(onClick = {
+                        // Open the drawer
+                        scope.launch {
+                            isNavigationClicked = false
+                            openBottomSheet = true
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = "Menu", tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                }
             )
         }
     }
 
     val bottomBar: @Composable () -> Unit = {
-        if (! isUserInSignInScreen) {
+        if (!isUserInSignInScreen) {
             BottomAppBar(
-                Modifier.wrapContentSize(), containerColor = md_theme_dark_onTertiaryContainer
+                Modifier.wrapContentSize(),
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
                 screensInBottom.forEach { item ->
 
@@ -206,14 +202,16 @@ fun MainView(startDestination: String, auth: FirebaseAuth) {
                     Log.d(
                         "Navigation",
                         "Item: ${item.bTitle}, Current Route: $currentRoute," +
-                            " Is Selected: $isSelected"
+                                " Is Selected: $isSelected"
                     )
                     val tint = if (isSelected)
-                        md_theme_dark_onSecondary
+                        MaterialTheme.colorScheme.inversePrimary
                     else
-                        md_theme_dark_inverseOnSurface
+                        MaterialTheme.colorScheme.onPrimary
 
                     NavigationBarItem(
+                        modifier = Modifier.weight(1f),
+                        //.background(MaterialTheme.colorScheme.primaryContainer),
                         selected = isSelected, //currentRoute == item.bRoute,
                         onClick = {
                             navController.navigate(item.bRoute)
@@ -227,6 +225,11 @@ fun MainView(startDestination: String, auth: FirebaseAuth) {
                             )
                         },
                         label = { Text(text = item.bTitle, color = tint) },
+                        colors = NavigationBarItemDefaults.colors(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.onPrimary,
+                            MaterialTheme.colorScheme.primaryContainer,
+                        )
                     )
                 }
             }
@@ -261,12 +264,16 @@ fun MainView(startDestination: String, auth: FirebaseAuth) {
                 topStart = roundedCornerRadius,
                 topEnd = roundedCornerRadius
             ),
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(320.dp)
         ) {
             if (isNavigationClicked) {
                 //RightBottomSheet(modifier = modifier)
+
+                HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.outline)
                 LazyColumn(Modifier.padding(16.dp)) {
                     items(screensInRightDrawer) { item ->
                         SettingsDrawerItem(selected = currentRoute == item.dRoute, item = item) {
@@ -277,7 +284,10 @@ fun MainView(startDestination: String, auth: FirebaseAuth) {
                             navController.navigate(item.dRoute)
                             title.value = item.dTitle
                         }
-                        HorizontalDivider()
+                        HorizontalDivider(
+                            thickness = 2.dp,
+                            color = MaterialTheme.colorScheme.outline
+                        )
                     }
                 }
             } else {
@@ -295,7 +305,10 @@ fun MainView(startDestination: String, auth: FirebaseAuth) {
                                 title.value = item.dTitle
                             }
                         }
-                        HorizontalDivider()
+                        HorizontalDivider(
+                            thickness = 2.dp,
+                            color = MaterialTheme.colorScheme.outline
+                        )
                     }
                 }
             }
@@ -309,7 +322,7 @@ fun AccountDrawerItem(
     item: Screen.AccountDrawerScreen,
     onDrawerItemClicked: () -> Unit
 ) {
-    val background = if (selected) md_theme_dark_onSecondaryContainer
+    val background = if (selected) MaterialTheme.colorScheme.secondaryContainer
     else Color.Transparent
     Row(
         Modifier
@@ -342,7 +355,8 @@ fun SettingsDrawerItem(
     item: Screen.SettingsDrawerScreen,
     onDrawerItemClicked: () -> Unit
 ) {
-    val background = if (selected) md_theme_dark_onSecondaryContainer
+    val background = if (selected)
+        MaterialTheme.colorScheme.secondaryContainer
     else Color.Transparent
     Row(
         Modifier

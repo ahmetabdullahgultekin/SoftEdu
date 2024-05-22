@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,8 +31,6 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
-import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_inverseOnSurface
-import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_onTertiaryContainer
 import kotlinx.coroutines.tasks.await
 
 @Composable
@@ -91,9 +90,10 @@ fun LeaderboardItem(user: User, isCurrentUser: Boolean) {
     OutlinedCard(
         colors = CardDefaults.cardColors(
             containerColor = if (isCurrentUser)
-                                md_theme_dark_inverseOnSurface
+                MaterialTheme.colorScheme.inverseOnSurface
                             else
-                                md_theme_dark_onTertiaryContainer
+                MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
         ),
         border = BorderStroke(1.dp, Color.Black),
         modifier = Modifier.fillMaxWidth()

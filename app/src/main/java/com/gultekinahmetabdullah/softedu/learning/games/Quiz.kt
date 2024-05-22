@@ -44,8 +44,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
 import com.gultekinahmetabdullah.softedu.database.updateAnsweredQuestions
-import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_error
-import com.gultekinahmetabdullah.softedu.theme.md_theme_dark_errorContainer
 import com.gultekinahmetabdullah.softedu.util.Screen
 import com.gultekinahmetabdullah.softedu.util.fetchQuestion
 
@@ -91,19 +89,20 @@ fun Quiz(navController: NavController, isTestScreen: Boolean, totalQuestions: In
     }
     Column(
         modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         // Progress bar
         LinearProgressIndicator(
             progress = { (questionCounter - 1) / (totalQuestions).toFloat() },
-            modifier = Modifier.fillMaxWidth(1f)// Fill 100% of the width
+            modifier = Modifier
+                .fillMaxWidth(1f)// Fill 100% of the width
                 .padding(8.dp)
                 .height(20.dp),
-            color = md_theme_dark_error,
-            trackColor = md_theme_dark_errorContainer,
+            color = MaterialTheme.colorScheme.error,
+            trackColor = MaterialTheme.colorScheme.errorContainer,
         )
 
         Text(text = "QuestionText -> $questionText \n QuestionId -> $questionId")
@@ -214,8 +213,8 @@ fun ChoiceBox(
     ) {
         Row(
             modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Spacer(Modifier.width(8.dp))

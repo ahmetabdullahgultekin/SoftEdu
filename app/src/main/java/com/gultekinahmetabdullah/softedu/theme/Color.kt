@@ -2,7 +2,6 @@ package com.gultekinahmetabdullah.softedu.theme
 
 import androidx.compose.ui.graphics.Color
 
-//TODO Arrange the colors in a better way
 val md_theme_light_primary = Color(0xFFFF9800)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFEEDCFF)
@@ -29,53 +28,78 @@ val md_theme_light_outline = Color(0xFF7B757F)
 val md_theme_light_inverseOnSurface = Color(0xFFF5EFF4)
 val md_theme_light_inverseSurface = Color(0xFF1D1B1E)
 val md_theme_light_inversePrimary = Color(0xFFD9B9FF)
-//val md_theme_light_shadow = Color(0xFF000000)
 val md_theme_light_surfaceTint = Color(0xFF00C853)
 
 
+//Bars Surface
+val md_theme_dark_primary = Color(0xFF000000)
 
+//TopBarItems
+val md_theme_dark_onPrimary = Color(0xFFFFD600)
 
-//TopBarFontColour
-val md_theme_dark_primary = Color(0xFF64DD17)
-val md_theme_dark_onPrimary = Color(0xFFDD2C00)
-//BoxColour
-val md_theme_dark_primaryContainer = Color(0xFF2962FF)
-val md_theme_dark_onPrimaryContainer = Color(0xFFD50000)
-//BackgroundColour
-val md_theme_dark_secondary = Color(0xFF00C853)
-//FontColourOnBackground
-val md_theme_dark_onSecondary = Color(0xFF6200EA)
-//BottomBarClickedColour
-val md_theme_dark_secondaryContainer = Color(0xFF245AEE)
+//Bottom Bar Selected Box
+val md_theme_dark_primaryContainer = Color(0xFFFFD600)
+val md_theme_dark_onPrimaryContainer = Color(0xFF6200EA)
+
+//DrawerSurface
+val md_theme_dark_secondary = Color(0xFF000000)
+
+//Drawer Items
+val md_theme_dark_onSecondary = Color(0xFFFFFFFF)
+
+//Current Screen In Drawer
+val md_theme_dark_secondaryContainer = Color(0xFF000000)
 //BottomSheetSurface
 val md_theme_dark_onSecondaryContainer = Color(0xFF00BFA5)
-val md_theme_dark_tertiary = Color(0xFFD50000)
-val md_theme_dark_onTertiary = Color(0xFFD50000)
+val md_theme_dark_tertiary = Color(0xFFFFFFFF)
+val md_theme_dark_onTertiary = Color(0xFFAA00FF)
 //GridBorderColourOfHome
 val md_theme_dark_tertiaryContainer = Color(0xFF2962FF)
 val md_theme_dark_onTertiaryContainer = Color(0xFF0091EA)
-val md_theme_dark_error = Color(0xFF570000)
+val md_theme_dark_error = Color(0xFFFFD600)
 val md_theme_dark_errorContainer = Color(0xFFD50000)
 val md_theme_dark_onError = Color(0xFFD50000)
 val md_theme_dark_onErrorContainer = Color(0xFFD50000)
-val md_theme_dark_background = Color(0xFFD50000)
-val md_theme_dark_onBackground = Color(0xFFD50000)
-//SurfaceOfBarsColour
-val md_theme_dark_surface = Color(0xFF000000)
-//TopBarFontColour
-val md_theme_dark_onSurface = Color(0xFF304FFE)
-//GridColour
-val md_theme_dark_surfaceVariant = Color(0xFF00C853)
+
+//Background
+val md_theme_dark_background = Color(0xFF070707)
+
+//Account Screen Text
+val md_theme_dark_onBackground = Color(0xFFFFD600)
+
+//Card Surface
+val md_theme_dark_surface = Color(0xFFFFD600)
+
+//Card Content
+val md_theme_dark_onSurface = Color(0xFF000000)
+val md_theme_dark_surfaceVariant = Color(0xFF000000)
 //NavigationIconColour
-val md_theme_dark_onSurfaceVariant = Color(0xFFFF6D00)
-val md_theme_dark_outline = Color(0xFFDD2C00)
-//IconOfSecondBottomSheetColour
+val md_theme_dark_onSurfaceVariant = Color(0xFF304FFE)
+
+//Horizontal Divider
+val md_theme_dark_outline = Color(0xFFFFFFFF)
+
+//Leaderboard Current User
 val md_theme_dark_inverseOnSurface = Color(0xFFFF6D00)
 val md_theme_dark_inverseSurface = Color(0xFFC51162)
-val md_theme_dark_inversePrimary = Color(0xFF000000)
-//val md_theme_dark_shadow = Color(0xFFD50000)
+
+//Bottom Bar Selected Icon
+val md_theme_dark_inversePrimary = Color(0xFFFFFFFF)
 val md_theme_dark_surfaceTint = Color(0xFFD50000)
 
+/*
+val topAppBarSurfaceColour = Color(0xFF000000)
+val topAppBarElementsColour = Color(0xFFFFFFFF)
 
+val bottomBarSurfaceColour = Color(0xFF000000)
+val bottomBarElementsColour = Color(0xFFFFFFFF)
+val bottomBarSelectedColourIcon = Color(0xFFFFD600)
+val bottomBarSelectedColourBackground = Color(0xFFFFAB00)
 
-//val seed = Color(0xFF4CAF50)
+val bottomSheetSurfaceColour = Color(0xFF000000)
+val bottomSheetElementsColour = Color(0xFFFFFFFF)
+val bottomSheetSelectedColour = Color(0xFF0091EA)
+val bottomSheetSelectedColour2 = Color(0xFF00B8D4)
+
+val horizontalDividerColour = Color(0xFFFFFFFF)
+ */

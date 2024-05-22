@@ -1,7 +1,6 @@
 package com.gultekinahmetabdullah.softedu.drawer
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,12 +12,12 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -204,7 +203,7 @@ fun AccountScreenRowItem(
         Text(text = userInfoLabel + userInfoValue)
     }
     if (!isRowTitle) {
-        HorizontalDivider()
+        HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.outline)
     } else {
         Spacer(modifier = Modifier.padding(10.dp))
     }

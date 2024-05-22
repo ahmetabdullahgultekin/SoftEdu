@@ -57,7 +57,7 @@ private fun GetAnnouncementsFB(listOfAnnouncements: MutableState<List<String>>) 
 
         AnnouncementCard()
 
-        HorizontalDivider()
+        HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.outline)
 
         if (isLoading) {
             CircularProgressIndicator(
@@ -110,7 +110,7 @@ fun MottoCard() {
                 text = "Welcome to SoftEdu",
                 modifier = Modifier.padding(8.dp)
             )
-            HorizontalDivider()
+            HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.outline)
             Text(
                 text = "Learn, Share, Grow",
                 modifier = Modifier.padding(8.dp)
@@ -158,9 +158,12 @@ fun HomeItem(cat: String, drawable: Int) {
             .padding(10.dp)
             .fillMaxWidth()
             .fillMaxHeight(),
-        border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.primary),
+        border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.outline),
         elevation = CardDefaults.cardElevation(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
         shape = MaterialTheme.shapes.medium
     ) {
         Column(
@@ -168,7 +171,7 @@ fun HomeItem(cat: String, drawable: Int) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = cat, modifier = Modifier.padding(10.dp))
-            HorizontalDivider()
+            HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.outline)
 //            Image(
 //                painter = painterResource(id = drawable),
 //                contentDescription = cat, modifier = Modifier.padding(8.dp)
