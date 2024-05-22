@@ -245,6 +245,11 @@ fun MainView(startDestination: String, auth: FirebaseAuth) {
     }
 
     if (openBottomSheet) {
+        /*
+        ModalNavigationDrawer(drawerContent = { /*TODO*/ }) {
+
+        }
+        */
         ModalBottomSheet(
             onDismissRequest = { openBottomSheet = false; isNavigationClicked = false },
             sheetState = modalSheetState,

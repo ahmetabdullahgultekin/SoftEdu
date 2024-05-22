@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CardDefaults
@@ -46,6 +47,15 @@ fun Leaderboard(auth: FirebaseAuth) {
         modifier = Modifier.fillMaxSize()
     ) {
 
+        if (isLoading) {
+            CircularProgressIndicator(
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(16.dp)
+                    .size(50.dp)
+            )
+        }
+
         LaunchedEffect(key1 = Unit) {
             try {
                 val result = db.collection(FirestoreConstants.COLLECTION_USERS)
@@ -66,9 +76,7 @@ fun Leaderboard(auth: FirebaseAuth) {
             }
         }
 
-        if (isLoading) {
-            CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
-        } else {
+        if (!isLoading) {
             LazyColumn {
                 items(users) { user ->
                     LeaderboardItem(user, user.id == auth.currentUser?.uid)

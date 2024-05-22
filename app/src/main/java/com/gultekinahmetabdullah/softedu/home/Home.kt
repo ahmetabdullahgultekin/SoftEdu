@@ -47,29 +47,6 @@ private fun GetAnnouncementsFB(listOfAnnouncements: MutableState<List<String>>) 
     val db = Firebase.firestore
     var isLoading by remember { mutableStateOf(true) }
 
-    LaunchedEffect(key1 = Unit) {
-        try {
-            db.collection(FirestoreConstants.COLLECTION_FEEDBACKS)
-                .orderBy(FirestoreConstants.FIELD_TIMESTAMP, Query.Direction.DESCENDING)
-                .limit(FirestoreConstants.LIMIT_ANNOUNCEMENTS)
-                .get()
-                .addOnSuccessListener { documents ->
-                    for (document in documents) {
-                        listOfAnnouncements.value += document.data[FirestoreConstants.FIELD_FEEDBACK].toString()
-                    }
-                    println("feedback -> $listOfAnnouncements")
-
-                }
-                .addOnFailureListener { exception ->
-                    Log.w(TAG, "Error getting documents: ", exception)
-                }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            isLoading = false
-        }
-    }
-
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -89,14 +66,33 @@ private fun GetAnnouncementsFB(listOfAnnouncements: MutableState<List<String>>) 
                     .padding(16.dp)
                     .size(50.dp)
             )
-        } else {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AnnouncementsColumn(listOfAnnouncements)
+        }
+
+        LaunchedEffect(key1 = Unit) {
+            try {
+                db.collection(FirestoreConstants.COLLECTION_FEEDBACKS)
+                    .orderBy(FirestoreConstants.FIELD_TIMESTAMP, Query.Direction.DESCENDING)
+                    .limit(FirestoreConstants.LIMIT_ANNOUNCEMENTS)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            listOfAnnouncements.value += document.data[FirestoreConstants.FIELD_FEEDBACK].toString()
+                        }
+                        println("feedback -> $listOfAnnouncements")
+
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.w(TAG, "Error getting documents: ", exception)
+                    }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                isLoading = false
             }
+        }
+
+        if (!isLoading) {
+            AnnouncementsColumn(listOfAnnouncements)
         }
     }
 }
