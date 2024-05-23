@@ -79,8 +79,8 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
         LaunchedEffect(key1 = true) {
             while (true) {
                 if (numberOfLight > 0) {
-                    isLight = !isLight
-                    --numberOfLight;
+                    isLight = ! isLight
+                    -- numberOfLight;
                     delay(100)
                 } else {
                     numberOfLight = 6
@@ -159,30 +159,30 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
             containerColor = MaterialTheme.colorScheme.onPrimary,
             contentColor = MaterialTheme.colorScheme.primary
         ),
-            onClick = {
-                if (email.isNotEmpty() && password.isNotEmpty()) {
-                    auth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                Toast.makeText(context, "Sign in successful!", Toast.LENGTH_SHORT)
-                                    .show()
-                                while (navController.currentBackStack.value.isNotEmpty()) {
-                                    navController.popBackStack()
-                                }
-                                navController.navigate(Screen.BottomScreen.Home.bRoute)
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "Mail address or password is invalid.", Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                } else {
-                    Toast.makeText(
-                        context, "Please enter email and password.", Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }) {
+               onClick = {
+                   if (email.isNotEmpty() && password.isNotEmpty()) {
+                       auth.signInWithEmailAndPassword(email, password)
+                           .addOnCompleteListener { task ->
+                               if (task.isSuccessful) {
+                                   Toast.makeText(context, "Sign in successful!", Toast.LENGTH_SHORT)
+                                       .show()
+                                   while (navController.currentBackStack.value.isNotEmpty()) {
+                                       navController.popBackStack()
+                                   }
+                                   navController.navigate(Screen.BottomScreen.Home.bRoute)
+                               } else {
+                                   Toast.makeText(
+                                       context,
+                                       task.exception?.message, Toast.LENGTH_LONG
+                                   ).show()
+                               }
+                           }
+                   } else {
+                       Toast.makeText(
+                           context, "Please enter email and password.", Toast.LENGTH_SHORT
+                       ).show()
+                   }
+               }) {
             Text("Sign In")
         }
 
@@ -204,45 +204,45 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                     .padding(end = 8.dp)
             )
             ClickableText(text = AnnotatedString("Sign Up"),
-                onHover = {},
-                style = TextStyle.Default.copy(
-                    color = MaterialTheme.colorScheme.onPrimary, // Change the color here
-                    textDecoration = TextDecoration.Underline,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = TextUnit(16f, TextUnitType.Sp)
-                ),
+                          onHover = {},
+                          style = TextStyle.Default.copy(
+                              color = MaterialTheme.colorScheme.onPrimary, // Change the color here
+                              textDecoration = TextDecoration.Underline,
+                              fontWeight = FontWeight.Bold,
+                              fontSize = TextUnit(16f, TextUnitType.Sp)
+                          ),
 
-                onClick = {
-                    if (email.isNotEmpty() && password.isNotEmpty()) {
-                        auth.createUserWithEmailAndPassword(email, password)
-                            .addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    Toast.makeText(
-                                        context,
-                                        "Sign up successful!",
-                                        Toast.LENGTH_SHORT
-                                    )
-                                        .show()
-                                    // Navigate to "main" screen
-                                    navController.navigate(Screen.LoginScreen.UserInfo.route)
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Sign up failed. Please try to sign up" +
-                                                " with valid email address again.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                    } else {
-                        Toast.makeText(
-                            context,
-                            "Please enter email and password.",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                    }
-                }
+                          onClick = {
+                              if (email.isNotEmpty() && password.isNotEmpty()) {
+                                  auth.createUserWithEmailAndPassword(email, password)
+                                      .addOnCompleteListener { task ->
+                                          if (task.isSuccessful) {
+                                              Toast.makeText(
+                                                  context,
+                                                  "Sign up successful!",
+                                                  Toast.LENGTH_SHORT
+                                              )
+                                                  .show()
+                                              // Navigate to "main" screen
+                                              navController.navigate(Screen.LoginScreen.UserInfo.route)
+                                          } else {
+                                              Toast.makeText(
+                                                  context,
+                                                  "Sign up failed. Please try to sign up" +
+                                                      " with valid email address again.",
+                                                  Toast.LENGTH_SHORT
+                                              ).show()
+                                          }
+                                      }
+                              } else {
+                                  Toast.makeText(
+                                      context,
+                                      "Please enter email and password.",
+                                      Toast.LENGTH_SHORT
+                                  )
+                                      .show()
+                              }
+                          }
             )
         }
 

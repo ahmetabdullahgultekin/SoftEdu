@@ -78,8 +78,6 @@ private fun GetAnnouncementsFB(listOfAnnouncements: MutableState<List<String>>) 
                         for (document in documents) {
                             listOfAnnouncements.value += document.data[FirestoreConstants.FIELD_FEEDBACK].toString()
                         }
-                        println("feedback -> $listOfAnnouncements")
-
                     }
                     .addOnFailureListener { exception ->
                         Log.w(TAG, "Error getting documents: ", exception)

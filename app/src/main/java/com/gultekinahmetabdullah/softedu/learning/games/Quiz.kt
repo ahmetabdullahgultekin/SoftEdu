@@ -98,14 +98,14 @@ fun Quiz(navController: NavController, isTestScreen: Boolean, totalQuestions: In
         LinearProgressIndicator(
             progress = { (questionCounter - 1) / (totalQuestions).toFloat() },
             modifier = Modifier
-                .fillMaxWidth(1f)// Fill 100% of the width
+                .fillMaxWidth(1f) // Fill 100% of the width
                 .padding(8.dp)
                 .height(20.dp),
             color = MaterialTheme.colorScheme.error,
             trackColor = MaterialTheme.colorScheme.errorContainer,
         )
 
-        Text(text = "QuestionText -> $questionText \n QuestionId -> $questionId")
+        Text(text = questionText)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -127,8 +127,8 @@ fun Quiz(navController: NavController, isTestScreen: Boolean, totalQuestions: In
                onClick = {
                    if (continueClicked) {
                        fetchQuestion(userId, questionCounter, totalQuestions, askedQuestionIds,
-                           false) { newQuestionId, newQuestionText, newChoices,
-                                    newCorrectChoice ->
+                                     false) { newQuestionId, newQuestionText, newChoices,
+                                              newCorrectChoice ->
 
                            questionId = newQuestionId
                            questionText = newQuestionText
@@ -152,7 +152,7 @@ fun Quiz(navController: NavController, isTestScreen: Boolean, totalQuestions: In
                                auth.currentUser?.uid?.let { updateExperienceLevel(it, newExperienceLevel) }
                            }
                            navController.navigate(Screen.ResultScreen.Result.rRoute
-                                   + ",${correctAnswered}" + ",${totalQuestions}")
+                                                      + ",${correctAnswered}" + ",${totalQuestions}")
                        }
                    } else {
                        if (selectedChoice == correctChoice) {
@@ -204,12 +204,12 @@ fun ChoiceBox(
         ),
 
         modifier = modifier
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null,
-                    enabled = ! answered,
-                    onClick = onOptionSelected
-                )
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                enabled = ! answered,
+                onClick = onOptionSelected
+            )
     ) {
         Row(
             modifier = Modifier
@@ -231,13 +231,13 @@ fun ChoiceBox(
 fun updateExperienceLevel(userId: String, experienceLevel: Int) {
     val db = Firebase.firestore
     db.collection(FirestoreConstants.COLLECTION_USERS).document(userId)
-            .update(FirestoreConstants.FIELD_EXPERIENCE_LEVEL, experienceLevel)
-            .addOnSuccessListener {
-                Log.d(ContentValues.TAG, "User experience level updated")
-            }
-            .addOnFailureListener { e ->
-                Log.w(ContentValues.TAG, "Error updating user experience level", e)
-            }
+        .update(FirestoreConstants.FIELD_EXPERIENCE_LEVEL, experienceLevel)
+        .addOnSuccessListener {
+            Log.d(ContentValues.TAG, "User experience level updated")
+        }
+        .addOnFailureListener { e ->
+            Log.w(ContentValues.TAG, "Error updating user experience level", e)
+        }
 }
 
 @Composable
@@ -251,18 +251,18 @@ private fun getUserInfo(userId: String?,
         userId1 = auth.currentUser?.uid
         userId1?.let {
             db.collection(FirestoreConstants.COLLECTION_USERS)
-                    .document(it)
-                    .get()
-                    .addOnSuccessListener { document ->
-                        if (document != null) {
-                            experienceLevel1 = document.getLong(FirestoreConstants.FIELD_EXPERIENCE_LEVEL)?.toInt() ?: 1
-                        } else {
-                            Log.d(ContentValues.TAG, "No such user document")
-                        }
+                .document(it)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        experienceLevel1 = document.getLong(FirestoreConstants.FIELD_EXPERIENCE_LEVEL)?.toInt() ?: 1
+                    } else {
+                        Log.d(ContentValues.TAG, "No such user document")
                     }
-                    .addOnFailureListener { exception ->
-                        Log.d(ContentValues.TAG, "get failed with ", exception)
-                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d(ContentValues.TAG, "get failed with ", exception)
+                }
         }
     }
     return Triple(function, experienceLevel1, userId1)
