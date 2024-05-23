@@ -39,7 +39,7 @@ val md_theme_dark_onPrimary = Color(0xFFFFD600)
 
 //Bottom Bar Selected Box
 val md_theme_dark_primaryContainer = Color(0xFFFFD600)
-val md_theme_dark_onPrimaryContainer = Color(0xFF6200EA)
+val md_theme_dark_onPrimaryContainer = Color(0xFFFFFFFF)
 
 //DrawerSurface
 val md_theme_dark_secondary = Color(0xFF000000)
@@ -52,10 +52,10 @@ val md_theme_dark_secondaryContainer = Color(0xFF000000)
 //BottomSheetSurface
 val md_theme_dark_onSecondaryContainer = Color(0xFF00BFA5)
 val md_theme_dark_tertiary = Color(0xFFFFFFFF)
-val md_theme_dark_onTertiary = Color(0xFFAA00FF)
+val md_theme_dark_onTertiary = Color(0xFFFFFFFF)
 //GridBorderColourOfHome
-val md_theme_dark_tertiaryContainer = Color(0xFF2962FF)
-val md_theme_dark_onTertiaryContainer = Color(0xFF0091EA)
+val md_theme_dark_tertiaryContainer = Color(0xFFFFFFFF)
+val md_theme_dark_onTertiaryContainer = Color(0xFFFFFFFF)
 val md_theme_dark_error = Color(0xFFFFD600)
 val md_theme_dark_errorContainer = Color(0xFFD50000)
 val md_theme_dark_onError = Color(0xFFD50000)
@@ -74,7 +74,7 @@ val md_theme_dark_surface = Color(0xFFFFD600)
 val md_theme_dark_onSurface = Color(0xFF000000)
 val md_theme_dark_surfaceVariant = Color(0xFF000000)
 //NavigationIconColour
-val md_theme_dark_onSurfaceVariant = Color(0xFF304FFE)
+val md_theme_dark_onSurfaceVariant = Color(0xFFFFFFFF)
 
 //Horizontal Divider
 val md_theme_dark_outline = Color(0xFFFFFFFF)
@@ -86,20 +86,3 @@ val md_theme_dark_inverseSurface = Color(0xFFC51162)
 //Bottom Bar Selected Icon
 val md_theme_dark_inversePrimary = Color(0xFFFFFFFF)
 val md_theme_dark_surfaceTint = Color(0xFFD50000)
-
-/*
-val topAppBarSurfaceColour = Color(0xFF000000)
-val topAppBarElementsColour = Color(0xFFFFFFFF)
-
-val bottomBarSurfaceColour = Color(0xFF000000)
-val bottomBarElementsColour = Color(0xFFFFFFFF)
-val bottomBarSelectedColourIcon = Color(0xFFFFD600)
-val bottomBarSelectedColourBackground = Color(0xFFFFAB00)
-
-val bottomSheetSurfaceColour = Color(0xFF000000)
-val bottomSheetElementsColour = Color(0xFFFFFFFF)
-val bottomSheetSelectedColour = Color(0xFF0091EA)
-val bottomSheetSelectedColour2 = Color(0xFF00B8D4)
-
-val horizontalDividerColour = Color(0xFFFFFFFF)
- */

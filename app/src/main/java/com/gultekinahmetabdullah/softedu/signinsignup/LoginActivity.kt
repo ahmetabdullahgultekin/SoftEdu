@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -65,6 +67,22 @@ fun ProfileInfoScreen(navController: NavController) {
             value = name,
             onValueChange = { name = it },
             label = { Text("Name") },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                unfocusedLabelColor = MaterialTheme.colorScheme.outline,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedTextColor = MaterialTheme.colorScheme.outline,
+                focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+
+                cursorColor = MaterialTheme.colorScheme.onPrimary,
+                selectionColors = TextSelectionColors(
+                    handleColor = MaterialTheme.colorScheme.onPrimary,
+                    backgroundColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -74,6 +92,22 @@ fun ProfileInfoScreen(navController: NavController) {
             value = surname,
             onValueChange = { surname = it },
             label = { Text("Surname") },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                unfocusedLabelColor = MaterialTheme.colorScheme.outline,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedTextColor = MaterialTheme.colorScheme.outline,
+                focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+
+                cursorColor = MaterialTheme.colorScheme.onPrimary,
+                selectionColors = TextSelectionColors(
+                    handleColor = MaterialTheme.colorScheme.onPrimary,
+                    backgroundColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ),
             modifier = Modifier.fillMaxWidth()
         )
 
