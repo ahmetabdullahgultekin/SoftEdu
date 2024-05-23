@@ -65,7 +65,7 @@ fun Quiz(navController: NavController, isTestScreen: Boolean, totalQuestions: In
     var askedQuestionIds by remember { mutableStateOf(listOf<String>()) }
     var selectedChoice by remember { mutableIntStateOf(- 1) }
     var continueClicked by remember { mutableStateOf(false) }
-
+    var isFetching by remember { mutableStateOf(false) }
     var buttonText by remember { mutableStateOf("Submit") }
 
 
@@ -123,13 +123,13 @@ fun Quiz(navController: NavController, isTestScreen: Boolean, totalQuestions: In
 
             Spacer(modifier = Modifier.height(8.dp))
         }
-        Button(enabled = selectedChoice != - 1,  // Disable the button if no choice is selected
+        Button(enabled = selectedChoice != - 1 && ! isFetching,  // Disable the button if no choice is selected
                onClick = {
+                   isFetching = true
                    if (continueClicked) {
                        fetchQuestion(userId, questionCounter, totalQuestions, askedQuestionIds,
                                      false) { newQuestionId, newQuestionText, newChoices,
                                               newCorrectChoice ->
-
                            questionId = newQuestionId
                            questionText = newQuestionText
                            choices = newChoices
@@ -140,6 +140,7 @@ fun Quiz(navController: NavController, isTestScreen: Boolean, totalQuestions: In
                            continueClicked = false
                            selectedChoice = - 1
                            buttonText = "Submit"
+                           isFetching = false
                        }
 
                        if (questionCounter >= totalQuestions) {
@@ -164,6 +165,7 @@ fun Quiz(navController: NavController, isTestScreen: Boolean, totalQuestions: In
                        isAnswerSelected = true
                        continueClicked = true
                        buttonText = "Next"
+                       isFetching = false
                    }
                }) {
             Text(buttonText)
