@@ -80,7 +80,7 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
             while (true) {
                 if (numberOfLight > 0) {
                     isLight = ! isLight
-                    -- numberOfLight;
+                    -- numberOfLight
                     delay(100)
                 } else {
                     numberOfLight = 6

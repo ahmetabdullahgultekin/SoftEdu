@@ -18,6 +18,7 @@ object FirestoreConstants {
     const val FIELD_EMAIL = "email"
     const val FIELD_NAME = "name"
     const val FIELD_SURNAME = "surname"
+    const val FIELD_NICKNAME = "nickname"
     const val FIELD_EXPERIENCE_LEVEL = "experienceLevel"
     const val FIELD_LATEST = "latest"
     const val FIELD_HASH_CODE = "hashCode"

@@ -1,5 +1,5 @@
 package com.gultekinahmetabdullah.softedu.signinsignup
-
+/*
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
@@ -341,7 +341,7 @@ fun ProfileScreen(navController: NavController, auth: FirebaseAuth) {
     val db = Firebase.firestore
     val userId = auth.currentUser?.uid
     val context = LocalContext.current
-    var user by remember { mutableStateOf(User("", "", "", 0)) }
+    var user by remember { mutableStateOf(User("", "", "", "", 0)) }
     var users by remember { mutableStateOf(listOf<User>()) }
     var rank by remember { mutableIntStateOf(0) }
 
@@ -401,3 +401,4 @@ fun ProfileScreen(navController: NavController, auth: FirebaseAuth) {
         }
     }
 }
+*/

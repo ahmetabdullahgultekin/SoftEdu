@@ -106,7 +106,7 @@ fun LeaderboardItem(user: User, isCurrentUser: Boolean) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = user.name,
+                text = user.nickname,
                 modifier = Modifier.padding(16.dp),
                 textAlign = TextAlign.Center,
             )

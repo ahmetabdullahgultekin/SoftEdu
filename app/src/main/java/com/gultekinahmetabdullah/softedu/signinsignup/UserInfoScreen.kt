@@ -30,7 +30,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -41,6 +40,7 @@ import com.gultekinahmetabdullah.softedu.util.Screen
 fun UserInfoScreen(navController: NavController) {
     var name by remember { mutableStateOf("") }
     var surname by remember { mutableStateOf("") }
+    var nickname by remember { mutableStateOf("") }
     val db = Firebase.firestore
     val context = LocalContext.current
     val totalQuestions = 10
@@ -103,6 +103,30 @@ fun UserInfoScreen(navController: NavController) {
         )
 
         Spacer(modifier = Modifier.height(24.dp))
+        OutlinedTextField(
+            value = nickname,
+            onValueChange = { nickname = it },
+            label = { Text("Nickname") },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                unfocusedLabelColor = MaterialTheme.colorScheme.outline,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedTextColor = MaterialTheme.colorScheme.outline,
+                focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+
+                cursorColor = MaterialTheme.colorScheme.onPrimary,
+                selectionColors = TextSelectionColors(
+                    handleColor = MaterialTheme.colorScheme.onPrimary,
+                    backgroundColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             colors = ButtonDefaults.buttonColors(
@@ -110,11 +134,11 @@ fun UserInfoScreen(navController: NavController) {
                 contentColor = MaterialTheme.colorScheme.primary
             ),
             onClick = {
-            // Navigate to the test screen
-            if (saveProfileInfo(name, surname, db, context)) {
-                navController.navigate(Screen.BottomScreen.Learnings.Quiz.bRoute + ",${true},${totalQuestions}")
-            }
-        }) {
+                // Navigate to the test screen
+                if (saveProfileInfo(name, surname, nickname, db, context)) {
+                    navController.navigate(Screen.BottomScreen.Learnings.Quiz.bRoute + ",${true},${totalQuestions}")
+                }
+            }) {
             Text("Continue")
         }
     }
@@ -123,36 +147,54 @@ fun UserInfoScreen(navController: NavController) {
 
 private fun saveProfileInfo(name: String,
                             surname: String,
+                            nickname: String,
                             db: FirebaseFirestore,
                             context: Context): Boolean {
 
-    // Check if name or surname is empty
-    if (name.isBlank() || surname.isBlank()) {
-        Toast.makeText(context, "Name and surname cannot be empty.", Toast.LENGTH_SHORT).show()
+    // Check if name, surname or nickname is empty
+    if (name.isBlank() || surname.isBlank() || nickname.isBlank()) {
+        Toast.makeText(context, "Name, surname and nickname cannot be empty.", Toast.LENGTH_SHORT).show()
         return false
     }
 
-    val user = hashMapOf(
-        FirestoreConstants.FIELD_NAME to name,
-        FirestoreConstants.FIELD_SURNAME to surname,
-        FirestoreConstants.FIELD_EXPERIENCE_LEVEL to 0,
-        FirestoreConstants.FIELD_SCORE to 0
-    )
-    val auth: FirebaseAuth = Firebase.auth
-    val userId = auth.currentUser?.uid
+    // Check if the nickname already exists in the database
+    db.collection(FirestoreConstants.COLLECTION_USERS)
+        .whereEqualTo(FirestoreConstants.FIELD_NICKNAME, nickname)
+        .get()
+        .addOnSuccessListener { documents ->
+            if (documents.isEmpty) {
+                // The nickname does not exist, proceed with saving the profile information
+                val user = hashMapOf(
+                    FirestoreConstants.FIELD_NAME to name,
+                    FirestoreConstants.FIELD_SURNAME to surname,
+                    FirestoreConstants.FIELD_NICKNAME to nickname,
+                    FirestoreConstants.FIELD_EXPERIENCE_LEVEL to 0,
+                    FirestoreConstants.FIELD_SCORE to 0
+                )
 
-    userId?.let {
-        db.collection(FirestoreConstants.COLLECTION_USERS)
-            .document(it) // Use auth.uid as the document ID
-            .set(user) // Use set instead of add
-            .addOnSuccessListener {
-                Toast.makeText(context, "Profile information saved!", Toast.LENGTH_SHORT).show()
-                //                    navController.navigate("home") // Navigate to "home" screen
+                val userId = FirebaseAuth.getInstance().currentUser?.uid
+                userId?.let {
+                    db.collection(FirestoreConstants.COLLECTION_USERS)
+                        .document(it) // Use auth.uid as the document ID
+                        .set(user) // Use set instead of add
+                        .addOnSuccessListener {
+                            Toast.makeText(context, "Profile information saved!", Toast.LENGTH_SHORT).show()
+                            //                    navController.navigate("home") // Navigate to "home" screen
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(context, "Error saving profile information.", Toast.LENGTH_SHORT).show()
+                            Log.w(ContentValues.TAG, "Error adding document", e)
+                        }
+                }
+            } else {
+                // The nickname already exists, show a Toast message
+                Toast.makeText(context, "This nickname is already taken. Please choose another one.", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(context, "Error saving profile information.", Toast.LENGTH_SHORT).show()
-                Log.w(ContentValues.TAG, "Error adding document", e)
-            }
-    }
+        }
+        .addOnFailureListener { e ->
+            Toast.makeText(context, "Error checking the nickname.", Toast.LENGTH_SHORT).show()
+            Log.w(ContentValues.TAG, "Error checking the nickname", e)
+        }
+
     return true
 }

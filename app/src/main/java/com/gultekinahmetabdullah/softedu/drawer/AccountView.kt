@@ -53,7 +53,7 @@ data class UserRowItem(
 fun AccountView(auth: FirebaseAuth, navController: NavController) {
     val db = Firebase.firestore
     val userId = auth.currentUser?.uid
-    var user by remember { mutableStateOf(User("", "", "", 0)) }
+    var user by remember { mutableStateOf(User("", "", "", "", 0)) }
     var users by remember { mutableStateOf(listOf<User>()) }
     var rank by remember { mutableIntStateOf(0) }
     val email = auth.currentUser?.email.toString()
@@ -74,11 +74,12 @@ fun AccountView(auth: FirebaseAuth, navController: NavController) {
                     if (document != null) {
                         val name = document.getString(FirestoreConstants.FIELD_NAME) ?: ""
                         val surname = document.getString(FirestoreConstants.FIELD_SURNAME) ?: ""
+                        val nickname = document.getString(FirestoreConstants.FIELD_NICKNAME) ?: ""
                         val score = document.getLong(FirestoreConstants.FIELD_SCORE)?.toInt() ?: 0
                         val experienceLevel = document.getLong(FirestoreConstants.FIELD_EXPERIENCE_LEVEL)?.toInt() ?: 1
-                        user = User(document.id, name, surname, score)
+                        user = User(document.id, name, surname, nickname, score)
                         rank =
-                            users.indexOfFirst { it.name == user.name && it.surname == user.surname } + 1
+                            users.indexOfFirst { it.nickname == user.nickname } + 1
                     }
                 }
         }
@@ -112,7 +113,7 @@ fun AccountView(auth: FirebaseAuth, navController: NavController) {
         UserRowItem(
             false, 0, Icons.Filled.PlayArrow,
             "Face", "Nickname : ",
-            "nickname", false
+            user.nickname, false
         ),
         UserRowItem(
             false, 0, Icons.Filled.Build,
@@ -147,18 +148,20 @@ fun AccountView(auth: FirebaseAuth, navController: NavController) {
             )
         }
 
-        item { Row(modifier = Modifier.padding(16.dp)) {
-            TextButton(onClick = {
-                navController.navigate(Screen.AccountDrawerScreen.AdjustAccount.dRoute)
-            }) {
-                Row {
-                    Text(text = "Manage")
-                    Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = null)
+        item {
+            Row(modifier = Modifier.padding(16.dp)) {
+                TextButton(onClick = {
+                    navController.navigate(Screen.AccountDrawerScreen.AdjustAccount.dRoute)
+                }) {
+                    Row {
+                        Text(text = "Manage")
+                        Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                             contentDescription = null)
+                    }
+                    //IconButton(onClick = {})}
                 }
-                //IconButton(onClick = {})}
             }
-        } }
+        }
 
         item { Spacer(modifier = Modifier.padding(50.dp)) }
 
@@ -202,7 +205,7 @@ fun AccountScreenRowItem(
         }
         Text(text = userInfoLabel + userInfoValue)
     }
-    if (!isRowTitle) {
+    if (! isRowTitle) {
         HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.outline)
     } else {
         Spacer(modifier = Modifier.padding(10.dp))
