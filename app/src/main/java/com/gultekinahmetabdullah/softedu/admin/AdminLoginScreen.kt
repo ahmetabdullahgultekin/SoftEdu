@@ -1,6 +1,7 @@
 package com.gultekinahmetabdullah.softedu.admin
 
 import android.content.ContentValues
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +35,7 @@ fun AdminLoginScreen(navController: NavController) {
     var isAdmin by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val sharedPreferences = context.getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
 
     Column(
         modifier = Modifier
@@ -58,6 +60,11 @@ fun AdminLoginScreen(navController: NavController) {
                     if (checkAdminKey(accessKey)) {
                         Toast.makeText(context, "Access granted.", Toast.LENGTH_SHORT).show()
                         isAdmin = true
+                        // Save admin status in SharedPreferences
+                        with(sharedPreferences.edit()) {
+                            putBoolean("isAdmin", true)
+                            apply()
+                        }
                         navController.navigate(Screen.BottomScreen.AdminHome.route)
                     } else {
                         // If the access key does not exist, show an error message
@@ -87,4 +94,9 @@ suspend fun checkAdminKey(key: String): Boolean {
         Log.w(ContentValues.TAG, "Error checking admin key", e)
         return false
     }
+}
+
+fun checkAdminStatus(context: Context): Boolean {
+    val sharedPreferences = context.getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("isAdmin", false)
 }

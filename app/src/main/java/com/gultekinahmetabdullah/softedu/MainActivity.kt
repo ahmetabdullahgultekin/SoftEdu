@@ -1,14 +1,13 @@
 package com.gultekinahmetabdullah.softedu
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -26,13 +25,13 @@ MainActivity : ComponentActivity() {
 
         setContent {
             val auth: FirebaseAuth = Firebase.auth
-            //val startDestination = Screen.BottomScreen.Home.bRoute
-            val isUserSignedIn by remember {
-                mutableStateOf(auth.currentUser != null)
-            }
-
-            val startDestination = if (isUserSignedIn)
+            val context = LocalContext.current
+            val sharedPreferences = context.getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
+            val isAdmin = sharedPreferences.getBoolean("isAdmin", false)
+            val startDestination = if (auth.currentUser != null && ! isAdmin)
                 Screen.BottomScreen.Home.bRoute
+            else if (auth.currentUser == null && isAdmin)
+                Screen.BottomScreen.AdminHome.route
             else
                 Screen.LoginScreen.Login.lRoute
 
