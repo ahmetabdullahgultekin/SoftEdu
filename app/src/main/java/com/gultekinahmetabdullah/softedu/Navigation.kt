@@ -9,6 +9,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.firebase.auth.FirebaseAuth
+import com.gultekinahmetabdullah.softedu.admin.AddQuestionPanel
+import com.gultekinahmetabdullah.softedu.admin.AdminHome
+import com.gultekinahmetabdullah.softedu.admin.AdminLoginScreen
+import com.gultekinahmetabdullah.softedu.admin.FeedbackPanel
 import com.gultekinahmetabdullah.softedu.drawer.AboutScreen
 import com.gultekinahmetabdullah.softedu.drawer.AccountView
 import com.gultekinahmetabdullah.softedu.drawer.AdjustProfileScreen
@@ -102,6 +106,18 @@ fun Navigation(
 
         composable(Screen.LoginScreen.UserInfo.route) {
             UserInfoScreen(navController)
+        }
+        composable(Screen.BottomScreen.AdminHome.route) {
+            AdminHome(navController)
+        }
+        composable(Screen.LoginScreen.AdminLogin.route) {
+            AdminLoginScreen(navController)
+        }
+        composable(Screen.BottomScreen.FeedbackPanel.route) {
+            FeedbackPanel()
+        }
+        composable(Screen.BottomScreen.AddQuestionPanel.route) {
+            AddQuestionPanel()
         }
 
         composable(Screen.ResultScreen.Result.rRoute + ",{correctAnswered}" + ",{totalQuestions}") { backStackEntry ->

@@ -7,33 +7,32 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.gultekinahmetabdullah.softedu.R
 
 
-//addQuestionToFirestore(2,"questionText", listOf("choice1", "choice2", "choice3"), 1)
+//addQuestionToFirestore(2,"questionText", listOf("choice1", "choice2", "choice3","choice4"), 1)
 fun addQuestionToFirestore(difficultyLevel: Int,
                            questionText: String,
                            choices: List<String>,
-                           correctChoice: Int) {
+                           correctChoice: Int): Boolean {
     val db = Firebase.firestore
     // Create a new question with a difficulty level, question text, choices, and correct choice
 
-    val question = hashMapOf(
-        FirestoreConstants.FIELD_DIFFICULTY_LEVEL to difficultyLevel,
-        FirestoreConstants.FIELD_QUESTION_TEXT to questionText,
-        FirestoreConstants.FIELD_CHOICES to choices,
-        FirestoreConstants.FIELD_CORRECT_CHOICE to correctChoice
-
-    )
-    // Add a new document with a generated ID to the "questions" collection
-    db.collection(FirestoreConstants.COLLECTION_QUESTIONS)
-        .add(question)
-        .addOnSuccessListener { documentReference ->
-            Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-        }
-        .addOnFailureListener { e ->
-            Log.w(TAG, "Error adding document", e)
-        }
+    if ((correctChoice in 0 .. 3) && (difficultyLevel in 1 .. 5) && (questionText.isNotEmpty()) && (choices.isNotEmpty())) {
+        val question = hashMapOf(
+            FirestoreConstants.FIELD_DIFFICULTY_LEVEL to difficultyLevel,
+            FirestoreConstants.FIELD_QUESTION_TEXT to questionText,
+            FirestoreConstants.FIELD_CHOICES to choices,
+            FirestoreConstants.FIELD_CORRECT_CHOICE to correctChoice
+        )
+        // Add a new document with a generated ID to the "questions" collection
+        db.collection(FirestoreConstants.COLLECTION_QUESTIONS)
+            .add(question)
+            .addOnSuccessListener { documentReference ->
+                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+                return@addOnSuccessListener
+            }
+    }
+    return false
 }
 
 
@@ -96,3 +95,4 @@ fun createUser(email: String, password: String, name: String, surname: String, e
             }
         }
 }
+

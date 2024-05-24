@@ -186,6 +186,17 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
             Text("Sign In")
         }
 
+        Button(
+            onClick = {
+                // Navigate to the admin login screen when the button is clicked
+                navController.navigate(Screen.LoginScreen.AdminLogin.lRoute)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text("Admin Login")
+        }
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -221,16 +232,13 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                                                   context,
                                                   "Sign up successful!",
                                                   Toast.LENGTH_SHORT
-                                              )
-                                                  .show()
-                                              // Navigate to "main" screen
+                                              ).show()
                                               navController.navigate(Screen.LoginScreen.UserInfo.route)
                                           } else {
                                               Toast.makeText(
                                                   context,
-                                                  "Sign up failed. Please try to sign up" +
-                                                      " with valid email address again.",
-                                                  Toast.LENGTH_SHORT
+                                                  task.exception?.message,
+                                                  Toast.LENGTH_LONG
                                               ).show()
                                           }
                                       }
@@ -239,8 +247,7 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                                       context,
                                       "Please enter email and password.",
                                       Toast.LENGTH_SHORT
-                                  )
-                                      .show()
+                                  ).show()
                               }
                           }
             )

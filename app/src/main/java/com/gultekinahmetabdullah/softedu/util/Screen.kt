@@ -1,4 +1,5 @@
 package com.gultekinahmetabdullah.softedu.util
+
 import androidx.annotation.DrawableRes
 import com.gultekinahmetabdullah.softedu.R
 
@@ -15,7 +16,11 @@ sealed class Screen(val title: String, val route: String) {
         data object UserInfo : LoginScreen(
             "UserInfo", "userInfo", R.drawable.baseline_login_24
         )
+        data object AdminLogin : LoginScreen(
+            "AdminLogin", "adminLogin", R.drawable.baseline_login_24
+        )
     }
+
 
     sealed class ResultScreen(
         private val rTitle: String, val rRoute: String,
@@ -23,7 +28,7 @@ sealed class Screen(val title: String, val route: String) {
     ) : Screen(rTitle, rRoute) {
 
         data object Result : ResultScreen(
-            "Result", "result",//TODO might cause an error
+            "Result", "result", //TODO might cause an error
             R.drawable.baseline_login_24
         )
     }
@@ -70,6 +75,17 @@ sealed class Screen(val title: String, val route: String) {
 
         data object Leaderboard : BottomScreen(
             "Leaderboard", "leaderboard", R.drawable.baseline_leaderboard_24
+        )
+        data object AdminHome : BottomScreen(
+            "Home", "adminHome", R.drawable.baseline_leaderboard_24
+        )
+
+        data object FeedbackPanel : BottomScreen(
+            "Feedback Panel", "feedbackPanel", R.drawable.baseline_leaderboard_24
+        )
+
+        data object AddQuestionPanel : BottomScreen(
+            "Add Question Panel", "addQuestionPanel", R.drawable.baseline_leaderboard_24
         )
     }
 
