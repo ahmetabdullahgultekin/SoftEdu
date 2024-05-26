@@ -146,6 +146,8 @@ fun BallRollingInEllipse() {
         )
     }
 
+    val color = MaterialTheme.colorScheme.outline
+
     Canvas(modifier = Modifier.fillMaxSize()) {
         //.size(ellipseWidth + ballRadius * 2, ellipseHeight + ballRadius * 2)
 
@@ -161,7 +163,7 @@ fun BallRollingInEllipse() {
 
         rotate(45f, center) {
             drawOval(
-                color = Color.LightGray,
+                color = color,
                 topLeft = Offset(center.x - half1Width / 2, center.y - half1Height / 2),
                 size = Size(half1Width, half1Height),
                 style = Stroke(strokeWidth)
@@ -170,7 +172,7 @@ fun BallRollingInEllipse() {
 
         rotate(-45f, center) {
             drawOval(
-                color = Color.LightGray,
+                color = color,
                 topLeft = Offset(center.x - half1Width / 2, center.y - half1Height / 2),
                 size = Size(half1Width, half1Height),
                 style = Stroke(strokeWidth)
@@ -178,7 +180,7 @@ fun BallRollingInEllipse() {
         }
 
         drawOval(
-            color = Color.LightGray,
+            color = color,
             topLeft = Offset(center.x - half3Width / 2, center.y - half3Height / 2),
             size = Size(half3Width, half3Height),
             style = Stroke(strokeWidth)
@@ -186,7 +188,7 @@ fun BallRollingInEllipse() {
 
         rotate(90f, center) {
             drawOval(
-                color = Color.LightGray,
+                color = color,
                 topLeft = Offset(center.x - half1Width / 2, center.y - half1Height / 2),
                 size = Size(half1Width, half1Height),
                 style = Stroke(strokeWidth)

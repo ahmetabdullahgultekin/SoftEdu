@@ -49,19 +49,12 @@ fun AddQuestionPanel(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            IconButton(modifier = Modifier
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(16.dp)
-                .align(Alignment.CenterVertically),
-                onClick = {
-                    navController.popBackStack()
-                }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_arrow_back_24),
-                    contentDescription = "Logout"
-                )
-
-            }
+                .align(Alignment.CenterHorizontally)
+        ) {
 
             Text(
                 text = "Add New Question",
@@ -69,9 +62,23 @@ fun AddQuestionPanel(navController: NavHostController) {
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(10.dp)
                     .align(Alignment.CenterVertically)
             )
+
+            Spacer(modifier = Modifier.padding(30.dp))
+
+            IconButton(modifier = Modifier
+                .padding(10.dp)
+                .align(Alignment.CenterVertically),
+                onClick = {
+                    navController.popBackStack()
+                }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_arrow_back_24),
+                    contentDescription = "Logout",
+                )
+            }
         }
 
         OutlinedTextField(
@@ -144,7 +151,8 @@ fun AddQuestionPanel(navController: NavHostController) {
                         questionText,
                         listOf(choice1, choice2, choice3, choice4),
                         correctChoice.toIntOrNull() ?: 0
-                    )) {
+                    )
+                ) {
                     Toast.makeText(context, "Question added!", Toast.LENGTH_SHORT).show()
                     difficultyLevel = ""
                     questionText = ""
@@ -154,7 +162,8 @@ fun AddQuestionPanel(navController: NavHostController) {
                     choice4 = ""
                     correctChoice = ""
                 } else {
-                    Toast.makeText(context, "Question could not be added!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Question could not be added!", Toast.LENGTH_SHORT)
+                        .show()
                 }
             },
             modifier = Modifier

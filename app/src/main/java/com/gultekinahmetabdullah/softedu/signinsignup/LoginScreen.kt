@@ -24,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -53,26 +52,24 @@ import com.google.firebase.auth.FirebaseAuth
 import com.gultekinahmetabdullah.softedu.R
 import com.gultekinahmetabdullah.softedu.theme.getCustomOutlinedTextFieldColors
 import com.gultekinahmetabdullah.softedu.util.Screen
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.DelicateCoroutinesApi
 
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, DelicateCoroutinesApi::class)
 @SuppressLint("RestrictedApi")
 @Composable
 fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
     val context = LocalContext.current
     //val auth: FirebaseAuth = Firebase.auth
 
-    val animationScope: CoroutineScope = rememberCoroutineScope()
-    val dBScope: CoroutineScope = rememberCoroutineScope()
+    val animScope = rememberCoroutineScope()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisibility by remember {
         mutableStateOf(PasswordVisualTransformation() as VisualTransformation)
     }
     var numberOfLight by remember { mutableIntStateOf(17) }
+
     val colourQueue = listOf(
         MaterialTheme.colorScheme.onPrimary,
         Color.Transparent,
@@ -92,10 +89,16 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
         Color.Transparent,
         MaterialTheme.colorScheme.outline
     )
+    val targetValue by remember { mutableStateOf(colourQueue[17 - numberOfLight]) }
+
+    //TODO Optimise animation
     val color = animateColorAsState(
-        targetValue = colourQueue[17 - numberOfLight],
-        //animationSpec = if (numberOfLight != 0) tween(0) else tween(2000),
-        label = "storming"
+        targetValue = targetValue,
+        animationSpec = if (numberOfLight > 0) tween(0, 50) else tween(0, 2000),
+        label = "storming",
+        finishedListener = {
+            numberOfLight--
+        }
     )
     var isTransparent by remember { mutableStateOf(color.value != Color.Transparent) }
     val alpha = animateFloatAsState(
@@ -104,16 +107,9 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
         else tween(2000)
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.primary),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-
-        LaunchedEffect(key1 = true) {
-            animationScope.launch {
+    /*
+        LaunchedEffect(key1 = false) {
+            animScope.launch {
                 while (numberOfLight > 0) {
 
                     if (numberOfLight > 1) {
@@ -129,6 +125,16 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                 }
             }
         }
+
+     */
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.primary),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
 
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_launcher_foreground),
@@ -192,7 +198,6 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
             contentColor = MaterialTheme.colorScheme.primary
         ),
             onClick = {
-                dBScope.launch {
                     if (email.isNotEmpty() && password.isNotEmpty()) {
                         auth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener { task ->
@@ -219,7 +224,6 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                             context, "Please enter email and password.", Toast.LENGTH_SHORT
                         ).show()
                     }
-                }
             }) {
             Text("Sign In")
         }
@@ -262,32 +266,30 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                 ),
 
                 onClick = {
-                    dBScope.launch {
-                        if (email.isNotEmpty() && password.isNotEmpty()) {
-                            auth.createUserWithEmailAndPassword(email, password)
-                                .addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        Toast.makeText(
-                                            context,
-                                            "Sign up successful!",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        navController.navigate(Screen.LoginScreen.UserInfo.route)
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "task.exception?.message",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                    }
+                    if (email.isNotEmpty() && password.isNotEmpty()) {
+                        auth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Toast.makeText(
+                                        context,
+                                        "Sign up successful!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    navController.navigate(Screen.LoginScreen.UserInfo.route)
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        task.exception?.message,
+                                        Toast.LENGTH_LONG
+                                    ).show()
                                 }
-                        } else {
-                            Toast.makeText(
-                                context,
-                                "Please enter email and password.",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                            }
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Please enter email and password.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             )

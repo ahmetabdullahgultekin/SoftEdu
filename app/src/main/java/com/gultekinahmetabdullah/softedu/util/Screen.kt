@@ -140,6 +140,12 @@ sealed class Screen(val title: String, val route: String) {
             "about",
             R.drawable.ic_about
         )
+
+        data object Contact : SettingsDrawerScreen(
+            "Contact",
+            "contact",
+            R.drawable.baseline_connect_without_contact_24
+        )
     }
 }
 
@@ -164,5 +170,6 @@ val screensInLeftDrawer = listOf(
 val screensInRightDrawer = listOf(
     Screen.SettingsDrawerScreen.Settings,
     Screen.SettingsDrawerScreen.Feedback,
-    Screen.SettingsDrawerScreen.About
+    Screen.SettingsDrawerScreen.About,
+    Screen.SettingsDrawerScreen.Contact
 )

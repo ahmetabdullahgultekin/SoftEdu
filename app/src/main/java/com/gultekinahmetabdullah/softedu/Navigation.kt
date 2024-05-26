@@ -17,6 +17,7 @@ import com.gultekinahmetabdullah.softedu.admin.FeedbackPanel
 import com.gultekinahmetabdullah.softedu.drawer.AboutScreen
 import com.gultekinahmetabdullah.softedu.drawer.AccountView
 import com.gultekinahmetabdullah.softedu.drawer.AdjustProfileScreen
+import com.gultekinahmetabdullah.softedu.drawer.ContactScreen
 import com.gultekinahmetabdullah.softedu.drawer.FeedbackScreen
 import com.gultekinahmetabdullah.softedu.drawer.Settings
 import com.gultekinahmetabdullah.softedu.drawer.Subscription
@@ -104,6 +105,10 @@ fun Navigation(
 
         composable(Screen.SettingsDrawerScreen.About.route) {
             AboutScreen()
+        }
+
+        composable(Screen.SettingsDrawerScreen.Contact.route) {
+            ContactScreen()
         }
 
         composable(Screen.LoginScreen.UserInfo.route) {

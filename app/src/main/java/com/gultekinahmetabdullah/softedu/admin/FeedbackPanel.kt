@@ -26,6 +26,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -53,13 +54,20 @@ fun FeedbackPanel(navController: NavHostController) {
 
     Scaffold(modifier = Modifier
         .fillMaxSize()
-        //.padding(16.dp)
         .background(
             color = MaterialTheme.colorScheme.primary,
             shape = MaterialTheme.shapes.medium
         ),
         topBar = {
-            TopAppBar(title = { Text("Feedback Panel") },
+            TopAppBar(
+                colors = TopAppBarColors(
+                    MaterialTheme.colorScheme.onPrimary,
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.outline,
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.secondary
+                ),
+                title = { Text("Feedback Panel") },
                 actions = {
                     IconButton(modifier = Modifier.padding(10.dp), onClick = {
                         navController.popBackStack()

@@ -57,7 +57,12 @@ fun Settings(isDarkTheme: MutableState<Boolean>) {
             AlertDialog(
                 onDismissRequest = { showDialog.value = false },
                 title = { Text("Update Available") },
-                text = { Text("A new version of the app is available. Would you like to download it?") },
+                text = {
+                    Text(
+                        "A new version of the app is available. " +
+                                "Would you like to download it?"
+                    )
+                },
                 confirmButton = {
                     TextButton(onClick = {
                         uriHandler.openUri(shortUrl.value)
