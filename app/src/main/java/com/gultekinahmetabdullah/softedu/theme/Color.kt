@@ -51,7 +51,7 @@ val md_theme_dark_onSecondary = Color(0xFFFFFFFF)
 val md_theme_dark_secondaryContainer = Color(0xFF000000)
 //BottomSheetSurface
 val md_theme_dark_onSecondaryContainer = Color(0xFF00BFA5)
-val md_theme_dark_tertiary = Color(0xFFFFFFFF)
+val md_theme_dark_tertiary = Color(0xFFFFD600)
 val md_theme_dark_onTertiary = Color(0xFFFFFFFF)
 //GridBorderColourOfHome
 val md_theme_dark_tertiaryContainer = Color(0xFFFFFFFF)

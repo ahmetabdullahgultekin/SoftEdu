@@ -3,6 +3,8 @@ package com.gultekinahmetabdullah.softedu.signinsignup
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -60,12 +63,36 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var numberOfLight by remember { mutableIntStateOf(6) }
-    var isLight by remember { mutableStateOf(false) }
+    var numberOfLight by remember { mutableIntStateOf(17) }
+    val colourQueue = listOf(
+        MaterialTheme.colorScheme.onPrimary,
+        Color.Transparent,
+        MaterialTheme.colorScheme.tertiary,
+        Color.Transparent,
+        MaterialTheme.colorScheme.outline,
+        Color.Transparent,
+        MaterialTheme.colorScheme.onPrimary,
+        Color.Transparent,
+        MaterialTheme.colorScheme.tertiary,
+        Color.Transparent,
+        MaterialTheme.colorScheme.outline,
+        Color.Transparent,
+        MaterialTheme.colorScheme.onPrimary,
+        Color.Transparent,
+        MaterialTheme.colorScheme.tertiary,
+        Color.Transparent,
+        MaterialTheme.colorScheme.outline
+    )
     val color = animateColorAsState(
-        if (isLight) MaterialTheme.colorScheme.onPrimary
-        else Color.Transparent,
+        targetValue = colourQueue[17 - numberOfLight],
+        //animationSpec = if (numberOfLight != 0) tween(0) else tween(2000),
         label = "storming"
+    )
+    var isTransparent by remember { mutableStateOf(color.value != Color.Transparent) }
+    val alpha = animateFloatAsState(
+        if (!isTransparent) 0f else 1f, label = "",
+        animationSpec = if (numberOfLight != 1) tween(0)
+        else tween(2000)
     )
 
     Column(
@@ -78,14 +105,18 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
 
         LaunchedEffect(key1 = true) {
             while (true) {
-                if (numberOfLight > 0) {
-                    isLight = ! isLight
-                    -- numberOfLight
-                    delay(100)
+
+                if (numberOfLight > 1) {
+                    delay(50)
+                    numberOfLight--
+                    isTransparent = color.value != Color.Transparent
                 } else {
-                    numberOfLight = 6
+                    isTransparent = color.value == Color.Transparent
                     delay(2000)
+                    //Must be odd number
+                    numberOfLight = 17
                 }
+
             }
         }
 
@@ -98,6 +129,7 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                 .padding(16.dp)
                 .background(color = MaterialTheme.colorScheme.primary)
                 .fillMaxWidth()
+                .alpha(alpha.value)
         )
 
         OutlinedTextField(
