@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +13,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -35,17 +35,13 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
-import com.gultekinahmetabdullah.softedu.theme.DarkColors
-import com.gultekinahmetabdullah.softedu.theme.LightColors
 import java.io.FileInputStream
 import java.security.MessageDigest
 
 @Composable
-fun Settings() {
+fun Settings(isDarkTheme: MutableState<Boolean>) {
     //TODO add settings
     val settings = listOf("Dark Mode", "Notifications", "Privacy", "About", "Help")
-    val systemInDarkTheme = isSystemInDarkTheme()
-    val isDarkTheme = remember { mutableStateOf(systemInDarkTheme) }
     val showDialog = remember { mutableStateOf(false) }
     val shortUrl = remember { mutableStateOf("") }
     Column(
@@ -54,7 +50,7 @@ fun Settings() {
         verticalArrangement = Arrangement.Center
     ) {
 
-        SwitchButtonOnRow(settings[0])
+        SwitchButtonOnRow(settings[0], isDarkTheme)
         CardWithUpdateLink(showDialog, shortUrl)
         if (showDialog.value) {
             val uriHandler = LocalUriHandler.current
@@ -99,22 +95,22 @@ fun CardWithUpdateLink(showDialog: MutableState<Boolean>, shortUrl: MutableState
         ) {
 
             ClickableText(text = AnnotatedString(text = "Check for Update"),
-                          onHover = { },
-                          modifier = Modifier
-                              .padding(16.dp)
-                              .align(Alignment.CenterVertically)
-                              .weight(1f)
-                              .fillMaxWidth(),
-                          style = TextStyle.Default.copy(
-                              color = Color.Cyan,
-                              textDecoration = TextDecoration.Underline,
-                              fontWeight = FontWeight.Bold,
-                              fontSize = TextUnit(16f, TextUnitType.Sp)
-                          ),
-                          onClick = {
-                              Toast.makeText(context, "Checking for update!", Toast.LENGTH_SHORT).show()
-                              checkForUpdate(context, showDialog, shortUrl)
-                          }
+                onHover = { },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.CenterVertically)
+                    .weight(1f)
+                    .fillMaxWidth(),
+                style = TextStyle.Default.copy(
+                    color = Color.Cyan,
+                    textDecoration = TextDecoration.Underline,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = TextUnit(16f, TextUnitType.Sp)
+                ),
+                onClick = {
+                    Toast.makeText(context, "Checking for update!", Toast.LENGTH_SHORT).show()
+                    checkForUpdate(context, showDialog, shortUrl)
+                }
             )
 
             Text(
@@ -127,14 +123,18 @@ fun CardWithUpdateLink(showDialog: MutableState<Boolean>, shortUrl: MutableState
     }
 }
 
-fun checkForUpdate(context: Context, showDialog: MutableState<Boolean>, shortUrl: MutableState<String>) {
+fun checkForUpdate(
+    context: Context,
+    showDialog: MutableState<Boolean>,
+    shortUrl: MutableState<String>
+) {
     try {
         val buffer = ByteArray(1024)
         val md = MessageDigest.getInstance("SHA-256")
         val fis = FileInputStream(context.applicationContext.packageResourcePath)
         var numRead: Int
 
-        while (fis.read(buffer).also { numRead = it } != - 1) {
+        while (fis.read(buffer).also { numRead = it } != -1) {
             md.update(buffer, 0, numRead)
         }
         fis.close()
@@ -162,7 +162,11 @@ fun checkForUpdate(context: Context, showDialog: MutableState<Boolean>, shortUrl
                             shortUrl.value = firestoreShortUrl
                             showDialog.value = true
                         } else {
-                            Toast.makeText(context, "You are using the latest version!", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                context,
+                                "You are using the latest version!",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     } else {
                         Log.d("Firestore", "No such document")
@@ -180,17 +184,7 @@ fun checkForUpdate(context: Context, showDialog: MutableState<Boolean>, shortUrl
 }
 
 @Composable
-fun SwitchButtonOnRow(btnText: String) {
-
-    val systemInDarkTheme = isSystemInDarkTheme()
-    val isDarkThemed = remember { mutableStateOf(systemInDarkTheme) }
-
-    val colors = if (! isDarkThemed.value) {
-        LightColors
-    } else {
-        DarkColors
-    }
-
+fun SwitchButtonOnRow(btnText: String, isDarkTheme: MutableState<Boolean>) {
 
     Card(
         modifier = Modifier
@@ -207,10 +201,18 @@ fun SwitchButtonOnRow(btnText: String) {
             Switch(modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.CenterVertically),
-                   checked = isDarkThemed.value, onCheckedChange = {
-                    //TODO change theme
-                    isDarkThemed.value = it
-                })
+                checked = isDarkTheme.value, onCheckedChange = { isDarkTheme.value = it },
+                thumbContent = {
+                    Text(
+                        text = if (isDarkTheme.value) "🌙" else "☀️",
+                        style = TextStyle.Default.copy(
+                            color = MaterialTheme.colorScheme.outline,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = TextUnit(16f, TextUnitType.Sp)
+                        )
+                    )
+                }
+            )
         }
     }
 }

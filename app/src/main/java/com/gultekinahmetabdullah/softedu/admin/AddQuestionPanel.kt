@@ -3,12 +3,15 @@ package com.gultekinahmetabdullah.softedu.admin
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -20,12 +23,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.gultekinahmetabdullah.softedu.R
 import com.gultekinahmetabdullah.softedu.database.addQuestionToFirestore
+import com.gultekinahmetabdullah.softedu.theme.getCustomOutlinedTextFieldColors
 
 @Composable
-fun AddQuestionPanel() {
+fun AddQuestionPanel(navController: NavHostController) {
     val context = LocalContext.current
     var difficultyLevel by remember { mutableStateOf("") }
     var questionText by remember { mutableStateOf("") }
@@ -42,19 +49,37 @@ fun AddQuestionPanel() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Text(
-            text = "Add New Question",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            IconButton(modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.CenterVertically),
+                onClick = {
+                    navController.popBackStack()
+                }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_arrow_back_24),
+                    contentDescription = "Logout"
+                )
+
+            }
+
+            Text(
+                text = "Add New Question",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.CenterVertically)
+            )
+        }
 
         OutlinedTextField(
             value = questionText,
             onValueChange = { questionText = it },
             label = { Text("Question Text") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = getCustomOutlinedTextFieldColors()
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -62,7 +87,8 @@ fun AddQuestionPanel() {
             value = choice1,
             onValueChange = { choice1 = it },
             label = { Text("Choice 1") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = getCustomOutlinedTextFieldColors()
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -70,7 +96,8 @@ fun AddQuestionPanel() {
             value = choice2,
             onValueChange = { choice2 = it },
             label = { Text("Choice 2") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = getCustomOutlinedTextFieldColors()
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -78,7 +105,8 @@ fun AddQuestionPanel() {
             value = choice3,
             onValueChange = { choice3 = it },
             label = { Text("Choice 3") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = getCustomOutlinedTextFieldColors()
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -86,7 +114,8 @@ fun AddQuestionPanel() {
             value = choice4,
             onValueChange = { choice4 = it },
             label = { Text("Choice 4") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = getCustomOutlinedTextFieldColors()
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -94,7 +123,8 @@ fun AddQuestionPanel() {
             value = correctChoice,
             onValueChange = { correctChoice = it },
             label = { Text("Correct Choice Index") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = getCustomOutlinedTextFieldColors()
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -102,7 +132,8 @@ fun AddQuestionPanel() {
             value = difficultyLevel,
             onValueChange = { difficultyLevel = it },
             label = { Text("Difficulty Level") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = getCustomOutlinedTextFieldColors()
         )
         Spacer(modifier = Modifier.height(8.dp))
 

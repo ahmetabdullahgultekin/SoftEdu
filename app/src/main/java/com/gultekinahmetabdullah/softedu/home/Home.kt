@@ -1,7 +1,5 @@
 package com.gultekinahmetabdullah.softedu.home
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,11 +17,12 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +32,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.R
 import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
+import kotlinx.coroutines.tasks.await
 
 @Composable
 fun Home() { //TODO add announcement
@@ -46,6 +46,7 @@ private fun GetAnnouncementsFB(listOfAnnouncements: MutableState<List<String>>) 
 
     val db = Firebase.firestore
     var isLoading by remember { mutableStateOf(true) }
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -59,39 +60,62 @@ private fun GetAnnouncementsFB(listOfAnnouncements: MutableState<List<String>>) 
 
         HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.outline)
 
-        if (isLoading) {
-            CircularProgressIndicator(
-                Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(16.dp)
-                    .size(50.dp)
-            )
-        }
 
-        LaunchedEffect(key1 = Unit) {
+        val announcements = produceState(initialValue = listOf<String>(), producer = {
             try {
-                db.collection(FirestoreConstants.COLLECTION_FEEDBACKS)
+                val result = db.collection(FirestoreConstants.COLLECTION_FEEDBACKS)
                     .orderBy(FirestoreConstants.FIELD_TIMESTAMP, Query.Direction.DESCENDING)
                     .limit(FirestoreConstants.LIMIT_ANNOUNCEMENTS)
                     .get()
-                    .addOnSuccessListener { documents ->
-                        for (document in documents) {
-                            listOfAnnouncements.value += document.data[FirestoreConstants.FIELD_FEEDBACK].toString()
-                        }
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.w(TAG, "Error getting documents: ", exception)
-                    }
+                    .await()
+
+                value = result.documents.mapNotNull { document ->
+                    document.data?.get(FirestoreConstants.FIELD_FEEDBACK)?.toString()
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
-            } finally {
-                isLoading = false
             }
+        })
+
+        if (announcements.value.isEmpty()) {
+            CircularProgressIndicator(
+                Modifier
+                    .padding(16.dp)
+                    .size(50.dp)
+                    .align(Alignment.CenterHorizontally),
+                color = MaterialTheme.colorScheme.outline,
+                strokeWidth = 5.dp,
+            )
+        } else {
+            AnnouncementsColumn(announcements.value)
         }
 
-        if (!isLoading) {
-            AnnouncementsColumn(listOfAnnouncements)
+        /*
+        LaunchedEffect(key1 = Unit) {
+            scope.launch {
+                try {
+                    db.collection(FirestoreConstants.COLLECTION_FEEDBACKS)
+                        .orderBy(FirestoreConstants.FIELD_TIMESTAMP, Query.Direction.DESCENDING)
+                        .limit(FirestoreConstants.LIMIT_ANNOUNCEMENTS)
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            for (document in documents) {
+                                listOfAnnouncements.value += document.data[FirestoreConstants.FIELD_FEEDBACK].toString()
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.w(TAG, "Error getting documents: ", exception)
+                        }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                finally {
+                    isLoading = false
+                }
+            }
         }
+        AnnouncementsColumn(listOfAnnouncements)
+         */
     }
 }
 
@@ -135,15 +159,15 @@ fun AnnouncementCard() {
 
 
 @Composable
-fun AnnouncementsColumn(listOfAnnouncements: MutableState<List<String>>) {
+fun AnnouncementsColumn(listOfAnnouncements: List<String>) {
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(16.dp)
     ) {
 
-        items(listOfAnnouncements.value.size) { index ->
-            HomeItem(listOfAnnouncements.value[index], drawable = R.drawable.ic_temporary)
+        items(listOfAnnouncements.size) { index ->
+            HomeItem(listOfAnnouncements[index], drawable = R.drawable.ic_temporary)
         }
     }
 }

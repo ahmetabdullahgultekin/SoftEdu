@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.firebase.firestore.FirebaseFirestore
+import com.gultekinahmetabdullah.softedu.theme.getCustomOutlinedTextFieldColors
 import com.gultekinahmetabdullah.softedu.util.Screen
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -49,6 +50,7 @@ fun AdminLoginScreen(navController: NavController) {
             onValueChange = { accessKey = it },
             label = { Text("Access Key") },
             visualTransformation = PasswordVisualTransformation(),
+            colors = getCustomOutlinedTextFieldColors(),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)

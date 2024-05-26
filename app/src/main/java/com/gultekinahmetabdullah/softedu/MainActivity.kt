@@ -4,8 +4,11 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.google.firebase.FirebaseApp
@@ -34,14 +37,16 @@ MainActivity : ComponentActivity() {
                 Screen.BottomScreen.AdminHome.route
             else
                 Screen.LoginScreen.Login.lRoute
+            val isSystemInDarkTheme = isSystemInDarkTheme()
+            val isDarkTheme = remember { mutableStateOf(isSystemInDarkTheme) }
 
-            SoftEduTheme {
+            SoftEduTheme(isDarkTheme.value) {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     //color = MaterialTheme.colorScheme.background
                 ) {
-                    MainView(startDestination, auth)
+                    MainView(startDestination, auth, isDarkTheme)
                 }
             }
         }

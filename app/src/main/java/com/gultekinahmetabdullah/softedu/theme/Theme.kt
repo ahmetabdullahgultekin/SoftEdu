@@ -1,10 +1,11 @@
 package com.gultekinahmetabdullah.softedu.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 
 val LightColors = lightColorScheme(
 
@@ -68,9 +69,11 @@ val LightColors = lightColorScheme(
     surfaceTint = md_theme_dark_surfaceTint,
 )
 
+var useDarkTheme: Boolean = false
+
 @Composable
 fun SoftEduTheme(
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    useDarkTheme: Boolean,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
@@ -116,4 +119,11 @@ fun SoftEduTheme(
             content = content
         )
         */
+}
+
+@Composable
+fun getThemePreference(): Boolean {
+    //TODO get theme preference
+    var isItDark = remember { mutableStateOf(true) }
+    return isItDark.value
 }

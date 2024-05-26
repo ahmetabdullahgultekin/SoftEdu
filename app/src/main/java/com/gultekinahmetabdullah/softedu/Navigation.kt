@@ -3,6 +3,7 @@ package com.gultekinahmetabdullah.softedu
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -37,7 +38,8 @@ fun Navigation(
     pd: PaddingValues,
     navController: NavController,
     startDestination: String,
-    auth: FirebaseAuth
+    auth: FirebaseAuth,
+    isDarkTheme: MutableState<Boolean>
 ) {
 
     NavHost(
@@ -93,7 +95,7 @@ fun Navigation(
         }
 
         composable(Screen.SettingsDrawerScreen.Settings.route) {
-            Settings()
+            Settings(isDarkTheme)
         }
 
         composable(Screen.SettingsDrawerScreen.Feedback.route) {
@@ -107,17 +109,21 @@ fun Navigation(
         composable(Screen.LoginScreen.UserInfo.route) {
             UserInfoScreen(navController)
         }
+
         composable(Screen.BottomScreen.AdminHome.route) {
             AdminHome(navController)
         }
+
         composable(Screen.LoginScreen.AdminLogin.route) {
             AdminLoginScreen(navController)
         }
+
         composable(Screen.BottomScreen.FeedbackPanel.route) {
-            FeedbackPanel()
+            FeedbackPanel(navController)
         }
+
         composable(Screen.BottomScreen.AddQuestionPanel.route) {
-            AddQuestionPanel()
+            AddQuestionPanel(navController)
         }
 
         composable(Screen.ResultScreen.Result.rRoute + ",{correctAnswered}" + ",{totalQuestions}") { backStackEntry ->

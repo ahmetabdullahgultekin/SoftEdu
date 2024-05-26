@@ -7,6 +7,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,13 +17,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +43,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -50,8 +51,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 import com.gultekinahmetabdullah.softedu.R
+import com.gultekinahmetabdullah.softedu.theme.getCustomOutlinedTextFieldColors
 import com.gultekinahmetabdullah.softedu.util.Screen
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -61,8 +65,13 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
     val context = LocalContext.current
     //val auth: FirebaseAuth = Firebase.auth
 
+    val animationScope: CoroutineScope = rememberCoroutineScope()
+    val dBScope: CoroutineScope = rememberCoroutineScope()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisibility by remember {
+        mutableStateOf(PasswordVisualTransformation() as VisualTransformation)
+    }
     var numberOfLight by remember { mutableIntStateOf(17) }
     val colourQueue = listOf(
         MaterialTheme.colorScheme.onPrimary,
@@ -104,19 +113,20 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
     ) {
 
         LaunchedEffect(key1 = true) {
-            while (true) {
+            animationScope.launch {
+                while (numberOfLight > 0) {
 
-                if (numberOfLight > 1) {
-                    delay(50)
-                    numberOfLight--
-                    isTransparent = color.value != Color.Transparent
-                } else {
-                    isTransparent = color.value == Color.Transparent
-                    delay(2000)
-                    //Must be odd number
-                    numberOfLight = 17
+                    if (numberOfLight > 1) {
+                        delay(50)
+                        numberOfLight--
+                        isTransparent = color.value != Color.Transparent
+                    } else {
+                        isTransparent = color.value == Color.Transparent
+                        delay(2000)
+                        //Must be odd number
+                        numberOfLight = 17
+                    }
                 }
-
             }
         }
 
@@ -137,22 +147,7 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
             onValueChange = { email = it },
             label = { Text("Email") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                unfocusedLabelColor = MaterialTheme.colorScheme.outline,
-                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
-                unfocusedTextColor = MaterialTheme.colorScheme.outline,
-                focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                focusedContainerColor = MaterialTheme.colorScheme.primary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-
-                cursorColor = MaterialTheme.colorScheme.onPrimary,
-                selectionColors = TextSelectionColors(
-                    handleColor = MaterialTheme.colorScheme.onPrimary,
-                    backgroundColor = MaterialTheme.colorScheme.onPrimary
-                )
-            ),
+            colors = getCustomOutlinedTextFieldColors(),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
@@ -160,61 +155,72 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
 
         //Spacer(modifier = Modifier.height(16.dp))
 
+        val imageVector = remember { mutableIntStateOf(R.drawable.baseline_visibility_off_24) }
+
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = passwordVisibility,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                unfocusedLabelColor = MaterialTheme.colorScheme.outline,
-                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
-                unfocusedTextColor = MaterialTheme.colorScheme.outline,
-                focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                focusedContainerColor = MaterialTheme.colorScheme.primary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-
-                cursorColor = MaterialTheme.colorScheme.onPrimary,
-                selectionColors = TextSelectionColors(
-                    handleColor = MaterialTheme.colorScheme.onPrimary,
-                    backgroundColor = MaterialTheme.colorScheme.onPrimary
-                )
-            ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
+            trailingIcon = {
+                Icon(
+                    imageVector = imageVector.intValue.let { ImageVector.vectorResource(id = it) },
+                    contentDescription = "Visibility Off",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            if (passwordVisibility == VisualTransformation.None) {
+                                passwordVisibility = PasswordVisualTransformation()
+                                imageVector.intValue = R.drawable.baseline_visibility_off_24
+                            } else {
+                                passwordVisibility = VisualTransformation.None
+                                imageVector.intValue = R.drawable.baseline_visibility_24
+                            }
+                        }
+                )
+            },
+            colors = getCustomOutlinedTextFieldColors()
         )
 
         Button(colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.onPrimary,
             contentColor = MaterialTheme.colorScheme.primary
         ),
-               onClick = {
-                   if (email.isNotEmpty() && password.isNotEmpty()) {
-                       auth.signInWithEmailAndPassword(email, password)
-                           .addOnCompleteListener { task ->
-                               if (task.isSuccessful) {
-                                   Toast.makeText(context, "Sign in successful!", Toast.LENGTH_SHORT)
-                                       .show()
-                                   while (navController.currentBackStack.value.isNotEmpty()) {
-                                       navController.popBackStack()
-                                   }
-                                   navController.navigate(Screen.BottomScreen.Home.bRoute)
-                               } else {
-                                   Toast.makeText(
-                                       context,
-                                       task.exception?.message, Toast.LENGTH_LONG
-                                   ).show()
-                               }
-                           }
-                   } else {
-                       Toast.makeText(
-                           context, "Please enter email and password.", Toast.LENGTH_SHORT
-                       ).show()
-                   }
-               }) {
+            onClick = {
+                dBScope.launch {
+                    if (email.isNotEmpty() && password.isNotEmpty()) {
+                        auth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Toast.makeText(
+                                        context,
+                                        "Sign in successful!",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                        .show()
+                                    while (navController.currentBackStack.value.isNotEmpty()) {
+                                        navController.popBackStack()
+                                    }
+                                    navController.navigate(Screen.BottomScreen.Home.bRoute)
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        task.exception?.message, Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+                    } else {
+                        Toast.makeText(
+                            context, "Please enter email and password.", Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }) {
             Text("Sign In")
         }
 
@@ -247,41 +253,43 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
                     .padding(end = 8.dp)
             )
             ClickableText(text = AnnotatedString("Sign Up"),
-                          onHover = {},
-                          style = TextStyle.Default.copy(
-                              color = MaterialTheme.colorScheme.onPrimary, // Change the color here
-                              textDecoration = TextDecoration.Underline,
-                              fontWeight = FontWeight.Bold,
-                              fontSize = TextUnit(16f, TextUnitType.Sp)
-                          ),
+                onHover = {},
+                style = TextStyle.Default.copy(
+                    color = MaterialTheme.colorScheme.onPrimary, // Change the color here
+                    textDecoration = TextDecoration.Underline,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = TextUnit(16f, TextUnitType.Sp)
+                ),
 
-                          onClick = {
-                              if (email.isNotEmpty() && password.isNotEmpty()) {
-                                  auth.createUserWithEmailAndPassword(email, password)
-                                      .addOnCompleteListener { task ->
-                                          if (task.isSuccessful) {
-                                              Toast.makeText(
-                                                  context,
-                                                  "Sign up successful!",
-                                                  Toast.LENGTH_SHORT
-                                              ).show()
-                                              navController.navigate(Screen.LoginScreen.UserInfo.route)
-                                          } else {
-                                              Toast.makeText(
-                                                  context,
-                                                  task.exception?.message,
-                                                  Toast.LENGTH_LONG
-                                              ).show()
-                                          }
-                                      }
-                              } else {
-                                  Toast.makeText(
-                                      context,
-                                      "Please enter email and password.",
-                                      Toast.LENGTH_SHORT
-                                  ).show()
-                              }
-                          }
+                onClick = {
+                    dBScope.launch {
+                        if (email.isNotEmpty() && password.isNotEmpty()) {
+                            auth.createUserWithEmailAndPassword(email, password)
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        Toast.makeText(
+                                            context,
+                                            "Sign up successful!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        navController.navigate(Screen.LoginScreen.UserInfo.route)
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            "task.exception?.message",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Please enter email and password.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
             )
         }
 
