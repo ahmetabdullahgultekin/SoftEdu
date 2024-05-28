@@ -1,8 +1,6 @@
 package com.gultekinahmetabdullah.softedu.signinsignup
 
-import android.content.ContentValues
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +32,10 @@ import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
 import com.gultekinahmetabdullah.softedu.theme.getCustomOutlinedTextFieldColors
 import com.gultekinahmetabdullah.softedu.util.Screen
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 @Composable
 fun UserInfoScreen(navController: NavController) {
@@ -44,7 +45,8 @@ fun UserInfoScreen(navController: NavController) {
     val db = Firebase.firestore
     val context = LocalContext.current
     val totalQuestions = 10
-    val scope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
+
 
 
     Column(
@@ -89,13 +91,19 @@ fun UserInfoScreen(navController: NavController) {
                 contentColor = MaterialTheme.colorScheme.primary
             ),
             onClick = {
-                // Navigate to the test screen
-                scope.launch {
-                    if (saveProfileInfo(name, surname, nickname, db, context)) {
-                    navController.navigate(Screen.BottomScreen.Learnings.Quiz.bRoute + ",${true},${totalQuestions}")
+                // Launch a new coroutine
+                coroutineScope.launch {
+                    // Navigate to the test screen
+                    val pair = saveProfileInfo(name, surname, nickname, db, context)
+                    val result = pair.first
+                    val message = pair.second
+                    if (result) {
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screen.BottomScreen.Learnings.Quiz.bRoute + ",${true},${totalQuestions}")
+                    } else {
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
                 }
-
             }) {
             Text("Continue")
         }
@@ -103,56 +111,49 @@ fun UserInfoScreen(navController: NavController) {
 }
 
 
-private fun saveProfileInfo(name: String,
-                            surname: String,
-                            nickname: String,
-                            db: FirebaseFirestore,
-                            context: Context): Boolean {
+private suspend fun saveProfileInfo(name: String,
+                                    surname: String,
+                                    nickname: String,
+                                    db: FirebaseFirestore,
+                                    context: Context): Pair<Boolean, String> = withContext(Dispatchers.IO) {
 
     // Check if name, surname or nickname is empty
     if (name.isBlank() || surname.isBlank() || nickname.isBlank()) {
-        Toast.makeText(context, "Name, surname and nickname cannot be empty.", Toast.LENGTH_SHORT).show()
-        return false
+        return@withContext Pair(false, "Name, surname and nickname cannot be empty.")
     }
 
     // Check if the nickname already exists in the database
-    db.collection(FirestoreConstants.COLLECTION_USERS)
+    val documents = db.collection(FirestoreConstants.COLLECTION_USERS)
         .whereEqualTo(FirestoreConstants.FIELD_NICKNAME, nickname)
         .get()
-        .addOnSuccessListener { documents ->
-            if (documents.isEmpty) {
-                // The nickname does not exist, proceed with saving the profile information
-                val user = hashMapOf(
-                    FirestoreConstants.FIELD_NAME to name,
-                    FirestoreConstants.FIELD_SURNAME to surname,
-                    FirestoreConstants.FIELD_NICKNAME to nickname,
-                    FirestoreConstants.FIELD_EXPERIENCE_LEVEL to 0,
-                    FirestoreConstants.FIELD_SCORE to 0
-                )
+        .await()
 
-                val userId = FirebaseAuth.getInstance().currentUser?.uid
-                userId?.let {
-                    db.collection(FirestoreConstants.COLLECTION_USERS)
-                        .document(it) // Use auth.uid as the document ID
-                        .set(user) // Use set instead of add
-                        .addOnSuccessListener {
-                            Toast.makeText(context, "Profile information saved!", Toast.LENGTH_SHORT).show()
-                            //                    navController.navigate("home") // Navigate to "home" screen
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(context, "Error saving profile information.", Toast.LENGTH_SHORT).show()
-                            Log.w(ContentValues.TAG, "Error adding document", e)
-                        }
-                }
-            } else {
-                // The nickname already exists, show a Toast message
-                Toast.makeText(context, "This nickname is already taken. Please choose another one.", Toast.LENGTH_SHORT).show()
+    if (documents.isEmpty) {
+        // The nickname does not exist, proceed with saving the profile information
+        val user = hashMapOf(
+            FirestoreConstants.FIELD_NAME to name,
+            FirestoreConstants.FIELD_SURNAME to surname,
+            FirestoreConstants.FIELD_NICKNAME to nickname,
+            FirestoreConstants.FIELD_EXPERIENCE_LEVEL to 0,
+            FirestoreConstants.FIELD_SCORE to 0
+        )
+
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        userId?.let {
+            try {
+                db.collection(FirestoreConstants.COLLECTION_USERS)
+                    .document(it) // Use auth.uid as the document ID
+                    .set(user) // Use set instead of add
+                    .await()
+                return@withContext Pair(true, "Profile information saved!")
+            } catch (e: Exception) {
+                return@withContext Pair(false, "Error saving profile information.")
             }
         }
-        .addOnFailureListener { e ->
-            Toast.makeText(context, "Error checking the nickname.", Toast.LENGTH_SHORT).show()
-            Log.w(ContentValues.TAG, "Error checking the nickname", e)
-        }
+    } else {
+        // The nickname already exists, show a Toast message
+        return@withContext Pair(false, "This nickname is already taken. Please choose another one.")
+    }
 
-    return true
+    return@withContext Pair(false, "An unknown error occurred.")
 }

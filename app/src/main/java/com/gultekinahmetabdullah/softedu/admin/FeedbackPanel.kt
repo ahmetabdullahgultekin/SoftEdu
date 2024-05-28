@@ -43,6 +43,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.R
+import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
 import com.gultekinahmetabdullah.softedu.theme.getCustomOutlinedTextFieldColors
 import kotlinx.coroutines.launch
 
@@ -58,28 +59,28 @@ fun FeedbackPanel(navController: NavHostController) {
             color = MaterialTheme.colorScheme.primary,
             shape = MaterialTheme.shapes.medium
         ),
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarColors(
-                    MaterialTheme.colorScheme.onPrimary,
-                    MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.outline,
-                    MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.secondary
-                ),
-                title = { Text("Feedback Panel") },
-                actions = {
-                    IconButton(modifier = Modifier.padding(10.dp), onClick = {
-                        navController.popBackStack()
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_arrow_back_24),
-                            contentDescription = "Back"
-                        )
-                    }
-                }
-            )
-        }) {
+             topBar = {
+                 TopAppBar(
+                     colors = TopAppBarColors(
+                         MaterialTheme.colorScheme.onPrimary,
+                         MaterialTheme.colorScheme.primary,
+                         MaterialTheme.colorScheme.outline,
+                         MaterialTheme.colorScheme.primary,
+                         MaterialTheme.colorScheme.secondary
+                     ),
+                     title = { Text("Feedback Panel") },
+                     actions = {
+                         IconButton(modifier = Modifier.padding(10.dp), onClick = {
+                             navController.popBackStack()
+                         }) {
+                             Icon(
+                                 painter = painterResource(id = R.drawable.baseline_arrow_back_24),
+                                 contentDescription = "Back"
+                             )
+                         }
+                     }
+                 )
+             }) {
 
         FeedbackPanelContent(it)
     }
@@ -250,19 +251,19 @@ fun FeedbackItem(
 }
 
 fun fetchFeedbacks(db: FirebaseFirestore, onResult: (List<Feedback>) -> Unit) {
-    db.collection("feedbacks")
+    db.collection(FirestoreConstants.COLLECTION_FEEDBACKS)
         .get()
         .addOnSuccessListener { result ->
             val feedbacks = result.map { document ->
-                Feedback(document.id, document.getString("feedback") ?: "")
+                Feedback(document.id, document.getString(FirestoreConstants.FIELD_FEEDBACK) ?: "")
             }
             onResult(feedbacks)
         }
 }
 
 fun updateFeedback(db: FirebaseFirestore, feedbackId: String, newMessage: String) {
-    db.collection("feedbacks").document(feedbackId)
-        .update("feedback", newMessage)
+    db.collection(FirestoreConstants.COLLECTION_FEEDBACKS).document(feedbackId)
+        .update(FirestoreConstants.FIELD_FEEDBACK, newMessage)
         .addOnSuccessListener {
             Log.d("AdminPanel", "Feedback successfully updated!")
         }
@@ -272,7 +273,7 @@ fun updateFeedback(db: FirebaseFirestore, feedbackId: String, newMessage: String
 }
 
 fun deleteFeedback(db: FirebaseFirestore, feedbackId: String) {
-    db.collection("feedbacks").document(feedbackId)
+    db.collection(FirestoreConstants.COLLECTION_FEEDBACKS).document(feedbackId)
         .delete()
         .addOnSuccessListener {
             Log.d("AdminPanel", "Feedback successfully deleted!")

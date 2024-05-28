@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +31,7 @@ import androidx.navigation.NavHostController
 import com.gultekinahmetabdullah.softedu.R
 import com.gultekinahmetabdullah.softedu.database.addQuestionToFirestore
 import com.gultekinahmetabdullah.softedu.theme.getCustomOutlinedTextFieldColors
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddQuestionPanel(navController: NavHostController) {
@@ -41,6 +43,7 @@ fun AddQuestionPanel(navController: NavHostController) {
     var choice3 by remember { mutableStateOf("") }
     var choice4 by remember { mutableStateOf("") }
     var correctChoice by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -71,9 +74,9 @@ fun AddQuestionPanel(navController: NavHostController) {
             IconButton(modifier = Modifier
                 .padding(10.dp)
                 .align(Alignment.CenterVertically),
-                onClick = {
-                    navController.popBackStack()
-                }) {
+                       onClick = {
+                           navController.popBackStack()
+                       }) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_arrow_back_24),
                     contentDescription = "Logout",
@@ -146,24 +149,26 @@ fun AddQuestionPanel(navController: NavHostController) {
 
         Button(
             onClick = {
-                if (addQuestionToFirestore(
-                        difficultyLevel.toIntOrNull() ?: 0,
-                        questionText,
-                        listOf(choice1, choice2, choice3, choice4),
-                        correctChoice.toIntOrNull() ?: 0
-                    )
-                ) {
-                    Toast.makeText(context, "Question added!", Toast.LENGTH_SHORT).show()
-                    difficultyLevel = ""
-                    questionText = ""
-                    choice1 = ""
-                    choice2 = ""
-                    choice3 = ""
-                    choice4 = ""
-                    correctChoice = ""
-                } else {
-                    Toast.makeText(context, "Question could not be added!", Toast.LENGTH_SHORT)
-                        .show()
+                coroutineScope.launch {
+                    if (addQuestionToFirestore(
+                            difficultyLevel.toIntOrNull() ?: 0,
+                            questionText,
+                            listOf(choice1, choice2, choice3, choice4),
+                            correctChoice.toIntOrNull() ?: 0
+                        )
+                    ) {
+                        Toast.makeText(context, "Question added!", Toast.LENGTH_SHORT).show()
+                        difficultyLevel = ""
+                        questionText = ""
+                        choice1 = ""
+                        choice2 = ""
+                        choice3 = ""
+                        choice4 = ""
+                        correctChoice = ""
+                    } else {
+                        Toast.makeText(context, "Question could not be added!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             },
             modifier = Modifier

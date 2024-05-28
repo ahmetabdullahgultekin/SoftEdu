@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -88,17 +88,17 @@ fun Leaderboard(auth: FirebaseAuth) {
             }
         }
 
-        if (!isLoading)
+        if (! isLoading)
             LazyColumn {
-                items(users) { user ->
-                    LeaderboardItem(user, user.id == auth.currentUser?.uid)
+                itemsIndexed(users) { index, user ->
+                    LeaderboardItem(user, user.id == auth.currentUser?.uid, index + 1)
+                }
             }
-        }
     }
 }
 
 @Composable
-fun LeaderboardItem(user: User, isCurrentUser: Boolean) {
+fun LeaderboardItem(user: User, isCurrentUser: Boolean, rank: Int) {
     OutlinedCard(
         colors = CardDefaults.cardColors(
             containerColor = if (isCurrentUser)
@@ -117,6 +117,23 @@ fun LeaderboardItem(user: User, isCurrentUser: Boolean) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            /*
+                 when (rank) {
+                            1 -> Image(painter = painterResource(id = R.drawable.gold_medal), contentDescription = "Gold Medal")
+                            2 -> Image(painter = painterResource(id = R.drawable.silver_medal), contentDescription = "Silver Medal")
+                            3 -> Image(painter = painterResource(id = R.drawable.bronze_medal), contentDescription = "Bronze Medal")
+                        }
+             */
+            when (rank) {
+                1 -> Text("🥇", modifier = Modifier.padding(16.dp))
+                2 -> Text("🥈", modifier = Modifier.padding(16.dp))
+                3 -> Text("🥉", modifier = Modifier.padding(16.dp))
+                else -> Text(
+                    text = rank.toString(),
+                    modifier = Modifier.padding(16.dp),
+                    textAlign = TextAlign.Center,
+                )
+            }
             Text(
                 text = user.nickname,
                 modifier = Modifier.padding(16.dp),
@@ -127,6 +144,7 @@ fun LeaderboardItem(user: User, isCurrentUser: Boolean) {
                 modifier = Modifier.padding(16.dp),
                 textAlign = TextAlign.Center,
             )
+
         }
     }
 }

@@ -18,6 +18,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -28,6 +29,7 @@ import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
 import com.gultekinahmetabdullah.softedu.theme.getCustomOutlinedTextFieldColors
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.util.Locale
 
 @Composable
@@ -39,8 +41,9 @@ fun AdjustProfileScreen() {
     var selectedField by remember { mutableStateOf("") }
     var newValue by remember { mutableStateOf("") }
     var oldPassword by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
 
-    val fields = listOf("Name", "Surname", "Password")
+    val fields = listOf("Nickname", "Name", "Surname", "Password")
 
     Column(
         modifier = Modifier
@@ -50,7 +53,12 @@ fun AdjustProfileScreen() {
         verticalArrangement = Arrangement.Center
     ) {
         fields.forEach { field ->
-            Button(onClick = { selectedField = field }) {
+            Button(onClick = {
+                selectedField = field
+                newValue = ""
+                oldPassword = ""
+                errorMessage = ""
+            }) {
                 Text(field)
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -78,6 +86,14 @@ fun AdjustProfileScreen() {
             colors = getCustomOutlinedTextFieldColors(),
             modifier = Modifier.fillMaxWidth()
         )
+        // Display the error message
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -86,18 +102,24 @@ fun AdjustProfileScreen() {
                 val user = auth.currentUser
                 if (user != null) {
                     when (selectedField) {
+
                         "Name", "Surname" -> {
                             // Update name or surname in Firestore
-                            val docRef = db.collection(FirestoreConstants.COLLECTION_USERS)
-                                .document(user.uid)
-                            docRef.update(selectedField.lowercase(Locale.getDefault()), newValue)
-                                .addOnSuccessListener {
-                                    android.widget.Toast.makeText(
-                                        context,
-                                        "$selectedField updated",
-                                        android.widget.Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                            if (newValue.trim().isNotEmpty()) {
+                                val docRef = db.collection(FirestoreConstants.COLLECTION_USERS)
+                                    .document(user.uid)
+                                docRef.update(selectedField.lowercase(Locale.getDefault()), newValue)
+                                    .addOnSuccessListener {
+                                        android.widget.Toast.makeText(
+                                            context,
+                                            "$selectedField updated",
+                                            android.widget.Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                            } else {
+                                // The new value is empty, show an error message
+                                errorMessage = "$selectedField cannot be empty"
+                            }
                         }
 
                         "Password" -> {
@@ -115,25 +137,42 @@ fun AdjustProfileScreen() {
                                                         android.widget.Toast.LENGTH_SHORT
                                                     ).show()
                                                 } else {
-                                                    android.widget.Toast.makeText(
-                                                        context,
-                                                        "Error updating password",
-                                                        android.widget.Toast.LENGTH_SHORT
-                                                    ).show()
+                                                    errorMessage = "Password enter a valid password"
                                                 }
                                             }
                                     } else {
-                                        android.widget.Toast.makeText(
-                                            context,
-                                            "Incorrect old password",
-                                            android.widget.Toast.LENGTH_SHORT
-                                        ).show()
+                                        errorMessage = "Please check your old password"
                                     }
                                 }
                         }
+
+                        "Nickname" -> {
+                            // Check if a user with the same nickname already exists
+                            val result = db.collection(FirestoreConstants.COLLECTION_USERS)
+                                .whereEqualTo(FirestoreConstants.FIELD_NICKNAME, newValue)
+                                .get()
+                                .await()
+
+                            if (result.isEmpty) {
+                                // No user with the same nickname exists, update the nickname
+                                val docRef = db.collection(FirestoreConstants.COLLECTION_USERS)
+                                    .document(user.uid)
+                                docRef.update(FirestoreConstants.FIELD_NICKNAME, newValue)
+                                    .addOnSuccessListener {
+                                        errorMessage = ""
+                                        android.widget.Toast.makeText(
+                                            context,
+                                            "$selectedField updated",
+                                            android.widget.Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                            } else {
+                                // A user with the same nickname exists, show an error message
+                                errorMessage = "Nickname already exists"
+                            }
+                        }
                     }
                 }
-
             }
         }) {
             Text("Update Info")
