@@ -1,6 +1,7 @@
 package com.gultekinahmetabdullah.softedu.leaderboard
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,12 +26,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.R
 import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -117,23 +120,18 @@ fun LeaderboardItem(user: User, isCurrentUser: Boolean, rank: Int) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            /*
-                 when (rank) {
-                            1 -> Image(painter = painterResource(id = R.drawable.gold_medal), contentDescription = "Gold Medal")
-                            2 -> Image(painter = painterResource(id = R.drawable.silver_medal), contentDescription = "Silver Medal")
-                            3 -> Image(painter = painterResource(id = R.drawable.bronze_medal), contentDescription = "Bronze Medal")
-                        }
-             */
+
             when (rank) {
-                1 -> Text("🥇", modifier = Modifier.padding(16.dp))
-                2 -> Text("🥈", modifier = Modifier.padding(16.dp))
-                3 -> Text("🥉", modifier = Modifier.padding(16.dp))
+                1 -> Image(painter = painterResource(id = R.drawable.gold_medal), contentDescription = "Gold Medal")
+                2 -> Image(painter = painterResource(id = R.drawable.silver_medal), contentDescription = "Silver Medal")
+                3 -> Image(painter = painterResource(id = R.drawable.bronze_medal), contentDescription = "Bronze Medal")
                 else -> Text(
                     text = rank.toString(),
                     modifier = Modifier.padding(16.dp),
                     textAlign = TextAlign.Center,
                 )
             }
+
             Text(
                 text = user.nickname,
                 modifier = Modifier.padding(16.dp),
