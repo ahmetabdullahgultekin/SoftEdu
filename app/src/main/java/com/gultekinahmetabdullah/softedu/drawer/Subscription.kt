@@ -1,5 +1,6 @@
 package com.gultekinahmetabdullah.softedu.drawer
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +19,15 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.gultekinahmetabdullah.softedu.theme.getCustomButtonColors
 
 @Composable
 fun Subscription(){
+
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier.height(200.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -30,11 +36,20 @@ fun Subscription(){
         Card(modifier = Modifier.padding(8.dp), elevation = CardDefaults.cardElevation()){
             Column(modifier = Modifier.padding(8.dp)){
                 Column {
-                    Text(text = "Musical")
+                    Text(text = "Education")
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(text = "Free Tier")
-                        TextButton(onClick = { /*TODO*/ }) {
-                            Row {
+                        Text(text = "Free Plan")
+                        TextButton(colors = getCustomButtonColors(),
+                            onClick = {
+                                Toast.makeText(
+                                    context, "There is not an available plan now!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
                                 Text(text = "See All Plans")
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,

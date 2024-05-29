@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +27,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
+import com.gultekinahmetabdullah.softedu.theme.getCustomButtonColors
 import com.gultekinahmetabdullah.softedu.theme.getCustomOutlinedTextFieldColors
 
 @Composable
@@ -54,10 +53,7 @@ fun FeedbackScreen() {
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.onPrimary,
-                contentColor = MaterialTheme.colorScheme.primary
-            ),
+            colors = getCustomButtonColors(),
             onClick = {
             sendFeedbackToFirestore(feedback, context)
             feedback = ""

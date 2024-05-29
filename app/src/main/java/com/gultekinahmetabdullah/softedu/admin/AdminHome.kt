@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gultekinahmetabdullah.softedu.R
+import com.gultekinahmetabdullah.softedu.theme.getCustomButtonColors
 import com.gultekinahmetabdullah.softedu.util.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,7 +88,7 @@ fun AdminHomeContent(
                     shape = MaterialTheme.shapes.large
                 ),
             shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.outline),
+            colors = getCustomButtonColors(),
             elevation = ButtonDefaults.buttonElevation(5.dp, 5.dp, 5.dp, 5.dp, 5.dp),
             onClick = { navController.navigate(Screen.BottomScreen.FeedbackPanel.bRoute) }) {
             Text(
@@ -108,7 +109,7 @@ fun AdminHomeContent(
                     shape = MaterialTheme.shapes.large
                 ),
             shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.outline),
+            colors = getCustomButtonColors(),
             elevation = ButtonDefaults.buttonElevation(5.dp, 5.dp, 5.dp, 5.dp, 5.dp),
             onClick = { navController.navigate(Screen.BottomScreen.AddQuestionPanel.bRoute) }) {
             Text(

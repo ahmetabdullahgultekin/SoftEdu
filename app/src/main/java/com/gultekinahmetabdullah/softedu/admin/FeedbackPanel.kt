@@ -44,6 +44,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.R
 import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
+import com.gultekinahmetabdullah.softedu.theme.getCustomButtonColors
 import com.gultekinahmetabdullah.softedu.theme.getCustomOutlinedTextFieldColors
 import kotlinx.coroutines.launch
 
@@ -213,6 +214,7 @@ fun FeedbackItem(
                 )
 
                 Button(
+                    colors = getCustomButtonColors(),
                     onClick = {
                         onConfirmEditClick(feedback, editingText)
                     },

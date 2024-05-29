@@ -60,7 +60,7 @@ fun ContactCard() {
                 )
 
                 Text(
-                    text = "Gorillas",
+                    text = "GODI",
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(16.dp)
@@ -72,7 +72,7 @@ fun ContactCard() {
                     modifier = Modifier.padding(16.dp)
                 )
                 Text(
-                    text = "gorillas_hr@gorillas.com",
+                    text = "godi_sw@godi.com",
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(16.dp)

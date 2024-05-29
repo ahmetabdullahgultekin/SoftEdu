@@ -1,6 +1,7 @@
 package com.gultekinahmetabdullah.softedu.theme
 
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -111,4 +112,12 @@ fun getCustomOutlinedTextFieldColors() = OutlinedTextFieldDefaults.colors(
         handleColor = MaterialTheme.colorScheme.onPrimary,
         backgroundColor = MaterialTheme.colorScheme.onPrimary
     )
+)
+
+@Composable
+fun getCustomButtonColors() = ButtonDefaults.buttonColors(
+    containerColor = MaterialTheme.colorScheme.onPrimary,
+    contentColor = MaterialTheme.colorScheme.primary,
+    disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+    disabledContainerColor = MaterialTheme.colorScheme.primary,
 )

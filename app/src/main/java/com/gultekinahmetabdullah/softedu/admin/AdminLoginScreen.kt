@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.firebase.firestore.FirebaseFirestore
+import com.gultekinahmetabdullah.softedu.theme.getCustomButtonColors
 import com.gultekinahmetabdullah.softedu.theme.getCustomOutlinedTextFieldColors
 import com.gultekinahmetabdullah.softedu.util.Screen
 import kotlinx.coroutines.launch
@@ -57,6 +58,7 @@ fun AdminLoginScreen(navController: NavController) {
         )
 
         Button(
+            colors = getCustomButtonColors(),
             onClick = {
                 scope.launch {
                     if (checkAdminKey(accessKey)) {

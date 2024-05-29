@@ -2,9 +2,6 @@ package com.gultekinahmetabdullah.softedu.signinsignup
 
 import android.annotation.SuppressLint
 import android.widget.Toast
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,12 +25,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
@@ -50,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 import com.gultekinahmetabdullah.softedu.R
+import com.gultekinahmetabdullah.softedu.theme.getCustomButtonColors
 import com.gultekinahmetabdullah.softedu.theme.getCustomOutlinedTextFieldColors
 import com.gultekinahmetabdullah.softedu.util.Screen
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -62,12 +57,14 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
     val context = LocalContext.current
     //val auth: FirebaseAuth = Firebase.auth
 
-    val animScope = rememberCoroutineScope()
+    //val animScope = rememberCoroutineScope()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisibility by remember {
         mutableStateOf(PasswordVisualTransformation() as VisualTransformation)
     }
+
+    /*
     var numberOfLight by remember { mutableIntStateOf(17) }
 
     val colourQueue = listOf(
@@ -107,7 +104,7 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
         else tween(2000)
     )
 
-    /*
+
         LaunchedEffect(key1 = false) {
             animScope.launch {
                 while (numberOfLight > 0) {
@@ -139,13 +136,13 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_launcher_foreground),
             contentDescription = "Storm",
-            tint = color.value,
+            tint = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier
                 .size(300.dp)
                 .padding(16.dp)
                 .background(color = MaterialTheme.colorScheme.primary)
                 .fillMaxWidth()
-                .alpha(alpha.value)
+            //.alpha(alpha.value)
         )
 
         OutlinedTextField(
@@ -229,12 +226,12 @@ fun LoginScreen(auth: FirebaseAuth, navController: NavHostController) {
         }
 
         Button(
+            colors = getCustomButtonColors(),
             onClick = {
                 // Navigate to the admin login screen when the button is clicked
                 navController.navigate(Screen.LoginScreen.AdminLogin.lRoute)
             },
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(16.dp)
         ) {
             Text("Admin Login")

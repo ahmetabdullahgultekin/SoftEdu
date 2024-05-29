@@ -44,6 +44,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
 import com.gultekinahmetabdullah.softedu.database.updateAnsweredQuestions
+import com.gultekinahmetabdullah.softedu.theme.getCustomButtonColors
 import com.gultekinahmetabdullah.softedu.util.Screen
 import com.gultekinahmetabdullah.softedu.util.fetchQuestion
 
@@ -123,7 +124,9 @@ fun Quiz(navController: NavController, isTestScreen: Boolean, totalQuestions: In
 
             Spacer(modifier = Modifier.height(8.dp))
         }
-        Button(enabled = selectedChoice != - 1 && ! isFetching,  // Disable the button if no choice is selected
+        Button(
+            colors = getCustomButtonColors(),
+            enabled = selectedChoice != -1 && !isFetching,  // Disable the button if no choice is selected
                onClick = {
                    isFetching = true
                    if (continueClicked) {

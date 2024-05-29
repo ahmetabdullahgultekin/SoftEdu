@@ -1,6 +1,7 @@
 package com.gultekinahmetabdullah.softedu.drawer
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +28,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -37,6 +39,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
 import com.gultekinahmetabdullah.softedu.leaderboard.User
+import com.gultekinahmetabdullah.softedu.theme.getCustomButtonColors
 import com.gultekinahmetabdullah.softedu.util.Screen
 
 data class UserRowItem(
@@ -150,10 +153,13 @@ fun AccountView(auth: FirebaseAuth, navController: NavController) {
 
         item {
             Row(modifier = Modifier.padding(16.dp)) {
-                TextButton(onClick = {
+                TextButton(colors = getCustomButtonColors(), onClick = {
                     navController.navigate(Screen.AccountDrawerScreen.AdjustAccount.dRoute)
                 }) {
-                    Row {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Text(text = "Manage")
                         Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                              contentDescription = null)

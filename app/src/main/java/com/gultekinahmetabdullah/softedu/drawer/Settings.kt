@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
+import com.gultekinahmetabdullah.softedu.theme.getCustomButtonColors
 import java.io.FileInputStream
 import java.security.MessageDigest
 
@@ -64,7 +65,9 @@ fun Settings(isDarkTheme: MutableState<Boolean>) {
                     )
                 },
                 confirmButton = {
-                    TextButton(onClick = {
+                    TextButton(
+                        colors = getCustomButtonColors(),
+                        onClick = {
                         uriHandler.openUri(shortUrl.value)
                         showDialog.value = false
                     }) {
@@ -72,7 +75,8 @@ fun Settings(isDarkTheme: MutableState<Boolean>) {
                     }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showDialog.value = false }) {
+                    TextButton(colors = getCustomButtonColors(),
+                        onClick = { showDialog.value = false }) {
                         Text("Cancel")
                     }
                 }

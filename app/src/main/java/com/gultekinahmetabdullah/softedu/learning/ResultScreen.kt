@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.gultekinahmetabdullah.softedu.theme.getCustomButtonColors
 import com.gultekinahmetabdullah.softedu.util.Screen
 
 @Composable
@@ -35,7 +36,9 @@ fun ResultScreen(navController: NavController, correctAnswered: Int, totalQuesti
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(onClick = {
+        Button(
+            colors = getCustomButtonColors(),
+            onClick = {
             Toast.makeText(
                 context,
                 "Navigating to ${Screen.BottomScreen.Home.bTitle} Screen",

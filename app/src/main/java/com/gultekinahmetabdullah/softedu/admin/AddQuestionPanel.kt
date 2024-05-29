@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.gultekinahmetabdullah.softedu.R
 import com.gultekinahmetabdullah.softedu.database.addQuestionToFirestore
+import com.gultekinahmetabdullah.softedu.theme.getCustomButtonColors
 import com.gultekinahmetabdullah.softedu.theme.getCustomOutlinedTextFieldColors
 import kotlinx.coroutines.launch
 
@@ -148,6 +149,7 @@ fun AddQuestionPanel(navController: NavHostController) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Button(
+            colors = getCustomButtonColors(),
             onClick = {
                 coroutineScope.launch {
                     if (addQuestionToFirestore(
