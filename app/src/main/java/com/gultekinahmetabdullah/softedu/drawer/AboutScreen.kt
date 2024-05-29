@@ -6,17 +6,13 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,13 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -40,11 +35,42 @@ import kotlin.math.sin
 @Composable
 fun AboutScreen() {
 
+    val aboutText = "SoftEdu is a mobile application that aims to improve software and " +
+            "engineering knowledge of people from all ages. " +
+            "SoftEdu has smooth, brief, simple and understandable user interface design " +
+            "in order to satisfy more comprehensive and accessible display for " +
+            "children or older people. Furthermore; since SoftEdu appeals for " +
+            "every person wants to learn or dive deeper in programming " +
+            "(or in other words software design - abstract engineering), everyone will be " +
+            "able to use SoftEdu alike whatever his or her age. Additionally, we know that " +
+            "enjoying while learning is how much crucial so, we can emphasize that our design " +
+            "pleases client's pleasure.Therefore we can say that SoftEdu fulfills the " +
+            "entertaining teaching methods like games, quizzes, puzzles and so on. " +
+            "Eventually, this is a flexible platform that presents unique experience by " +
+            "requesting the user knowledge level. Finally as a student of SoftEdu, you will " +
+            "admire your flawless software knowledge!"
+
+    AboutCard(aboutText)
+
     BallRollingInEllipse()
 
-    Column {
-        Card(modifier = Modifier.alpha(0.25f).align(Alignment.CenterHorizontally)//TODO Vertyicwl center
-            .padding(16.dp), shape = RoundedCornerShape(16.dp)) {
+}
+
+@Composable
+fun AboutCard(aboutText: String) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .zIndex(1f)
+    ) {
+        Card(
+            modifier = Modifier
+                .alpha(0.75f)
+                .align(Alignment.CenterHorizontally)//TODO Vertical center
+                .padding(16.dp), shape = RoundedCornerShape(16.dp)
+        ) {
             Column(
                 modifier = Modifier
                     .padding(16.dp),
@@ -58,7 +84,7 @@ fun AboutScreen() {
                 )
 
                 Text(
-                    text = "This is a sample application built using Jetpack Compose. It demonstrates various features of the framework.",
+                    text = aboutText,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center
                 )
@@ -69,25 +95,22 @@ fun AboutScreen() {
 
 @Composable
 fun BallRollingInEllipse() {
+    val strokeWidth = 5f
+    val ballRadiusDP = 7.5.dp
+    val ellipseWidthDP = 150.dp
+    val ellipseHeightDP = 600.dp
+
     val ball1Position = remember { Animatable(0f) }
     val ball2Position = remember { Animatable(0f) }
     val ball3Position = remember { Animatable(0f) }
     val ball4Position = remember { Animatable(0f) }
-    val ballRadius = listOf(10.dp, 10.dp, 10.dp, 10.dp)
-    val ellipseWidth = listOf(200.dp, 200.dp, 200.dp, 200.dp)
-    val ellipseHeight = listOf(800.dp, 800.dp, 800.dp, 800.dp)
+    val ballRadius = listOf(ballRadiusDP, ballRadiusDP, ballRadiusDP, ballRadiusDP)
+    val ellipseWidth = listOf(ellipseWidthDP, ellipseWidthDP, ellipseWidthDP, ellipseWidthDP)
+    val ellipseHeight = listOf(ellipseHeightDP, ellipseHeightDP, ellipseHeightDP, ellipseHeightDP)
+
 
     LaunchedEffect(key1 = true) {
         ball1Position.animateTo(
-            targetValue = 1f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(1000, easing = LinearEasing),
-                repeatMode = RepeatMode.Restart
-            )
-        )
-    }
-    LaunchedEffect(key1 = true) {
-        ball2Position.animateTo(
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
                 animation = tween(500, easing = LinearEasing),
@@ -96,10 +119,19 @@ fun BallRollingInEllipse() {
         )
     }
     LaunchedEffect(key1 = true) {
+        ball2Position.animateTo(
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(1000, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart
+            )
+        )
+    }
+    LaunchedEffect(key1 = true) {
         ball3Position.animateTo(
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
-                animation = tween(1500, easing = LinearEasing),
+                animation = tween(2000, easing = LinearEasing),
                 repeatMode = RepeatMode.Restart
             )
         )
@@ -108,11 +140,13 @@ fun BallRollingInEllipse() {
         ball4Position.animateTo(
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
-                animation = tween(2000, easing = LinearEasing),
+                animation = tween(4000, easing = LinearEasing),
                 repeatMode = RepeatMode.Restart
             )
         )
     }
+
+    val color = MaterialTheme.colorScheme.outline
 
     Canvas(modifier = Modifier.fillMaxSize()) {
         //.size(ellipseWidth + ballRadius * 2, ellipseHeight + ballRadius * 2)
@@ -129,35 +163,35 @@ fun BallRollingInEllipse() {
 
         rotate(45f, center) {
             drawOval(
-                color = Color.LightGray,
+                color = color,
                 topLeft = Offset(center.x - half1Width / 2, center.y - half1Height / 2),
                 size = Size(half1Width, half1Height),
-                style = Stroke(10f)
+                style = Stroke(strokeWidth)
             )
         }
 
         rotate(-45f, center) {
             drawOval(
-                color = Color.LightGray,
+                color = color,
                 topLeft = Offset(center.x - half1Width / 2, center.y - half1Height / 2),
                 size = Size(half1Width, half1Height),
-                style = Stroke(10f)
+                style = Stroke(strokeWidth)
             )
         }
 
         drawOval(
-            color = Color.LightGray,
+            color = color,
             topLeft = Offset(center.x - half3Width / 2, center.y - half3Height / 2),
             size = Size(half3Width, half3Height),
-            style = Stroke(10f)
+            style = Stroke(strokeWidth)
         )
 
         rotate(90f, center) {
             drawOval(
-                color = Color.LightGray,
+                color = color,
                 topLeft = Offset(center.x - half1Width / 2, center.y - half1Height / 2),
                 size = Size(half1Width, half1Height),
-                style = Stroke(10f)
+                style = Stroke(strokeWidth)
             )
         }
 

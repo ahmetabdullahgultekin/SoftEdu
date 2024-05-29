@@ -1,5 +1,5 @@
 package com.gultekinahmetabdullah.softedu.signinsignup
-
+/*
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -40,6 +42,7 @@ import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.gultekinahmetabdullah.softedu.database.FirestoreConstants
 import com.gultekinahmetabdullah.softedu.database.updateAnsweredQuestions
 import com.gultekinahmetabdullah.softedu.leaderboard.User
 import com.gultekinahmetabdullah.softedu.util.Screen
@@ -55,8 +58,8 @@ fun ProfileInfoScreen(navController: NavController) {
 
     Column(
         modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -64,6 +67,22 @@ fun ProfileInfoScreen(navController: NavController) {
             value = name,
             onValueChange = { name = it },
             label = { Text("Name") },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                unfocusedLabelColor = MaterialTheme.colorScheme.outline,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedTextColor = MaterialTheme.colorScheme.outline,
+                focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+
+                cursorColor = MaterialTheme.colorScheme.onPrimary,
+                selectionColors = TextSelectionColors(
+                    handleColor = MaterialTheme.colorScheme.onPrimary,
+                    backgroundColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -73,6 +92,22 @@ fun ProfileInfoScreen(navController: NavController) {
             value = surname,
             onValueChange = { surname = it },
             label = { Text("Surname") },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                unfocusedLabelColor = MaterialTheme.colorScheme.outline,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedTextColor = MaterialTheme.colorScheme.outline,
+                focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+
+                cursorColor = MaterialTheme.colorScheme.onPrimary,
+                selectionColors = TextSelectionColors(
+                    handleColor = MaterialTheme.colorScheme.onPrimary,
+                    backgroundColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -105,26 +140,26 @@ private fun saveProfileInfo(name: String,
                             context: Context,
                             navController: NavController) {
     val user = hashMapOf(
-        "name" to name,
-        "surname" to surname,
-        "experienceLevel" to experienceLevel.toInt(),
-        "score" to 0
+        FirestoreConstants.FIELD_NAME to name,
+        FirestoreConstants.FIELD_SURNAME to surname,
+        FirestoreConstants.FIELD_EXPERIENCE_LEVEL to experienceLevel.toInt(),
+        FirestoreConstants.FIELD_SCORE to 0
     )
     val auth: FirebaseAuth = Firebase.auth
     val userId = auth.currentUser?.uid
 
     userId?.let {
-        db.collection("users")
-                .document(it) // Use auth.uid as the document ID
-                .set(user) // Use set instead of add
-                .addOnSuccessListener {
-                    Toast.makeText(context, "Profile information saved!", Toast.LENGTH_SHORT).show()
-                    navController.navigate(Screen.BottomScreen.Home.bRoute)
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(context, "Error saving profile information.", Toast.LENGTH_SHORT).show()
-                    Log.w(TAG, "Error adding document", e)
-                }
+        db.collection(FirestoreConstants.COLLECTION_USERS)
+            .document(it) // Use auth.uid as the document ID
+            .set(user) // Use set instead of add
+            .addOnSuccessListener {
+                Toast.makeText(context, "Profile information saved!", Toast.LENGTH_SHORT).show()
+                navController.navigate(Screen.BottomScreen.Home.bRoute)
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(context, "Error saving profile information.", Toast.LENGTH_SHORT).show()
+                Log.w(TAG, "Error adding document", e)
+            }
     }
 }
 
@@ -154,43 +189,43 @@ fun MultipleChoiceQuestionScreen(navController: NavController) {
     // Function to fetch a question from Firestore
     val fetchQuestion = {
         userId?.let { userId ->
-            db.collection("users").document(userId).get()
-                    .addOnSuccessListener { document ->
-                        if (document != null) {  // If the user document exists
-                            // Get the correctQuestions array from the user's document
-                            val correctQuestions = document.get("correctQuestions") as? List<String> ?: emptyList()
-                            // Generate a random string
-                            val randomString = UUID.randomUUID().toString()
+            db.collection(FirestoreConstants.COLLECTION_USERS).document(userId).get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {  // If the user document exists
+                        // Get the correctQuestions array from the user's document
+                        val correctQuestions = document.get(FirestoreConstants.FIELD_CORRECT_QUESTIONS) as? List<String> ?: emptyList()
+                        // Generate a random string
+                        val randomString = UUID.randomUUID().toString()
 
-                            // Fetch each question that is not in the correctQuestions array
-                            db.collection("questions")
-                                    .whereGreaterThanOrEqualTo(FieldPath.documentId(), randomString) // fetch random question
-                                    .whereGreaterThanOrEqualTo("difficultyLevel", experienceLevel)
-                                    .get()
-                                    .addOnSuccessListener { result ->
-                                        for (document in result) {
-                                            if (! correctQuestions.contains(document.id) && ! askedQuestionIds.contains(document.id)) {
-                                                questionId = document.id
-                                                questionText = document.getString("questionText") ?: ""
-                                                choices = document.get("choices") as List<String>
-                                                correctChoice = document.getLong("correctChoice")?.toInt() ?: - 1
-                                                questionCounter ++
-                                                isAnswerSelected = false
-                                                askedQuestionIds += document.id
-                                                break
-                                            }
-                                        }
+                        // Fetch each question that is not in the correctQuestions array
+                        db.collection(FirestoreConstants.COLLECTION_QUESTIONS)
+                            .whereGreaterThanOrEqualTo(FieldPath.documentId(), randomString) // fetch random question
+                            .whereGreaterThanOrEqualTo(FirestoreConstants.FIELD_DIFFICULTY_LEVEL, experienceLevel)
+                            .get()
+                            .addOnSuccessListener { result ->
+                                for (document in result) {
+                                    if (! correctQuestions.contains(document.id) && ! askedQuestionIds.contains(document.id)) {
+                                        questionId = document.id
+                                        questionText = document.getString(FirestoreConstants.FIELD_QUESTION_TEXT) ?: ""
+                                        choices = document.get(FirestoreConstants.FIELD_CHOICES) as List<String>
+                                        correctChoice = document.getLong(FirestoreConstants.FIELD_CORRECT_CHOICE)?.toInt() ?: - 1
+                                        questionCounter ++
+                                        isAnswerSelected = false
+                                        askedQuestionIds += document.id
+                                        break
                                     }
-                                    .addOnFailureListener { exception ->
-                                        Log.w(TAG, "Error getting documents.", exception)
-                                    }
-                        } else {
-                            Log.d(TAG, "No such document")
-                        }
+                                }
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.w(TAG, "Error getting documents.", exception)
+                            }
+                    } else {
+                        Log.d(TAG, "No such document")
                     }
-                    .addOnFailureListener { exception ->
-                        Log.d(TAG, "get failed with ", exception)
-                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d(TAG, "get failed with ", exception)
+                }
         }
     }
     LaunchedEffect(key1 = Unit) {
@@ -199,8 +234,8 @@ fun MultipleChoiceQuestionScreen(navController: NavController) {
     }
     Column(
         modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -256,19 +291,19 @@ private fun getUserInfo(userId: String?,
     val function = {
         userId1 = auth.currentUser?.uid
         userId1?.let {
-            db.collection("users")
-                    .document(it)
-                    .get()
-                    .addOnSuccessListener { document ->
-                        if (document != null) {
-                            experienceLevel1 = document.getLong("experienceLevel")?.toInt() ?: 0
-                        } else {
-                            Log.d(TAG, "No such user document")
-                        }
+            db.collection(FirestoreConstants.COLLECTION_USERS)
+                .document(it)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        experienceLevel1 = document.getLong(FirestoreConstants.FIELD_EXPERIENCE_LEVEL)?.toInt() ?: 0
+                    } else {
+                        Log.d(TAG, "No such user document")
                     }
-                    .addOnFailureListener { exception ->
-                        Log.d(TAG, "get failed with ", exception)
-                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d(TAG, "get failed with ", exception)
+                }
         }
     }
     return Triple(function, experienceLevel1, userId1)
@@ -280,8 +315,8 @@ fun MainScreen(navController: NavController, auth: FirebaseAuth) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -306,38 +341,38 @@ fun ProfileScreen(navController: NavController, auth: FirebaseAuth) {
     val db = Firebase.firestore
     val userId = auth.currentUser?.uid
     val context = LocalContext.current
-    var user by remember { mutableStateOf(User("", "", "", 0)) }
+    var user by remember { mutableStateOf(User("", "", "", "", 0)) }
     var users by remember { mutableStateOf(listOf<User>()) }
     var rank by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(key1 = userId) {
         userId?.let { it ->
-            db.collection("users")
-                    .get()
-                    .addOnSuccessListener { result ->
-                        users = result.documents.mapNotNull { it.toObject(User::class.java) }
-                        users = users.sortedByDescending { it.score }
-                    }
+            db.collection(FirestoreConstants.COLLECTION_USERS)
+                .get()
+                .addOnSuccessListener { result ->
+                    users = result.documents.mapNotNull { it.toObject(User::class.java) }
+                    users = users.sortedByDescending { it.score }
+                }
 
-            db.collection("users")
-                    .document(it)
-                    .get()
-                    .addOnSuccessListener { document ->
-                        if (document != null) {
-                            val name = document.getString("name") ?: ""
-                            val surname = document.getString("surname") ?: ""
-                            val score = document.getLong("score")?.toInt() ?: 0
-                            user = User(document.id, name, surname, score)
-                            rank = users.indexOfFirst { it.name == user.name && it.surname == user.surname } + 1
-                        }
+            db.collection(FirestoreConstants.COLLECTION_USERS)
+                .document(it)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        val name = document.getString(FirestoreConstants.FIELD_NAME) ?: ""
+                        val surname = document.getString(FirestoreConstants.FIELD_SURNAME) ?: ""
+                        val score = document.getLong(FirestoreConstants.FIELD_SCORE)?.toInt() ?: 0
+                        user = User(document.id, name, surname, score)
+                        rank = users.indexOfFirst { it.name == user.name && it.surname == user.surname } + 1
                     }
+                }
         }
     }
 
     Surface(
         modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            .fillMaxSize()
+            .padding(16.dp),
         color = MaterialTheme.colorScheme.background,
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -366,3 +401,4 @@ fun ProfileScreen(navController: NavController, auth: FirebaseAuth) {
         }
     }
 }
+*/

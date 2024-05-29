@@ -3,11 +3,15 @@ package com.gultekinahmetabdullah.softedu
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.gultekinahmetabdullah.softedu.util.Screen
 
 class MainViewModel:ViewModel() {
 
-    private val startDestination = Screen.BottomScreen.Home
+    private val startDestination = Firebase.auth.currentUser?.let {
+        Screen.BottomScreen.Home
+    } ?: Screen.LoginScreen.Login
 
     private val _currentScreen: MutableState<Screen> = mutableStateOf(startDestination)
 

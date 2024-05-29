@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.gultekinahmetabdullah.softedu.theme.getCustomButtonColors
 import com.gultekinahmetabdullah.softedu.util.Screen
 
 @Composable
@@ -25,8 +26,8 @@ fun ResultScreen(navController: NavController, correctAnswered: Int, totalQuesti
 
     Column(
         modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -35,9 +36,15 @@ fun ResultScreen(navController: NavController, correctAnswered: Int, totalQuesti
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(onClick = {
-            Toast.makeText(context, "Navigating to home", Toast.LENGTH_SHORT).show()
-            navController.navigate(Screen.BottomScreen.Home.route)
+        Button(
+            colors = getCustomButtonColors(),
+            onClick = {
+            Toast.makeText(
+                context,
+                "Navigating to ${Screen.BottomScreen.Home.bTitle} Screen",
+                Toast.LENGTH_SHORT
+            ).show()
+            navController.navigate(Screen.BottomScreen.Home.bRoute)
         }) {
             Text("Continue")
         }
